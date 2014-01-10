@@ -55,28 +55,36 @@ class Parser:
         return tree.render(context)
 
     def parse_group(self):
-        children = []
-        while not self.end():
-            if self.peek() == 'startvar':
-                self.next()
-                children.append(self.parse_python())
-                if self.peek() != 'endvar':
-                    raise ParseException('No closing "}}"')
-                self.next()
-                
-            elif self.peek() == 'starttag':
-                self.next()
-                tag_contents = self.peek().strip()
-                keyword = tag_contents.split()[0]
-                
-                if keyword == 'include':
-                    children.append(self.parse_include())
-                if self.peek() != 'endtag':
-                    raise ParseError('No end tag')
-                self.next()
-            else:
-                children.append(self.parse_text())
-        return GroupNode(children)
+        if self.end():
+            return GroupNode([])
+
+        
+        child = None
+        if self.peek() == 'startvar':
+            self.next()
+            child = self.parse_python()
+            if self.peek() != 'endvar':
+                raise ParseException('No closing "}}"')
+            self.next()
+            
+        elif self.peek() == 'starttag':
+            self.next()
+            tag_contents = self.peek().strip()
+            keyword = tag_contents.split()[0]
+            
+            if keyword == 'include':
+                child = self.parse_include()
+            if self.peek() != 'endtag':
+                raise ParseError('No end tag')
+            self.next()
+        else:
+            child = self.parse_text()
+
+        
+        group = self.parse_group()
+        group.children = [child] + group.children
+
+        return group
 
     def parse_python(self):
         if self.peek() == 'endvar':
@@ -100,3 +108,8 @@ class Parser:
 
         self.next()
         return TextNode(result)
+
+
+text = 'This is some text {{1 + 2 + 3}} var + 1 = {{var + 1}} empty = {{}} {% include template.html %}'
+p = Parser(text)
+print(p.expand({'var' : 6}))
