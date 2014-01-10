@@ -2,6 +2,7 @@ import re
 from GroupNode import GroupNode
 from PythonNode import PythonNode
 from TextNode import TextNode
+from IfNode import IfNode
 
 TOKENS = {
     '{{' : 'startvar',
@@ -92,6 +93,8 @@ Context is a dictionary representing the variables in the local scope.
             
             if keyword == 'include':
                 child = self.parse_include()
+            elif keyword == 'if':
+                child = self.parse_if()
             if self.peek() != 'endtag':
                 raise ParseError('No end tag')
             self.next()
@@ -103,6 +106,20 @@ Context is a dictionary representing the variables in the local scope.
         group.children = [child] + group.children
 
         return group
+
+
+    def parse_if(self):
+        tag_contents = self.peek().strip()
+        keyword, tag_contents = tag_contents.split(sep = None, maxsplit = 1)
+        
+        predicate = tag_contents
+
+        self.next()
+        if self.peek != 'endtag':
+            raise ParseException('No end tag')
+        self.next()
+        group = self.parse_group()
+        return TextNode(result)
 
     def parse_python(self):
         if self.peek() == 'endvar':
