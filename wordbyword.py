@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import html
+import textwrap
 
 from tornado.ncss import Server
 
@@ -8,15 +9,29 @@ import db
 
 server = Server()
 
-def greet(response):
-	first = response.get_field("fname", "John")
-	last = response.get_field("lname", "Smith")
-	response.write("Sup, {0} {1}.".format(first, last))
+def render_word(word):
+	children = word.children()
+	if len(children) == 0:
+		html = """\
+		<div id="child-{cid}">
+			{word}
+		</div>
+		""".format(cid=word.id(), word=word.value())
+		return html
+	else:
+		children_html = [render_word(child) for child in children]
+		html = """\
+		<div id="child-{cid}">
+			{word}
+			{children}
+		</div>
+		""".format(cid=word.id(), word=word.value(), children="\n".join(children_html))
+		return html
 
 def story(response, sid):
-	title, words = db.story_from_id(sid)
-	# current = ???
-	current = "Once upon a time there was a swag-master called Alex"
+	story = db.Story.from_id(sid)
+	# title, words = db.story_from_id(sid)
+	# current = "Once upon a time there was a swag-master called Alex"
 	html = """
 	<!DOCTYPE html>
 	<html>
@@ -26,13 +41,13 @@ def story(response, sid):
 	<body>
 		<h1>{title}</h1>
 		<h3>{current}</h3>
-		<p>
-			<b>story tree goes here</b>
+		<p id="tree">
+			{tree}
 		</p>
 	</body>
 	</html>
-	""".format(title=title, current=current)
+	""".format(title=story.title(), current=story.current(), tree=render_word(story.first_word()))
 	response.write(html)
 
-server.register("/greet", greet)
-server.run()
+if __name__ == "__main__":
+	server.run()
