@@ -29,11 +29,19 @@ class Word:
     def id(self):
         return self._id
        
-    def story_id(self):
+    def story_id(self, new_value=None):
+        if new_value is not None:
+            self._value = new_value
         return self._story_id
     
-    def value(self):
+    def value(self, new_value=None):
+        if new_value is not None:
+            self._value = new_value
+            
         return self._value
+        
+    def __str__(self):
+        return self.value()
         
     def children(self):
         c = db.cursor()
@@ -55,11 +63,27 @@ class Word:
     
     def save(self):
         c = db.cursor()
+        if self._id:
+            c.execute("""
+                UPDATE words
+                SET
+                storyID = ?
+                , word = ?
+                """, (self._story_id, self._value))
+            db.commit()
+        else:
+            c.execute("""
+                INSERT INTO words VALUES (NULL,?,?)
+                """, (self._story_id, self._value))
+            db.commit()
         
         
         
 testWord = Word.from_id(1)
 
-print(testWord.children())
+#testWord.value("world")
+
+print(testWord.value())
         
+testWord.save()
    
