@@ -1,20 +1,18 @@
 CREATE TABLE stories (
-     storyID INTEGER NOT NULL
+     storyID INTEGER PRIMARY KEY
     ,name    TEXT    NOT NULL
-    ,PRIMARY KEY (storyID)
 );
 
 CREATE TABLE words (
-    wordID  INTEGER NOT NULL
+    wordID  INTEGER PRIMARY KEY
     ,storyID    INTEGER NOT NULL
     ,word   TEXT    NOT NULL
-    ,PRIMARY KEY (wordID)
     ,FOREIGN KEY(storyID) REFERENCES stories(storyID)
 );
 
 CREATE TABLE wordchild (
-    parentID    INTEGER NOT NULL
-    ,childID    INTEGER NOT NULL
+    parentID    INTEGER NULL
+    ,childID    INTEGER NULL
     ,PRIMARY KEY(parentID, childID)
     ,FOREIGN KEY(parentID) REFERENCES words(wordID)
     ,FOREIGN KEY(childID) REFERENCES words(wordID)
