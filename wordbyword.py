@@ -1,6 +1,6 @@
 from tornado.ncss import Server
-#import db
-
+import database
+db = Database
 def index(response):
     response.write("Hello World! :) Welcome to SpyWare Exchange!")
     for x in range(100):
@@ -13,17 +13,19 @@ def stories(response):
 	# Var below returns a list of tuplets.
 	# For each elemet of the list there is
 	# a tuple for each story that is to be listed 
-	stories = ['The big bug','Harry Potter','The Green Sheep','The long snake','the small ant','the broken wheel']
+	stories = db.story_list()
+	
+	#debug = ['The big bug','Harry Potter','The Green Sheep','The long snake','the small ant','the broken wheel']
 	# story_list_data should return: 
-	#	titles, authors, contents,
-	#	short description, most popular
-	#	unconfirmed word chain, last edited
+	#	titles
 
 	#db.story_list_data()
 	# arguments:
 	# returns: 
 	response.write("""
 		<html>
+		<head>
+		</head>
 		<body>
 
 		""")
@@ -34,7 +36,7 @@ def stories(response):
 	response.write("""
 		</body>
 		</html>
-		
+
 		""")
 
 
