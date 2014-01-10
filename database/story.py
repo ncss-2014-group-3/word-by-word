@@ -3,7 +3,14 @@ import sqlite3
 class Story:
     @classmethod
     def from_id(cla,id):
-        
+        with sqlite3.connect('database.db') as connection:
+            cursor = connection.cursor()
+            cursor.execute('''SELECT name FROM stories WHERE id=?''', (id,))
+            row = cursor.fetchone()
+            if row is None:
+                return False
+            return cla(row[0],#todo
+                       )
     def __init__(self, title, first_word, story_id=None):
         self._title = title
         self._first_word = first_word
