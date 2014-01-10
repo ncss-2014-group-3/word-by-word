@@ -1,5 +1,6 @@
 from tornado.ncss import Server
-import db 
+#import db
+import re
 def index(response):
     response.write("Welcome to Spyware Exchange!")
     i = 0
@@ -13,12 +14,28 @@ def hello(response, name):
 def create(response):
     invalid_word = False
     #get the variables we need using get_field
-    title = response.get_field("title")
+    title = str(response.get_field("title"))
     start_word = response.get_field("start_word")
+    if title is None:
+        #we didn't get given a title
+    #TODO: We need to make sure the start word is actually a word, not numbers. Check the whitespace and also check the Title contains letters and that there is actually a title.
+    check = re.match("^[A-Za-z0-9]([A-Za-z0-9!\"\(\)?',\.\:;]+|[A-Za-z0-9])*$", title)
+    #word_che
+    if " " in title:
+        if check == True:
+            print("yeyeyeye")        
+    elif " " not in title:        
+        if check == True:
+            print("yeyeyeye")
+        else:
+            print("OH GOD SWEET JESUS NO!")
+    title = title[0].upper() + title[1:]
+    print(title)
+    print(start_word)
     #write them to the database
-    db.create_story(title, start_word)
+    #db.create_story(title, start_word)
 
-    #TODO: We need to make sure the start word is actually a word, not numbers. 
+    
     response.write("""
     <html>
     <head>
