@@ -12,7 +12,11 @@ class Story:
         self._cursor = self._connection.cursor()
     
     def total_votes(self):
-        self._cursor.execute('''SELECT COUNT(*) FROM votes WHERE storyID=?''', (self._story_id,))
+        self._cursor.execute('''
+            SELECT COUNT(*) FROM votes as v 
+            INNER JOIN words as m ON v.wordID = m.wordID
+            WHERE m.storyID = ?
+        ''', (self._story_id,))
     def story_id(self):
         return self._story_id
     def title(self):
