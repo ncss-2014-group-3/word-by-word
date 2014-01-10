@@ -1,5 +1,5 @@
 from tornado.ncss import Server
-import db
+#import db
 
 def index(response):
     response.write("Hello World! :) Welcome to SpyWare Exchange!")
@@ -13,7 +13,7 @@ def stories(response):
 	# Var below returns a list of tuplets.
 	# For each elemet of the list there is
 	# a tuple for each story that is to be listed 
-	stories = db.get_all_stories()
+	stories = ['The big bug','Harry Potter','The Green Sheep','The long snake','the small ant','the broken wheel']
 	# story_list_data should return: 
 	#	titles, authors, contents,
 	#	short description, most popular
@@ -22,32 +22,23 @@ def stories(response):
 	#db.story_list_data()
 	# arguments:
 	# returns: 
+	response.write("""
+		<html>
+		<body>
+
+		""")
+	for i in stories:
+		response.write("<h1>")
+		response.write(i)
+		response.write("</h1>")
+	response.write("""
+		</body>
+		</html>
+		
+		""")
 
 
-
-
-
-
-	response.write('''
-<html>
-<head>
-<style>
-body
-{
-	background-color: green;
-}
-h1
-{
-	color: white
-}
-</style>
-</head>
-<body>
-<h1>list stories</h1>
-<p>many stories here</p>
-</body>
-</html>
-		''')
+	
 
 
 def greet(response):
