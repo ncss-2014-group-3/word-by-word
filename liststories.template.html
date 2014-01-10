@@ -1,7 +1,7 @@
 <div class='list_stories'>
-{% fro title in stories %}
+{% for title in stories %}
 	<ul>
-		<li><a class='' href="">{{ title }}</a></li>
+		<li><a class='list_item' href="{{ story_link }}">{{ story_title }}</a></li>
 	</ul>
 {% end for %}
 </div>
