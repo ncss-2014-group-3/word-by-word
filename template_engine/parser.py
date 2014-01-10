@@ -25,6 +25,9 @@ class Parser:
         if not self.end():
             self._upto += 1
 
+    def expand(self, context={}):
+        tree = self.parse_group()
+        return tree.render(context)
 
     def parse_group(self):
         children = []
