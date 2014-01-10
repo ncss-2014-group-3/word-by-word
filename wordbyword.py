@@ -6,20 +6,11 @@ def index(response):
     for x in range(100):
     	response.write(str(x) + '\n')
 
-def hello(response, name):
-	response.write("hello" + name)
-
-
 #	function:	stories()
 #	arguments:	response
 #	description:
 #		When the page is called for listing the stories avaliable.
 def stories(response):
-	# Var below returns a list of tuplets.
-	# For each elemet of the list there is
-	# a tuple for each story that is to be listed
-
-
 	#stories = db.story_list()
 
 	stories = ['The big bug','Harry Potter','The Green Sheep','The long snake','the small ant','the broken wheel']
@@ -46,24 +37,6 @@ def stories(response):
 
 		""")
 
-
-	
-
-
-def greet(response):
-	fname = response.get_field("fname", "annomynous")
-	lname = response.get_field("lname", "")
-	response.write('''
-<html>
-<head>
-
-</head>
-<body>
-<h1>list stories</h1>
-<p>hello {fname} {lname}</p>
-</body>
-</html>
-		'''.format(fname=fname, lname=lname))
 
 server= Server()
 server.register("/hello/([a-z]+)", hello)
