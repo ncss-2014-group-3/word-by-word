@@ -1,19 +1,23 @@
 import sqlite3
 
 class Story:
+    @classmethod
+    def from_id(cla,id):
+        
     def __init__(self, title, first_word, story_id=None):
         self._title = title
         self._first_word = first_word
         self._story_id = story_id
-        conn = sqlite3.connect('database.db')
-        cursor = conn.cursor()
+        self._connection = sqlite3.connect('database.db')
+        self._cursor = self._connection.cursor()
+    
     def total_votes(self):
-        cursor.execute('''SELECT COUNT(*) FROM votes WHERE storyID=?''', (self._story_id,))
+        self._cursor.execute('''SELECT COUNT(*) FROM votes WHERE storyID=?''', (self._story_id,))
     def story_id(self):
         return self._story_id
     def title(self):
         return self._title
     def save(self):
         if not self._story_id:
-            cursor.execute('''INSERT INTO stories (name) VALUES (?)''', (self._title,))
+            self._cursor.execute('''INSERT INTO stories (name) VALUES (?)''', (self._title,))
             self._story_id = cursor.lastrowid
