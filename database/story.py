@@ -8,7 +8,12 @@ class Story:
         conn = sqlite3.connect('database.db')
         cursor = conn.cursor()
     def total_votes(self):
-        cursor.execute('''SELECT COUNT(*) FROM votes WHERE storyID=?''', (self._story_id,))
+        cursor.execute("""
+            SELECT COUNT(*) FROM votes as v 
+            INNER JOIN words as m ON v.wordID = m.wordID
+            WHERE m.storyID = ?
+        """, (self._story_id,))
+        
     def story_id(self):
         return self._story_id
     def title(self):
