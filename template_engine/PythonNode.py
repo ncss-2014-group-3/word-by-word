@@ -5,7 +5,7 @@ class PythonNode:
     def render(self, context):
         try:
             result = eval(self.code, {}, context)
-        except NameError:
+        except (NameError, SyntaxError):
             return ''
         else:
             return '' if result == None else str(result)

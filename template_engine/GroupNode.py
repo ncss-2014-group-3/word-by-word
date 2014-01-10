@@ -8,6 +8,6 @@ class GroupNode:
             result += child.render(context)
         return result
 
-    def __refr__(self):
+    def __repr__(self):
         return 'GroupNode({!r})'.format(self.children)
     
