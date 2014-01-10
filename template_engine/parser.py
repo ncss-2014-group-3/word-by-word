@@ -15,7 +15,12 @@ class ParseException(Exception):
 
 
 class Parser:
+    """ Parser(text) -> parser object
+
+Creates a new Parser object from a string that can be expanded. """
+    
     def __init__(self, text):
+        """ p.__init__(text) initialises the Parser and stores in p. """
         self._tokens = []
         while text:
             minpos = len(text)
@@ -51,6 +56,19 @@ class Parser:
             self._upto += 1
 
     def expand(self, context={}):
+        """ p.expand(context = {}) -> str
+
+expanded form of the text given in the constructor.
+
+Context is a dictionary representing the variables in the local scope.
+
+>>> Parser('Test {{ 3 * 9 }}').expand()
+'Test 27'
+>>> Parser('Test {{ var + 3 }}').expand({ 'var' : 9})
+'Test 12'
+>>> Parser('var * 9 = {{ var * 9 }} WORDS! {{ 6 * 9 - (var + 4)}}').expand({ 'var' : 1.4})
+'var * 9 = 12.6 WORDS! 48.6'
+"""
         tree = self.parse_group()
         return tree.render(context)
 
@@ -110,6 +128,7 @@ class Parser:
         return TextNode(result)
 
 
-text = 'This is some text {{1 + 2 + 3}} var + 1 = {{var + 1}} empty = {{}} {% include template.html %}'
-p = Parser(text)
-print(p.expand({'var' : 6}))
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
+    print('Passed')
