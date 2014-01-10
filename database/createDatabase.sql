@@ -11,8 +11,8 @@ CREATE TABLE words (
 );
 
 CREATE TABLE wordchild (
-    parentID    INTEGER NOT NULL
-    ,childID    INTEGER NOT NULL
+    parentID    INTEGER NULL
+    ,childID    INTEGER NULL
     ,PRIMARY KEY(parentID, childID)
     ,FOREIGN KEY(parentID) REFERENCES words(wordID)
     ,FOREIGN KEY(childID) REFERENCES words(wordID)
