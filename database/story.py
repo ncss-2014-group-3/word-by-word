@@ -1,18 +1,15 @@
 from collections import deque
+import sqlite3
+db = sqlite3.connect('database.db')
+
 class Story:
     def __init__(self, story_id, title, first_word):
         self._story_id = story_id
         self._title = title
         self._first_word = first_word
-        self._story = []
-
-        # Recursive tree building
-        todo = deque(self._first_word])
-        while todo:
-            current = todo.popleft()
-    def _build_tree(self,word):
-        for child in word.children():
-            # _build_tree
+    def total_votes(self):
+        cursor = db.cursor()
+        cursor.execute('''SELECT COUNT(*) FROM votes WHERE storyID=?''', (self._story_id))
     def story_id(self):
         return self._story_id
     def title(self):
