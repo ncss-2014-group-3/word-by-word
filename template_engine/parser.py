@@ -65,7 +65,7 @@ Creates a new Parser object from a string that can be expanded. """
         return keyword, tag_contents
         
     def expand(self, context={}):
-        """ p.expand(context = {}) -> str
+        r""" p.expand(context = {}) -> str
 
 expanded form of the text given in the constructor.
 
@@ -75,6 +75,8 @@ Context is a dictionary representing the variables in the local scope.
 'Test 27'
 >>> Parser('Test {{ var + 3 }}').expand({ 'var' : 9})
 'Test 12'
+>>> Parser('Test {{ var }}').expand({ 'var' : '<p> <!-- --> "\'\\/ &amp; & #? <!CDATA[[ &'})
+'Test &lt;p&gt; &lt;!-- --&gt; &quot;&#x27;\\/ &amp;amp; &amp; #? &lt;!CDATA[[ &amp;'
 >>> Parser('var * 9 = {{ var * 9 }} WORDS! {{ 6 * 9 - (var + 4)}}').expand({ 'var' : 1.4})
 'var * 9 = 12.6 WORDS! 48.6'
 >>> text = 'Test words {% if var == 1 %} The world is good {% end if %} '
