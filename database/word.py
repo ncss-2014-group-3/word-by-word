@@ -18,13 +18,13 @@ class Word:
         if result:
             return cla(result[0],result[1], result[2])
             
-        c.commit()
-        return result
+        return False
         
     def __init__(self, id, story_id, value):
         self._id = id
         self._story_id = story_id
         self._value = value
+        self.save()
         
     def id(self):
         return self._id
@@ -43,6 +43,26 @@ class Word:
     def __str__(self):
         return self.value()
         
+    def add_child(self, value):
+        new_word = Word(False, self.story_id(), value)
+        new_word.save()
+        c = db.cursor()
+        c.execute("""
+        INSERT INTO wordchild VALUES (?,?)
+        """, (self._id, new_word._id))
+        db.commit()
+        return new_word
+    def remove(self):
+        for child in self.children():
+            child.remove()
+        c = db.cursor()
+        c.execute("""
+        DELETE FROM word WHERE wordID = ?
+        """, (self._id,))
+        c.execute("""
+        DELETE FROM wordchild WHERE parentID = ?
+        """, (self._id,))
+        
     def children(self):
         c = db.cursor()
         c.row_factory = dict_factory
@@ -52,11 +72,11 @@ class Word:
             INNER JOIN wordchild ON words.wordID = wordchild.childID
             WHERE
                 wordchild.parentID = ?
-        """, (self.id(),))
+        """, (self._id,))
         
-        children = {}
+        children = []
         for childWord in c:
-            children[childWord["word"]] = Word(childWord["wordID"], childWord["storyID"], childWord["value"])
+            children.append(Word(childWord["wordID"], childWord["storyID"], childWord["word"]))
             
         #c.commit()
         return children
@@ -69,21 +89,17 @@ class Word:
                 SET
                 storyID = ?
                 , word = ?
-                """, (self._story_id, self._value))
+                WHERE
+                    wordID = ?
+                """, (self._story_id, self._value, self._id))
             db.commit()
         else:
             c.execute("""
                 INSERT INTO words VALUES (NULL,?,?)
                 """, (self._story_id, self._value))
             db.commit()
+            self._id = c.lastrowid
         
         
         
-testWord = Word.from_id(1)
-
-#testWord.value("world")
-
-print(testWord.value())
-        
-testWord.save()
    
