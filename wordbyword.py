@@ -1,7 +1,13 @@
 from tornado.ncss import Server
 from template_engine.parser import Parser
 
-from database import story
+                     
+#import db
+import re
+from template_engine.parser import Parser
+
+#import database
+#db = Database
 
 #	function:	stories()
 #	arguments:	response
@@ -22,7 +28,7 @@ def stories(response):
 	("The big bug","big bug wanted a big hug",1002),
 	("Harry Potter","the boy who lived",5000),
 	("The Green Sheep","thomas's bedtime story",1450),
-	("The long snake","pun on python coding",6354),
+	("The long snake","pun on python coding",6354),  
 	("the small ant","got squashed",3),
 	("the broken wheel","went round and round and fell down",789),
 	]
@@ -33,7 +39,7 @@ def stories(response):
 	#create the parser object from template file
 	p = Parser.from_file('templates/list-of-stories.html')
 	#render the html code in var result
-	result = p.expand({'stories': []})
+	result = p.expand({'stories': []}) # dict in expand
 	#render the result to the client
 	response.write(result)
 
@@ -41,8 +47,11 @@ def style(response):
 	with open('style.css', 'r') as f:
 		response.write(f.read())
 
+def hello(response, name):
+    response.write("Hello " + name + " ")
 
 def create(response):
+    invalid_word = False
     #get the variables we need using get_field
     title = response.get_field("title")
     firstword = response.get_field("firstword")
@@ -59,38 +68,60 @@ def create(response):
             errors.append("You didn't enter a starting word!")  
         if ' ' in firstword:
             errors.append("Please only enter one word.")
-        if len(firstword) > 20:
-            errors.append("Your word is too long. Word must be below 21 characters long.")
         if errors:
-
-            #if there are errors, relay back to user
             errors.append("Please try again.")
-            p = Parser.from_file("templates/createastory.html")
-            variables = {'errors': errors }
-                          
-            view = p.expand(variables)
-            response.write(view)
-            return
-            
-        else:
-            #write to the database
-            new_story = story.Story(title, firstword)
-            story_id = new_story.story_id
-            response.redirect("/story/" + str(story_id))
-    else:
-            
-        p = Parser.from_file("templates/createastory.html")
-                              
-        view = p.expand()
-        response.write(view)
 
-           
-      
+    p = Parser.from_file("HTML/createastory.html")
+    variables = { 'title': title, 'firstword': firstword, 'errors':errors }
+                  
+    p.expand(variables)
+        
+       
+            
+        
+    #word_che
+    if " " in title:
+        if check == True:
+            print("yeyeyeye")        
+    elif " " not in title:        
+        if check == True:
+            print("yeyeyeye")
+        else:
+            print("OH GOD SWEET JESUS NO!")
+    title = title[0].upper() + title[1:]
+    print(title)
+    print(start_word)
+    #write them to the database
+    #db.create_story(title, start_word)
+
+    
+    response.write("""
+    <html>
+    <head>
+    <title> Create A Story </title>
+    </head>
+
+
+    <body>
+    <strong>This is the create page</strong>
+    </body>
+
+    </html>
+    """)
+
+
+    
+
+def greet(response):
+    fname = response.get_field('fname', 'James')
+    lname = response.get_field('lname', 'Curran')
+    response.write("Hello " + fname + " " + lname + "!")
 
     
 server = Server()
 server.register("/", stories)
 server.register("/style.css", style)
+server.register("/hello/([a-z]+)", hello)
 server.register("/story", create)
-
+server.register("/greet", greet)
 server.run()
