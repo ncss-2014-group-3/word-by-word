@@ -1,18 +1,11 @@
 import sqlite3
 
-db = sqlite3.connect("database.db")
-
-def dict_factory(cursor, row):
-    d = {}
-    for idx,col in enumerate(cursor.description):
-        d[col[0]] = row[idx]
-    return d
-
+from . import connection, dict_factory
 
 class Word:
     @classmethod
     def from_id(cla, word_id):
-        c = db.cursor()
+        c = connection.cursor()
         c.execute("SELECT wordID, storyID, word FROM words WHERE wordID = ?", (word_id,))
         result = c.fetchone()
         if result:
@@ -47,23 +40,23 @@ class Word:
     def add_child(self, value):
         new_word = Word(False, self.story_id(), value)
         new_word.save()
-        c = db.cursor()
+        c = connection.cursor()
         c.execute("""
         INSERT INTO wordchild VALUES (?,?)
         """, (self._id, new_word._id))
-        db.commit()
+        connection.commit()
         return new_word
     def remove(self):
         for child in self.children():
             child.remove()
-        c = db.cursor()
+        c = connection.cursor()
         c.execute("""
         DELETE FROM words WHERE wordID = ?
         """, (self._id,))
         c.execute("""
         DELETE FROM wordchild WHERE parentID = ?
         """, (self._id,))
-        db.commit()
+        connection.commit()
         
     def word_count(self):
         count = 1 #account for self
@@ -72,7 +65,7 @@ class Word:
         return count
     
     def children(self):
-        c = db.cursor()
+        c = connection.cursor()
         
         c.execute("""
             SELECT * FROM
@@ -91,7 +84,7 @@ class Word:
         return children
     
     def save(self):
-        c = db.cursor()
+        c = connection.cursor()
         if self._id:
             print('[save] update')
             c.execute("""
@@ -102,13 +95,13 @@ class Word:
                 WHERE
                     wordID = ?
                 """, (self._story_id, self._value, self._id))
-            db.commit()
+            connection.commit()
         else:
             print('[save] insert')
             c.execute("""
                 INSERT INTO words VALUES (NULL,?,?)
                 """, (self._story_id, self._value))
-            db.commit()
+            connection.commit()
             self._id = c.lastrowid
         
         
