@@ -36,7 +36,7 @@ def stories(response):
 	#	titles
 
 	#render the page from the template
-	#create the parser object from template file
+	#create the parser object from template f vcile
 	p = Parser.from_file('templates/list-of-stories.html')
 	#render the html code in var result
 	result = p.expand({'stories': []}) # dict in expand
@@ -117,11 +117,49 @@ def greet(response):
     lname = response.get_field('lname', 'Curran')
     response.write("Hello " + fname + " " + lname + "!")
 
+def login(response):
+        user = response.get_field('name', '')
+        password = response.get_field('password', '')
+        logged_name = response.get_secure_cookie('username')
+        if logged_name: logged_name = logged_name.decode()
+        logged_in = logged_name is not None
+        if logged_in:
+                user = logged_name.decode()
+                print(user)
+                response.write('<h1> You are logged in as {}</h1>'.format(user))
+        else:
+                response.set_secure_cookie('username', user)
+                response.write('''
+<html>
+    <head>
+    <title> Login </title>
+    </head>
+
+
+    <body>
+    <strong>Login</strong>
+    <form method="POST">
+        <input name="name">
+        <input type="password" name="password">
+        <input type="submit" name="submit">
+    </form>
     
+    </body>
+
+    </html>
+    '''
+)
+
+def logout(response):
+        response.clear_cookie('username')
+        response.write('You logged out')
+
 server = Server()
 server.register("/", stories)
 server.register("/style.css", style)
 server.register("/hello/([a-z]+)", hello)
 server.register("/story", create)
 server.register("/greet", greet)
+server.register('/login', login)
+server.register('/logout', logout)
 server.run()
