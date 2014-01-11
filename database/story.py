@@ -14,6 +14,8 @@ class Story:
                             WHERE parentID IS NULL
                             AND storyID=?''', (id,))
         word_row = cursor.fetchone()
+        if word_row is None:
+            return False
         return cla(row[0], Word(word_row[0],id,word_row[2]),id)
 
     @classmethod
@@ -38,8 +40,8 @@ class Story:
         self.first_word = first_word
         if not self.story_id:
             self._cursor.execute('''INSERT INTO stories (name) VALUES (?)''', (self.title,))
-            connection.commit()
             self.story_id = self._cursor.lastrowid
+            connection.commit()
         if type(first_word) == str:
             self.first_word = Word(False, self.story_id, first_word)
         else:
