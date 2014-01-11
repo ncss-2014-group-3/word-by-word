@@ -10,6 +10,18 @@ class User:
         if row is None: 
             return None
         return cla(username, row[0])
+
+    @classmethod
+    def login(cla, username, password):
+        check = ''
+        cursor = connection.cursor()
+        returned = cursor.execute('SELECT password FROM users WHERE username=?', (username,))
+        for item in returned:
+            check = item[0]
+        if password == check:
+            return cla(username, password)
+        else:
+            return False
     
     def __init__(self, username, password):
         self.username = username
@@ -20,17 +32,6 @@ class User:
         if username not in user_list:
             cursor.execute('''INSERT INTO users VALUES(?,?)''', (username, password))
             connection.commit()
-        
-    def login(self, username, password):
-        check = ''
-        cursor = connection.cursor()
-        returned = cursor.execute('SELECT password FROM users WHERE username=?', (username,))
-        for item in returned:
-            check = item[0]
-        if password == check:
-            return True
-        else:
-            return False
 
     def remove(self):
         cursor = connection.cursor()
