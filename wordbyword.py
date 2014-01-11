@@ -46,12 +46,12 @@ def create(response):
     #we will give this to the template.
     errors = []
     if response.request.method == "POST":
-        if title is None:
+        if not title:
             #we didn't get given a title
             errors.append("You didn't enter a title!")
         if len(title) > 50:
             errors.append("Your title was too long!")
-        if firstword is None:
+        if not firstword:
             errors.append("You didn't enter a starting word!")  
         if ' ' in firstword:
             errors.append("Please only enter one word.")
