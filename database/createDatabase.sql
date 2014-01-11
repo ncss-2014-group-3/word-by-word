@@ -13,7 +13,6 @@ CREATE TABLE words (
     ,parentID   INTEGER NULL
     ,storyID    INTEGER NOT NULL
     ,word   TEXT    NOT NULL
---    ,FOREIGN KEY(storyID) REFERENCES stories(storyID)
 );
 
 
@@ -21,12 +20,3 @@ CREATE TABLE votes (
     wordID  INTEGER NOT NULL
     ,FOREIGN KEY(wordID) REFERENCES words(wordID)
 );
-
-
---test data
-/*INSERT INTO stories VALUES (1, "test story");
-
-INSERT INTO words VALUES (1, 1, "hello");
-INSERT INTO words VALUES (2, 1, "world");
-
-INSERT INTO wordchild VALUES (1, 2);*/
