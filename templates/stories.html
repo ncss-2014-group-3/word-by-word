@@ -8,7 +8,7 @@
         </tr>
         {% for story in stories %}
             <tr>
-                <td>{{ story.title }}</td>
+                <td><a href="/story/{{story.story_id}}">{{ story.title }}</a></td>
                 <td>{{ story.total_votes }}</td>
             </tr>
         {% end for %}
