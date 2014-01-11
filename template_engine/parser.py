@@ -1,9 +1,9 @@
 import re
-from PythonNode import PythonNode
-from GroupNode import GroupNode
-from TextNode import TextNode
-from ForNode import ForNode
-from IfNode import IfNode
+from .PythonNode import PythonNode
+from .GroupNode import GroupNode
+from .TextNode import TextNode
+from .ForNode import ForNode
+from .IfNode import IfNode
 
 TOKENS = {
     '{{' : 'startvar',
