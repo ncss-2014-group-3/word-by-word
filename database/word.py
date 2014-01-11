@@ -24,7 +24,8 @@ class Word:
         self._id = id
         self._story_id = story_id
         self._value = value
-        self.save()
+        if not id:
+            self.save()
         
     def id(self):
         return self._id
@@ -57,33 +58,36 @@ class Word:
             child.remove()
         c = db.cursor()
         c.execute("""
-        DELETE FROM word WHERE wordID = ?
+        DELETE FROM words WHERE wordID = ?
         """, (self._id,))
         c.execute("""
         DELETE FROM wordchild WHERE parentID = ?
         """, (self._id,))
+        db.commit()
         
     def children(self):
         c = db.cursor()
-        c.row_factory = dict_factory
+        
         c.execute("""
             SELECT * FROM
                 words
             INNER JOIN wordchild ON words.wordID = wordchild.childID
             WHERE
-                wordchild.parentID = ?
-        """, (self._id,))
+                wordchild.parentID = """ + str(self._id) + """
+        """)
+        
+        
         
         children = []
         for childWord in c:
-            children.append(Word(childWord["wordID"], childWord["storyID"], childWord["word"]))
-            
-        #c.commit()
+            children.append(Word(childWord[0], childWord[1], childWord[2]))
+        
         return children
     
     def save(self):
         c = db.cursor()
         if self._id:
+            print('[save] update')
             c.execute("""
                 UPDATE words
                 SET
@@ -94,6 +98,7 @@ class Word:
                 """, (self._story_id, self._value, self._id))
             db.commit()
         else:
+            print('[save] insert')
             c.execute("""
                 INSERT INTO words VALUES (NULL,?,?)
                 """, (self._story_id, self._value))
