@@ -4,14 +4,23 @@ from . import connection, dict_factory
 
 class Word:
     @classmethod
+    def from_story_id(cla, story_id):
+        """
+        Get the first word for a story
+        """
+        c = connection.cursor()
+        c.execute("SELECT * FROM words WHERE storyID = ? and parentID IS NULL", (story_id,))
+        result = c.fetchone()
+        if result:
+            return cla(result[0],result[1], result[2], result[3])
+    
+    @classmethod
     def from_id(cla, word_id):
         c = connection.cursor()
         c.execute("SELECT wordID, storyID, word, parentID FROM words WHERE wordID = ?", (word_id,))
         result = c.fetchone()
         if result:
             return cla(result[0],result[1], result[2], result[3])
-            
-        return False
         
     def __init__(self, id, story_id, value, parent_id = None):
         self.id = id
