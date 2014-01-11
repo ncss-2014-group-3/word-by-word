@@ -14,49 +14,37 @@ class Word:
         return False
         
     def __init__(self, id, story_id, value, parent_id = None):
-        self._id = id
-        self._parent_id = parent_id
-        self._story_id = story_id
-        self._value = value
+        self.id = id
+        self.parent_id = parent_id
+        self.story_id = story_id
+        self.value = value
         if not id:
             self.save()
-        
-    def id(self):
-        return self._id
-       
-    def story_id(self, new_value=None):
-        if new_value is not None:
-            self._value = new_value
-        return self._story_id
-    
-    def value(self, new_value=None):
-        if new_value is not None:
-            self._value = new_value
-            
-        return self._value
-        
+
     def __str__(self):
-        return self.value()
+        return self.value
         
     def add_child(self, value):
-        new_word = Word(False, self.story_id(), value, self._id)
+        new_word = Word(False, self.story_id, value, self.id)
         new_word.save()
         return new_word
     def remove(self):
-        for child in self.children():
+        for child in self.children:
             child.remove()
         c = connection.cursor()
         c.execute("""
         DELETE FROM words WHERE wordID = ?
-        """, (self._id,))
+        """, (self.id,))
         connection.commit()
         
+    @property
     def word_count(self):
         count = 1 #account for self
-        for child in self.children():
-            count += child.word_count()
+        for child in self.children:
+            count += child.word_count
         return count
     
+    @property
     def children(self):
         c = connection.cursor()
         
@@ -64,7 +52,7 @@ class Word:
             SELECT * FROM
                 words
             WHERE
-                parentID = """ + str(self._id) + """
+                parentID = """ + str(self.id) + """
         """)
         
         children = []
@@ -76,7 +64,7 @@ class Word:
     
     def save(self):
         c = connection.cursor()
-        if self._id:
+        if self.id:
             #print('[save] update')
             c.execute("""
                 UPDATE words
@@ -86,12 +74,12 @@ class Word:
                 ,parentID = ?
                 WHERE
                     wordID = ?
-                """, (self._story_id, self._value, self._parent_id, self._id))
+                """, (self.story_id, self.value, self.parent_id, self.id))
             connection.commit()
         else:
             #print('[save] insert')
             c.execute("""
                 INSERT INTO words VALUES (NULL,?,?,?)
-                """, (self._parent_id, self._story_id, self._value))
+                """, (self.parent_id, self.story_id, self.value))
             connection.commit()
-            self._id = c.lastrowid
+            self.id = c.lastrowid

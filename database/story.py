@@ -25,52 +25,48 @@ class Story:
         return stories_list
             
     def __init__(self, title, first_word, story_id=None):
-        self._title = title
-        self._story_id = story_id
+        """
+        Creates a story
+        arguments: 
+            Title (of story)
+            First word (string or word object)
+            story id (optional, new story will be created if not specified)
+        """
+        self.title = title
+        self.story_id = story_id
         self._cursor = connection.cursor()
-        self._first_word = first_word
-        if not self._story_id:
-            self._cursor.execute('''INSERT INTO stories (name) VALUES (?)''', (self._title,))
+        self.first_word = first_word
+        if not self.story_id:
+            self._cursor.execute('''INSERT INTO stories (name) VALUES (?)''', (self.title,))
             connection.commit()
-            self._story_id = self._cursor.lastrowid
+            self.story_id = self._cursor.lastrowid
         if type(first_word) == str:
-            self._first_word = Word(False, self._story_id, first_word)
+            self.first_word = Word(False, self.story_id, first_word)
         else:
-            self._first_word = first_word
+            self.first_word = first_word
     
+    @property
     def total_votes(self):
         self._cursor.execute('''
             SELECT COUNT(*) FROM votes as v 
             INNER JOIN words as m ON v.wordID = m.wordID
             WHERE m.storyID = ?
-        ''', (self._story_id,))
-        
-    def story_id(self):
-        return self._story_id
-    
-    def title(self):
-        return self._title
-            
-    def first_word(self):
-        return self._first_word
-        
+        ''', (self.story_id,))
+
     def remove(self):
-        self._first_word.remove()
+        self.first_word.remove()
         self._cursor.execute('''
             DELETE FROM stories WHERE storyID = ?
-        ''', (self._story_id,))
+        ''', (self.story_id,))
         connection.commit()
         
+    @property
     def word_count(self):
-        return self._first_word.word_count()
-
-if __name__ == '__main__':
-    # Test
-    s = Story.from_id(1)
-    print('title:', s.title())
-    print('id:', s.story_id())
-    print('first word:', s.first_word().value())
-
-    # Doesn't work D:
-    print('\nNot working D:')
-    print(s.first_word().children())
+        return self.first_word.word_count
+        
+    def save(self):
+        self._cursor.execte("""UPDATE stories SET
+            name = ?
+            WHERE storyID = ?
+        """, self.title, self.story_id)
+        connection.commit()
