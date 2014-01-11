@@ -17,14 +17,18 @@ class Story:
         
     def __init__(self, title, first_word, story_id=None):
         self._title = title
-        self._first_word = first_word
         self._story_id = story_id
         self._connection = sqlite3.connect('database.db')
         self._cursor = self._connection.cursor()
         self._first_word = first_word
         if not self._story_id:
             self._cursor.execute('''INSERT INTO stories (name) VALUES (?)''', (self._title,))
-            self._story_id = cursor.lastrowid
+            self._connection.commit()
+            self._story_id = self._cursor.lastrowid
+        if type(first_word) == str:
+            self._first_word = word.Word(False, self._story_id, first_word)
+        else:
+            self._first_word = first_word
     
     def total_votes(self):
         self._cursor.execute('''
@@ -41,6 +45,16 @@ class Story:
             
     def first_word(self):
         return self._first_word
+        
+    def remove(self):
+        self._first_word.remove()
+        self._cursor.execute('''
+            DELETE FROM stories WHERE storyID = ?
+        ''', (self._story_id,))
+        self._connection.commit()
+        
+    def word_count(self):
+        return self._first_word.word_count()
 
 if __name__ == '__main__':
     # Test

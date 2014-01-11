@@ -65,6 +65,12 @@ class Word:
         """, (self._id,))
         db.commit()
         
+    def word_count(self):
+        count = 1 #account for self
+        for child in self.children():
+            count += child.word_count()
+        return count
+    
     def children(self):
         c = db.cursor()
         
