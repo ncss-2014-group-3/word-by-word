@@ -19,7 +19,7 @@ class User:
         for item in returned:
             check = item[0]
         if password == check:
-            return cla(username, password)
+            return cla(username, password) # return User object if True
         else:
             return False
     
@@ -27,9 +27,9 @@ class User:
         self.username = username
         self.password = password
         cursor = connection.cursor()
-        selection = cursor.execute('''SELECT username FROM users''')
-        user_list = [x[0] for x in selection]
-        if username not in user_list:
+        selection = cursor.execute('''SELECT username FROM users WHERE username=?''', (username,))
+        row = selection.fetchone()
+        if row == None:
             cursor.execute('''INSERT INTO users VALUES(?,?)''', (username, password))
             connection.commit()
 
