@@ -3,15 +3,27 @@ body {
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 14px;
 	line-height: 21px;
+    
 }
 
-p {
-	margin-bottom: 14px;
+p.view{
+	margin-top:30px;
+    margin-bottom: 20px;
     text-align:justify;
+    font-family: 'Signika', sans-serif;
+}
+
+p.edit{
+	margin-top:30px;
+    margin-bottom: 20px;
+    text-align:justify;
+    font-family: 'Rokkitt', serif;
+    font-size:21px;
 }
 
 a {
 	color: inherit;
+    text-decoration:none;
 }
 
 article {
@@ -27,18 +39,18 @@ article {
 
 /* headings */
 h1 {
-	font-size: 29px;
+	font-size: 35px;
 	font-weight: bold;
-	margin-bottom: 32px;
+	margin-bottom: 20px;
 	line-height: 29px;
+
 }
 
 h2 {
-	font-size: 19px;
+	font-size: 25px;
 	font-weight: bold;
 	margin-bottom: 19px;
 	line-height: 21px;
-	border-top: 4px solid black;
 	padding-top: 18px;
 	margin-top: 25px;
 }
@@ -89,10 +101,12 @@ ul {
 fieldset {
 	/*border: 1px solid black;*/
 	padding: 20px;
+    margin-bottom:40px;
 }
 
 legend {
 	font-weight: bold;
+    font-style:italic;
 }
 
 form label, form input {
@@ -114,7 +128,7 @@ form input[type=text].lastname {
 }
 
 form input[type=submit] {
-	float:  right;
+	float:left;
 	margin-top: 10px;
 }
 
@@ -152,7 +166,7 @@ footer {
     background-color:black;
 
     height:50px;
-    color:black;
+    color:white;
 } 
 
 table {
@@ -160,11 +174,16 @@ table {
     width:100%;
     text-align:justify;
     border:1px solid #a8a8a8;
-    padding:5px 10px 5px 10px;
-    
-    
+    border-collapse:collapse;
 }
 
+td, th {
+    word-wrap:break-word;
+    border-right:1px dotted #a8a8a8;
+    border-bottom:1px dotted #a8a8a8;
+    padding:10px 4px 10px 4px;
+    line-height:18px;
+}
 input { 
     font-family:Helvetica, sans-serif;
     font-size:14px;
