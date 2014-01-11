@@ -1,34 +1,74 @@
 import sqlite3
+from .word import Word
+from . import connection
 
 class Story:
     @classmethod
     def from_id(cla,id):
-        with sqlite3.connect('database.db') as connection:
-            cursor = connection.cursor()
-            cursor.execute('''SELECT name FROM stories WHERE id=?''', (id,))
-            row = cursor.fetchone()
-            if row is None:
-                return False
-            return cla(row[0],#todo
-                       )
+        cursor = connection.cursor()
+        cursor.execute('''SELECT name FROM stories WHERE storyID=?''', (id,))
+        row = cursor.fetchone()
+        if row is None:
+            return False
+        cursor.execute('''  SELECT * FROM words
+                            WHERE parentID IS NULL
+                            AND storyID=?''', (id,))
+        word_row = cursor.fetchone()
+        if word_row is None:
+            return False
+        return cla(row[0], Word(word_row[0],id,word_row[2]),id)
+
+    @classmethod
+    def story_list(self):
+        stories = self._cursor.execute('''SELECT storyID FROM stories''')
+        stories_list = []
+        for s in stories:
+            stories_list.append(Story.from_id(s[0]))
+        return stories_list
+            
     def __init__(self, title, first_word, story_id=None):
-        self._title = title
-        self._first_word = first_word
-        self._story_id = story_id
-        self._connection = sqlite3.connect('database.db')
-        self._cursor = self._connection.cursor()
+        """
+        Creates a story
+        arguments: 
+            Title (of story)
+            First word (string or word object)
+            story id (optional, new story will be created if not specified)
+        """
+        self.title = title
+        self.story_id = story_id
+        self._cursor = connection.cursor()
+        self.first_word = first_word
+        if not self.story_id:
+            self._cursor.execute('''INSERT INTO stories (name) VALUES (?)''', (self.title,))
+            self.story_id = self._cursor.lastrowid
+            connection.commit()
+        if type(first_word) == str:
+            self.first_word = Word(False, self.story_id, first_word)
+        else:
+            self.first_word = first_word
     
+    @property
     def total_votes(self):
         self._cursor.execute('''
             SELECT COUNT(*) FROM votes as v 
             INNER JOIN words as m ON v.wordID = m.wordID
             WHERE m.storyID = ?
-        ''', (self._story_id,))
-    def story_id(self):
-        return self._story_id
-    def title(self):
-        return self._title
+        ''', (self.story_id,))
+
+    def remove(self):
+        self.first_word.remove()
+        self._cursor.execute('''
+            DELETE FROM stories WHERE storyID = ?
+        ''', (self.story_id,))
+        connection.commit()
+        
+    @property
+    def word_count(self):
+        return self.first_word.word_count
+        
     def save(self):
-        if not self._story_id:
-            self._cursor.execute('''INSERT INTO stories (name) VALUES (?)''', (self._title,))
-            self._story_id = cursor.lastrowid
+        self._cursor.execte("""UPDATE stories SET
+            name = ?
+            WHERE storyID = ?
+        """, self.title, self.story_id)
+        connection.commit()
