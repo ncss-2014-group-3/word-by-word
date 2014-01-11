@@ -5,7 +5,7 @@
         <title>Word By Word</title>
     </head>
     <body>
-        {% include header.html %}
+        {% include templates/header.html %}
         <article>
             <h1>Create A Story!</h1>
             <form action="/story" method="post">
@@ -23,9 +23,12 @@
                         <input type="text"
                         name="firstword" placeholder="  Eg: Once...">
                     </p>
+                    <p>
+                        <input type="submit" value="Submit" action="/story" method="POST">
+                    </p>
                 </fieldset>
              </form>   
         </article>
-        {% include footer.html %}
+        {% include templates/footer.html %}
     </body>
 </html>
