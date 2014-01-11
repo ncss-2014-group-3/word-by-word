@@ -1,4 +1,7 @@
 from tornado.ncss import Server
+from template_engine.parser import Parser
+
+                     
 #import db
 import re
 from template_engine.parser import Parser
@@ -51,7 +54,7 @@ def create(response):
     invalid_word = False
     #get the variables we need using get_field
     title = response.get_field("title")
-    start_word = response.get_field("firstword")
+    firstword = response.get_field("firstword")
     # a list of strings of things that went wrong
     #we will give this to the template.
     errors = []
@@ -61,12 +64,17 @@ def create(response):
             errors.append("You didn't enter a title!")
         if len(title) > 50:
             errors.append("Your title was too long!")
-        if start_word is None:
+        if firstword is None:
             errors.append("You didn't enter a starting word!")  
-        if ' ' in start_word:
+        if ' ' in firstword:
             errors.append("Please only enter one word.")
         if errors:
             errors.append("Please try again.")
+
+    p = Parser.from_file("HTML/createastory.html")
+    variables = { 'title': title, 'firstword': firstword, 'errors':errors }
+                  
+    p.expand(variables)
         
        
             
