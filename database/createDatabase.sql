@@ -14,8 +14,6 @@ CREATE TABLE words (
     ,parentID   INTEGER NULL
     ,storyID    INTEGER NOT NULL
     ,word   TEXT    NOT NULL
-    ,author TEXT    NOT NULL
-    ,FOREIGN KEY(author) REFERENCES users(username)
 );
 
 

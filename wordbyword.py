@@ -1,8 +1,10 @@
 from tornado.ncss import Server
 from template_engine.parser import Parser
 
-from database import story
-
+from database.story import Story
+#s1 = Story("The  Green Sheep",  "In")
+#print(s1)
+#print("asdf")
 #	function:	stories()
 #	arguments:	response
 #	description:
@@ -16,9 +18,7 @@ def stories(response):
     # arguments: no args
     # returns: title, short burb and word count
 
-    stories = story.Story.story_list()
-
-
+    stories = Story.story_list()
     
     # story_list_data should return: 
     #   titles and word count 
