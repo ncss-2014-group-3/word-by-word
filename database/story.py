@@ -1,32 +1,32 @@
-import sqlite3,word
+import sqlite3
+from .word import Word
+from . import connection
 
 class Story:
     @classmethod
     def from_id(cla,id):
-        with sqlite3.connect('database.db') as connection:
-            cursor = connection.cursor()
-            cursor.execute('''SELECT name FROM stories WHERE storyID=?''', (id,))
-            row = cursor.fetchone()
-            if row is None:
-                return False
-            cursor.execute('''  SELECT * FROM words
-                                WHERE parentID IS NULL
-                                AND storyID=?''', (id,))
-            word_row = cursor.fetchone()
-            return cla(row[0],word.Word(word_row[0],id,word_row[2]),id)
+        cursor = connection.cursor()
+        cursor.execute('''SELECT name FROM stories WHERE storyID=?''', (id,))
+        row = cursor.fetchone()
+        if row is None:
+            return False
+        cursor.execute('''  SELECT * FROM words
+                            WHERE parentID IS NULL
+                            AND storyID=?''', (id,))
+        word_row = cursor.fetchone()
+        return cla(row[0], Word(word_row[0],id,word_row[2]),id)
         
     def __init__(self, title, first_word, story_id=None):
         self._title = title
         self._story_id = story_id
-        self._connection = sqlite3.connect('database.db')
-        self._cursor = self._connection.cursor()
+        self._cursor = connection.cursor()
         self._first_word = first_word
         if not self._story_id:
             self._cursor.execute('''INSERT INTO stories (name) VALUES (?)''', (self._title,))
-            self._connection.commit()
+            connection.commit()
             self._story_id = self._cursor.lastrowid
         if type(first_word) == str:
-            self._first_word = word.Word(False, self._story_id, first_word)
+            self._first_word = Word(False, self._story_id, first_word)
         else:
             self._first_word = first_word
     
@@ -51,7 +51,7 @@ class Story:
         self._cursor.execute('''
             DELETE FROM stories WHERE storyID = ?
         ''', (self._story_id,))
-        self._connection.commit()
+        connection.commit()
         
     def word_count(self):
         return self._first_word.word_count()
