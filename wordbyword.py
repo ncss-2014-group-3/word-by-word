@@ -118,17 +118,19 @@ def greet(response):
     response.write("Hello " + fname + " " + lname + "!")
 
 def login(response):
-        user = response.get_field('name', '')
-        password = response.get_field('password', '')
+        user = response.get_field('name')
+        password = response.get_field('password')
         logged_name = response.get_secure_cookie('username')
-        if logged_name: logged_name = logged_name.decode()
-        logged_in = logged_name is not None
-        if logged_in:
+        if logged_name is not None:
                 user = logged_name.decode()
-                print(user)
+                print('user =', user)
                 response.write('<h1> You are logged in as {}</h1>'.format(user))
         else:
-                response.set_secure_cookie('username', user)
+                if user is not None and password is not None:
+                        print('username =', user)
+                        response.set_secure_cookie('username', user)
+                        response.redirect('/login')
+                        return
                 response.write('''
 <html>
     <head>
@@ -149,10 +151,12 @@ def login(response):
     </html>
     '''
 )
+        #p = Parser.from_file('templates/login.html')
+        #response.write(p.expand({ 'user' : user }))
 
 def logout(response):
         response.clear_cookie('username')
-        response.write('You logged out')
+        response.redirect('/login')
 
 server = Server()
 server.register("/", stories)
