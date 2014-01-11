@@ -41,7 +41,7 @@ class Story:
             self.story_id = self._cursor.lastrowid
             connection.commit()
         if type(first_word) == str:
-            self.first_word = Word(False, self.story_id, first_word)
+            self.first_word = Word(False, self.story_id, first_word) #author add
         else:
             self.first_word = first_word
     
