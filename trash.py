@@ -39,13 +39,13 @@ foo = Word("once", [
 			Word("was", [
 				Word("a", [
 					Word("frog"),
-					Word("douchebag")
+					Word("kitten")
 				])
 			])
 		]),
 		Word("upon", [
-			Word("penis", [
-				Word("land", [
+			Word("your", [
+				Word("face", [
 					Word("needed")
 				])
 			]),
