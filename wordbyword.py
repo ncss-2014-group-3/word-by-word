@@ -72,27 +72,12 @@ def create(response):
             errors.append("Please try again.")
 
     p = Parser.from_file("HTML/createastory.html")
-    variables = { 'title': title, 'firstword': firstword, 'errors':errors }
+    variables = { 'title': title, 'firstword': firstword, 'errors': errors }
                   
     p.expand(variables)
         
        
-            
-        
-    #word_che
-    if " " in title:
-        if check == True:
-            print("yeyeyeye")        
-    elif " " not in title:        
-        if check == True:
-            print("yeyeyeye")
-        else:
-            print("OH GOD SWEET JESUS NO!")
-    title = title[0].upper() + title[1:]
-    print(title)
-    print(start_word)
-    #write them to the database
-    #db.create_story(title, start_word)
+ 
 
     
     response.write("""
