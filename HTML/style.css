@@ -1,0 +1,160 @@
+body {
+	margin: 0px auto;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	line-height: 21px;
+}
+
+p {
+	margin-bottom: 14px;
+}
+
+a {
+	color: inherit;
+}
+
+article {
+    width:800px;
+    margin-left:auto;
+    margin-right:auto;
+    min-height:900px;
+}
+
+.bigger {
+	font-size: 30px;
+}
+
+/* headings */
+h1 {
+	font-size: 32px;
+	font-weight: bold;
+	margin-bottom: 32px;
+	line-height: 29px;
+}
+
+h2 {
+	font-size: 19px;
+	font-weight: bold;
+	margin-bottom: 19px;
+	line-height: 21px;
+	border-top: 4px solid black;
+	padding-top: 18px;
+	margin-top: 25px;
+}
+
+h3 {
+	font-size: 17px;
+	font-weight: bold;
+	line-height: 19px;
+	margin-bottom: 17px;
+	margin-top: 25px;
+}
+
+
+/* definition list */
+dl {
+	width: 400px;
+	margin-bottom: 20px;
+}
+
+	dt {
+		font-weight: bold;
+		display: inline-block;
+		width: 80px;
+	}
+	
+	dd {
+		display: inline-block;
+		width: 300px;
+	}
+
+
+/* lists */
+ol, ul {
+	padding-left: 16px;
+	margin-bottom: 20px;
+}
+
+ol {
+	list-style-type: decimal;
+}
+
+ul {
+	list-style-type: disc;
+}
+
+
+/* form */
+fieldset {
+	/*border: 1px solid black;*/
+	padding: 20px;
+}
+
+legend {
+	font-weight: bold;
+}
+
+form label, form input {
+	display: inline-block;
+}
+
+form label {
+	width: 70px;
+}
+
+form input[type=text] {
+	width: 300px;
+	border: 1px solid #ddd;
+	height: 20px;
+}
+
+form input[type=text].lastname {
+	text-transform: uppercase;
+}
+
+form input[type=submit] {
+	float:  right;
+	margin-top: 10px;
+}
+
+table {
+    font-size:16px;
+    width:100%;
+    text-align:justify;
+    border:1px dotted #C2C2C2;
+    
+}
+
+header {
+	background-color: black;
+	color: white;
+	height: 80px;
+	margin-bottom: 30px;
+	line-height: 80px;
+	position: relative;
+}
+	header h1 {
+		display: inline-block;
+		line-height: 80px;
+		margin-left: 20px;
+		font-size: 24px;
+	}
+
+	header nav {
+		position: absolute;
+		bottom: 20px;
+		right: 0px;
+		height: 14px;
+		line-height: 14px;
+	}
+	
+		header nav a {
+			margin-right: 20px;
+		}
+        
+footer {
+    background-color:black;
+
+    height:50px;
+    color:black;
+} 
