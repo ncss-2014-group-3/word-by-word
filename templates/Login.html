@@ -1,0 +1,23 @@
+<html>
+    <head>
+    <title> Login </title>
+    </head>
+
+
+    <body>
+    <strong>Login</strong>
+{% if user is not None %}
+Welcome {{user}}
+{% end if %}
+{% if user is None %}
+<form name="myWebForm" action="/login" method="post">
+User: <input type="user" title="Please enter user name" size="8"></br>
+Password: <input type="password" title="Please Enter Your Password" size="8" /><br />
+<input type="submit" value="SUBMIT" />
+</form> 
+{% end if %}
+  
+    
+    </body>
+
+    </html>
