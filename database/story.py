@@ -11,7 +11,7 @@ class Story:
         if row is None:
             return False
         cursor.execute('''  SELECT * FROM words
-                            WHERE wordID NOT IN (SELECT childID FROM wordchild)
+                            WHERE parentID IS NULL
                             AND storyID=?''', (id,))
         word_row = cursor.fetchone()
         return cla(row[0], Word(word_row[0],id,word_row[2]),id)
@@ -41,7 +41,7 @@ class Story:
         return self._story_id
     
     def title(self):
-        return self._title        
+        return self._title
             
     def first_word(self):
         return self._first_word

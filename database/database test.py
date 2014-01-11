@@ -8,7 +8,7 @@ if story1:
 
 story1 = story.Story("My first story", "Hello")
 hello_word = story1.first_word()
-
+#print(story1.first_word())
 
 
 world_word = hello_word.add_child("world")
