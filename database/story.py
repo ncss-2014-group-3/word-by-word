@@ -15,7 +15,15 @@ class Story:
                             AND storyID=?''', (id,))
         word_row = cursor.fetchone()
         return cla(row[0], Word(word_row[0],id,word_row[2]),id)
-        
+
+    @classmethod
+    def story_list(self):
+        stories = self._cursor.execute('''SELECT storyID FROM stories''')
+        stories_list = []
+        for s in stories:
+            stories_list.append(Story.from_id(s[0]))
+        return stories_list
+            
     def __init__(self, title, first_word, story_id=None):
         self._title = title
         self._story_id = story_id
