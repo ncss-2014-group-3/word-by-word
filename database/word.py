@@ -9,7 +9,7 @@ class Word:
         Get the first word for a story
         """
         c = connection.cursor()
-        c.execute("SELECT * FROM words WHERE storyID = ? and parentID IS NULL", (story_id,))
+        c.execute("SELECT wordID, storyID, word, parentID FROM words WHERE storyID = ? and parentID IS NULL", (story_id,))
         result = c.fetchone()
         if result:
             return cla(result[0],result[1], result[2], result[3])
