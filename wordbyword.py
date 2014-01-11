@@ -1,4 +1,7 @@
 from tornado.ncss import Server
+from template_engine.parser import Parser
+
+                     
 #import db
 import re
 from template_engine.parser import Parser
@@ -25,7 +28,7 @@ def stories(response):
 	("The big bug","big bug wanted a big hug",1002),
 	("Harry Potter","the boy who lived",5000),
 	("The Green Sheep","thomas's bedtime story",1450),
-	("The long snake","pun on python coding",6354),
+	("The long snake","pun on python coding",6354),  
 	("the small ant","got squashed",3),
 	("the broken wheel","went round and round and fell down",789),
 	]
@@ -36,7 +39,7 @@ def stories(response):
 	#create the parser object from template file
 	p = Parser.from_file('templates/list-of-stories.html')
 	#render the html code in var result
-	result = p.expand({'stories': []})
+	result = p.expand({'stories': []}) # dict in expand
 	#render the result to the client
 	response.write(result)
 
@@ -51,7 +54,7 @@ def create(response):
     invalid_word = False
     #get the variables we need using get_field
     title = response.get_field("title")
-    start_word = response.get_field("firstword")
+    firstword = response.get_field("firstword")
     # a list of strings of things that went wrong
     #we will give this to the template.
     errors = []
@@ -61,12 +64,17 @@ def create(response):
             errors.append("You didn't enter a title!")
         if len(title) > 50:
             errors.append("Your title was too long!")
-        if start_word is None:
+        if firstword is None:
             errors.append("You didn't enter a starting word!")  
-        if ' ' in start_word:
+        if ' ' in firstword:
             errors.append("Please only enter one word.")
         if errors:
             errors.append("Please try again.")
+
+    p = Parser.from_file("HTML/createastory.html")
+    variables = { 'title': title, 'firstword': firstword, 'errors':errors }
+                  
+    p.expand(variables)
         
        
             
