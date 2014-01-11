@@ -13,15 +13,16 @@ class Word:
     @classmethod
     def from_id(cla, word_id):
         c = db.cursor()
-        c.execute("SELECT wordID, storyID, word FROM words WHERE wordID = ?", (word_id,))
+        c.execute("SELECT wordID, storyID, word, parentID FROM words WHERE wordID = ?", (word_id,))
         result = c.fetchone()
         if result:
-            return cla(result[0],result[1], result[2])
+            return cla(result[0],result[1], result[2], result[3])
             
         return False
         
-    def __init__(self, id, story_id, value):
+    def __init__(self, id, story_id, value, parent_id = None):
         self._id = id
+        self._parent_id = parent_id
         self._story_id = story_id
         self._value = value
         if not id:
@@ -45,13 +46,8 @@ class Word:
         return self.value()
         
     def add_child(self, value):
-        new_word = Word(False, self.story_id(), value)
+        new_word = Word(False, self.story_id(), value, self._id)
         new_word.save()
-        c = db.cursor()
-        c.execute("""
-        INSERT INTO wordchild VALUES (?,?)
-        """, (self._id, new_word._id))
-        db.commit()
         return new_word
     def remove(self):
         for child in self.children():
@@ -59,9 +55,6 @@ class Word:
         c = db.cursor()
         c.execute("""
         DELETE FROM words WHERE wordID = ?
-        """, (self._id,))
-        c.execute("""
-        DELETE FROM wordchild WHERE parentID = ?
         """, (self._id,))
         db.commit()
         
@@ -77,37 +70,36 @@ class Word:
         c.execute("""
             SELECT * FROM
                 words
-            INNER JOIN wordchild ON words.wordID = wordchild.childID
             WHERE
-                wordchild.parentID = """ + str(self._id) + """
+                parentID = """ + str(self._id) + """
         """)
-        
-        
         
         children = []
         for childWord in c:
-            children.append(Word(childWord[0], childWord[1], childWord[2]))
+            #id, parentID, storyID, word
+            children.append(Word(childWord[0], childWord[2], childWord[3], childWord[1]))
         
         return children
     
     def save(self):
         c = db.cursor()
         if self._id:
-            print('[save] update')
+            #print('[save] update')
             c.execute("""
                 UPDATE words
                 SET
                 storyID = ?
-                , word = ?
+                ,word = ?
+                ,parentID = ?
                 WHERE
                     wordID = ?
-                """, (self._story_id, self._value, self._id))
+                """, (self._story_id, self._value, self._parent_id, self._id))
             db.commit()
         else:
-            print('[save] insert')
+            #print('[save] insert')
             c.execute("""
-                INSERT INTO words VALUES (NULL,?,?)
-                """, (self._story_id, self._value))
+                INSERT INTO words VALUES (NULL,?,?,?)
+                """, (self._parent_id, self._story_id, self._value))
             db.commit()
             self._id = c.lastrowid
         
