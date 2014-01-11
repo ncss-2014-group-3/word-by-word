@@ -1,7 +1,8 @@
 import re
-from GroupNode import GroupNode
 from PythonNode import PythonNode
+from GroupNode import GroupNode
 from TextNode import TextNode
+from ForNode import ForNode
 from IfNode import IfNode
 
 TOKENS = {
@@ -103,6 +104,18 @@ ParseException: No end if
 Traceback (most recent call last):
   ...
 TypeError: unorderable types: str() >= int()
+>>> Parser('Test {% for i in range(10) %} i = {{ i }} {% end for %}').expand()
+'Test  i = 0  i = 1  i = 2  i = 3  i = 4  i = 5  i = 6  i = 7  i = 8  i = 9 '
+>>> Parser('Test: {% for i in range(10) %}{% if i / 2 == int(i / 2) %}{{ i }} is divisible by two. {% end if %}{% end for %}').expand()
+'Test: 0 is divisible by two. 2 is divisible by two. 4 is divisible by two. 6 is divisible by two. 8 is divisible by two. '
+>>> Parser('{% for i in range(5) %} {{ i }}').expand()
+Traceback (most recent call last):
+  ...
+ParseException: No end for
+>>> Parser('{%for i in (\'dog\', \'cat\', \'frog\') %}{{ i }} {% end for %}').expand()
+'dog cat frog '
+>>> Parser('{% for i in range(9) %}{% for j in \'abcd\'%}{{ str(i) + j }},{%end for %}{% end for %}').expand()
+'0a,0b,0c,0d,1a,1b,1c,1d,2a,2b,2c,2d,3a,3b,3c,3d,4a,4b,4c,4d,5a,5b,5c,5d,6a,6b,6c,6d,7a,7b,7c,7d,8a,8b,8c,8d,'
 """
         tree = self.parse_group()
         return tree.render(context)
@@ -128,6 +141,8 @@ TypeError: unorderable types: str() >= int()
                 child = self.parse_include()
             elif keyword == 'if':
                 child = self.parse_if()
+            elif keyword == 'for':
+                child = self.parse_for()
             elif keyword == 'end':
                 self.prev()
                 return GroupNode([])
@@ -144,7 +159,29 @@ TypeError: unorderable types: str() >= int()
 
         return group
 
+    def parse_for(self):
+        keyword, for_condition = self.split_tag()
+        
 
+        self.next()
+        if self.peek() != 'endtag':
+            raise ParseException('No end tag')
+        self.next()
+        group = self.parse_group()
+
+        if self.peek() != 'starttag':
+            raise ParseException('No end for')
+
+        self.next()
+        
+        keyword, tag_contents = self.split_tag()
+
+        if keyword != 'end' or tag_contents != 'for':
+            raise ParseException('No end for')
+        self.next()
+        
+        return ForNode(for_condition, group)
+    
     def parse_if(self):
         keyword, predicate = self.split_tag()
         
