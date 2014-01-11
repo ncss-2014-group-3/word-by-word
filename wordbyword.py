@@ -21,7 +21,7 @@ def render_word(word, title=False):
 	<table id="child-{cid}" class="child">
 		<tr>
 			<td class="word">{word}</td>
-			<td class="children">{children}</td>
+			{children}
 		</tr>
 	</table>
 	""".format(
