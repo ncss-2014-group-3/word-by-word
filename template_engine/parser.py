@@ -52,10 +52,18 @@ Creates a new Parser object from a string that can be expanded. """
     def peek(self):
         return None if self.end() else self._tokens[self._upto]
 
+    def prev(self):
+        self._upto -= 1
+
     def next(self):
         if not self.end():
             self._upto += 1
 
+    def split_tag(self):
+        tag_contents = self.peek().strip()
+        keyword, tag_contents = tag_contents.split(sep = None, maxsplit = 1)
+        return keyword, tag_contents
+        
     def expand(self, context={}):
         """ p.expand(context = {}) -> str
 
@@ -69,6 +77,30 @@ Context is a dictionary representing the variables in the local scope.
 'Test 12'
 >>> Parser('var * 9 = {{ var * 9 }} WORDS! {{ 6 * 9 - (var + 4)}}').expand({ 'var' : 1.4})
 'var * 9 = 12.6 WORDS! 48.6'
+>>> text = 'Test words {% if var == 1 %} The world is good {% end if %} '
+>>> Parser(text).expand({'var' : 1})
+'Test words  The world is good  '
+>>> Parser(text).expand({'var' : 0})
+'Test words  '
+>>> Parser('{% hello').expand()
+Traceback (most recent call last):
+  ...
+ParseException: No end tag
+>>> Parser('{% if 1 == 1 %}hello').expand()
+Traceback (most recent call last):
+  ...
+ParseException: No end if
+>>> text = '{% if var >= 1%}{%if var == 1 %}var = 1, {% end if %}var >= 1{% end if %}'
+>>> Parser(text).expand({ 'var' : 1})
+'var = 1, var >= 1'
+>>> Parser(text).expand({ 'var' : 2})
+'var >= 1'
+>>> Parser(text).expand({ 'var' : 0})
+''
+>>> Parser(text).expand({ 'var' : ''})
+Traceback (most recent call last):
+  ...
+TypeError: unorderable types: str() >= int()
 """
         tree = self.parse_group()
         return tree.render(context)
@@ -77,7 +109,6 @@ Context is a dictionary representing the variables in the local scope.
         if self.end():
             return GroupNode([])
 
-        
         child = None
         if self.peek() == 'startvar':
             self.next()
@@ -90,18 +121,22 @@ Context is a dictionary representing the variables in the local scope.
             self.next()
             tag_contents = self.peek().strip()
             keyword = tag_contents.split()[0]
-            
+            #import pdb; pdb.set_trace()
             if keyword == 'include':
                 child = self.parse_include()
             elif keyword == 'if':
                 child = self.parse_if()
+            elif keyword == 'end':
+                self.prev()
+                return GroupNode([])
+                
             if self.peek() != 'endtag':
-                raise ParseError('No end tag')
+                raise ParseException('No end tag')
+                
             self.next()
         else:
             child = self.parse_text()
 
-        
         group = self.parse_group()
         group.children = [child] + group.children
 
@@ -109,17 +144,27 @@ Context is a dictionary representing the variables in the local scope.
 
 
     def parse_if(self):
-        tag_contents = self.peek().strip()
-        keyword, tag_contents = tag_contents.split(sep = None, maxsplit = 1)
+        keyword, predicate = self.split_tag()
         
-        predicate = tag_contents
 
         self.next()
-        if self.peek != 'endtag':
+        if self.peek() != 'endtag':
             raise ParseException('No end tag')
         self.next()
         group = self.parse_group()
-        return TextNode(result)
+
+        if self.peek() != 'starttag':
+            raise ParseException('No end if')
+
+        self.next()
+        
+        keyword, tag_contents = self.split_tag()
+
+        if keyword != 'end' or tag_contents != 'if':
+            raise ParseException('No end if')
+        self.next()
+        
+        return IfNode(predicate, group)
 
     def parse_python(self):
         if self.peek() == 'endvar':
@@ -147,5 +192,6 @@ Context is a dictionary representing the variables in the local scope.
 
 if __name__ == '__main__':
     import doctest
-    doctest.testmod()
-    print('Passed')
+    nFailed, nTests = doctest.testmod()
+    if nFailed == 0:
+        print('Passed')
