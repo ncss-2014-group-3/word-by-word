@@ -50,4 +50,5 @@ if __name__ == '__main__':
     print('first word:', s.first_word().value())
 
     # Doesn't work D:
+    print('\nNot working D:')
     print(s.first_word().children())
