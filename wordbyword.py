@@ -14,12 +14,27 @@ def hello(response, name):
 def create(response):
     invalid_word = False
     #get the variables we need using get_field
-    title = str(response.get_field("title"))
-    start_word = response.get_field("start_word")
-    if title is None:
-        #we didn't get given a title
-    #TODO: We need to make sure the start word is actually a word, not numbers. Check the whitespace and also check the Title contains letters and that there is actually a title.
-    check = re.match("^[A-Za-z0-9]([A-Za-z0-9!\"\(\)?',\.\:;]+|[A-Za-z0-9])*$", title)
+    title = response.get_field("title")
+    start_word = response.get_field("firstword")
+    # a list of strings of things that went wrong
+    #we will give this to the template.
+    errors = []
+    if response.request.method == "POST":
+        if title is None:
+            #we didn't get given a title
+            errors.append("You didn't enter a title!")
+        if len(title) > 50:
+            errors.append("Your title was too long!")
+        if start_word is None:
+            errors.append("You didn't enter a starting word!")  
+        if ' ' in start_word:
+            errors.append("Please only enter one word.")
+        if errors:
+            errors.append("Please try again.")
+        
+       
+            
+        
     #word_che
     if " " in title:
         if check == True:
@@ -62,6 +77,6 @@ def greet(response):
 server = Server()
 server.register("/", index)
 server.register("/hello/([a-z]+)", hello)
-server.register("/create", create)
+server.register("/story", create)
 server.register("/greet", greet)
 server.run()
