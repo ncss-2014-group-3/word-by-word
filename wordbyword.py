@@ -11,9 +11,8 @@ from database import story
 import database
 from database import story
 
-# Create the database if it doesn't exist
-if not os.path.isfile('database.db'):
-  database.create()
+# Create the database
+database.create()
 
 
 #	function:	stories()
