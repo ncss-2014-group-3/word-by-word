@@ -7,6 +7,14 @@ from tornado.ncss import Server
 from template_engine.parser import Parser
 from database import story
 
+import database
+from database import story
+
+# Create the database if it doesn't exist
+if not os.path.isfile('database.db'):
+  database.create()
+
+
 #	function:	stories()
 #	arguments:	response
 #	description:
@@ -21,9 +29,9 @@ def stories(response):
     # returns: title, short burb and word count
 
     stories = story.Story.story_list()
-    
-    # story_list_data should return: 
-    #   titles and word count 
+
+    # story_list_data should return:
+    #   titles and word count
 
     variables = {'stories': stories}
 
@@ -54,7 +62,7 @@ def create(response):
         if len(title) > 50:
             errors.append("Your title was too long!")
         if not firstword:
-            errors.append("You didn't enter a starting word!")  
+            errors.append("You didn't enter a starting word!")
         if ' ' in firstword:
             errors.append("Please only enter one word.")
         if len(firstword) > 20:
@@ -66,13 +74,13 @@ def create(response):
             story_id = new_story.story_id
             response.redirect("/story/" + str(story_id))
             return
-        
+
         #if there are errors, relay back to user
         errors.append("Please try again.")
 
     p = Parser.from_file("templates/createastory.html")
     variables = {'errors': errors }
-                          
+
     view = p.expand(variables)
     response.write(view)
 
