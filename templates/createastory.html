@@ -19,7 +19,16 @@
             <p>
                 <input type="submit" value="Submit" action="/story" method="POST">
             </p>
+           
         </fieldset>
-     </form>   
+     </form>  
+
+        <div>
+         {% for error in errors %}
+            <ul>
+              <li> {{ error }} </li>
+            </ul>
+         {% end for %}
+         </div>
 </article>
 {% include templates/footer.html %}
