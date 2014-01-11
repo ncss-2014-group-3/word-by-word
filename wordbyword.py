@@ -124,35 +124,16 @@ def login(response):
         if logged_name is not None:
                 user = logged_name.decode()
                 print('user =', user)
-                response.write('<h1> You are logged in as {}</h1>'.format(user))
         else:
                 if user is not None and password is not None:
                         print('username =', user)
                         response.set_secure_cookie('username', user)
                         response.redirect('/login')
                         return
-                response.write('''
-<html>
-    <head>
-    <title> Login </title>
-    </head>
-
-
-    <body>
-    <strong>Login</strong>
-    <form method="POST">
-        <input name="name">
-        <input type="password" name="password">
-        <input type="submit" name="submit">
-    </form>
-    
-    </body>
-
-    </html>
-    '''
-)
-        #p = Parser.from_file('templates/login.html')
-        #response.write(p.expand({ 'user' : user }))
+                
+        p = Parser.from_file('templates/login.html')
+        html = p.expand({ 'user' : user })
+        response.write(html)
 
 def logout(response):
         response.clear_cookie('username')
