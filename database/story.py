@@ -43,7 +43,7 @@ class Story:
         return self._first_word
 
 if __name__ == '__main__':
-    # Testing
+    # Test
     s = Story.from_id(1)
     print('title:', s.title())
     print('id:', s.story_id())
