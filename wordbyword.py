@@ -1,6 +1,10 @@
-from tornado.ncss import Server
-from template_engine.parser import Parser
+# -*- coding: utf-8 -*-
+import html
 
+import tornado.web
+from tornado.ncss import Server
+
+from template_engine.parser import Parser
 from database import story
 
 #	function:	stories()
@@ -74,13 +78,27 @@ def create(response):
     view = p.expand(variables)
     response.write(view)
 
-           
-      
 
-    
-server = Server()
-server.register("/", stories)
-server.register("/style.css", style)
-server.register("/story", create)
+def view_story(response, sid):
+	story = story.Story.from_id(sid)
 
-server.run()
+	if not story:
+		raise tornado.web.HTTPError(404)
+
+	p = Parser.from_file("templates/viewstory.html")
+
+	# html = """
+	# """.format(
+	# 	title=story.title,
+	# 	current="",#story.current,
+	# 	tree=render_word(story.first_word, title=True))
+	# print("?", html)
+	response.write(p.expand({"story": story}))
+
+if __name__ == "__main__":
+	server = Server()
+	server.register("/", stories)
+	server.register("/style.css", style)
+	server.register("/story", create)
+	server.register("/story/(\d+)", view_story)
+	server.run()

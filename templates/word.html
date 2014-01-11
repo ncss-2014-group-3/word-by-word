@@ -1,0 +1,10 @@
+	<table id="child-{{ word.id }}" class="child">
+		<tr>
+			<td class="word">{{ word.value }}</td>
+			<td class="children">
+			{% for child in word.children %}
+				{% include templates/word.html word=child %}
+			{% end for %}
+			</td>
+		</tr>
+	</table>
