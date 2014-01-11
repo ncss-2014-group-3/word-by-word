@@ -125,11 +125,13 @@ def login(response):
                 user = logged_name.decode()
                 print('user =', user)
         else:
-                if user is not None and password is not None:
+                if user and password:
                         print('username =', user)
                         response.set_secure_cookie('username', user)
                         response.redirect('/login')
                         return
+                else:
+                        user = password = None
                 
         p = Parser.from_file('templates/login.html')
         html = p.expand({ 'user' : user })
@@ -139,6 +141,9 @@ def logout(response):
         response.clear_cookie('username')
         response.redirect('/login')
 
+def create_account(response):
+        pass
+
 server = Server()
 server.register("/", stories)
 server.register("/style.css", style)
@@ -147,4 +152,5 @@ server.register("/story", create)
 server.register("/greet", greet)
 server.register('/login', login)
 server.register('/logout', logout)
+server.register('/create_account', create_account)
 server.run()
