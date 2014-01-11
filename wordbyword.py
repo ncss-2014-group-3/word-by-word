@@ -78,9 +78,9 @@ def create(response):
 
 
 def view_story(response, sid):
-	story = story.Story.from_id(sid)
+	s = story.Story.from_id(sid)
 
-	if not story:
+	if not s:
 		raise tornado.web.HTTPError(404)
 
 	p = Parser.from_file("templates/viewstory.html")
@@ -91,7 +91,7 @@ def view_story(response, sid):
 	# 	current="",#story.current,
 	# 	tree=render_word(story.first_word, title=True))
 	# print("?", html)
-	response.write(p.expand({"story": story}))
+	response.write(p.expand({"story": s}))
 
 if __name__ == "__main__":
 	server = Server()
