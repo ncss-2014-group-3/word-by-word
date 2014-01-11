@@ -57,28 +57,22 @@ def create(response):
             errors.append("Please only enter one word.")
         if len(firstword) > 20:
             errors.append("Your word is too long. Word must be below 21 characters long.")
-        if errors:
 
-            #if there are errors, relay back to user
-            errors.append("Please try again.")
-            p = Parser.from_file("templates/createastory.html")
-            variables = {'errors': errors }
-                          
-            view = p.expand(variables)
-            response.write(view)
-            return
-            
-        else:
+        if not errors:
             #write to the database
             new_story = story.Story(title, firstword)
             story_id = new_story.story_id
             response.redirect("/story/" + str(story_id))
-    else:
-            
-        p = Parser.from_file("templates/createastory.html")
-                              
-        view = p.expand()
-        response.write(view)
+            return
+        
+        #if there are errors, relay back to user
+        errors.append("Please try again.")
+
+    p = Parser.from_file("templates/createastory.html")
+    variables = {'errors': errors }
+                          
+    view = p.expand(variables)
+    response.write(view)
 
            
       
