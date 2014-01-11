@@ -1,9 +1,9 @@
 import re
-from PythonNode import PythonNode
-from GroupNode import GroupNode
-from TextNode import TextNode
-from ForNode import ForNode
-from IfNode import IfNode
+from .PythonNode import PythonNode
+from .GroupNode import GroupNode
+from .TextNode import TextNode
+from .ForNode import ForNode
+from .IfNode import IfNode
 
 TOKENS = {
     '{{' : 'startvar',
@@ -64,6 +64,12 @@ Creates a new Parser object from a string that can be expanded. """
         tag_contents = self.peek().strip()
         keyword, tag_contents = tag_contents.split(sep = None, maxsplit = 1)
         return keyword, tag_contents
+
+    @classmethod
+    def from_file(cls, file_name):
+        with open(file_name) as f:
+            text = f.read()
+        return Parser(text)
         
     def expand(self, context={}):
         r""" p.expand(context = {}) -> str
