@@ -18,18 +18,21 @@ class User:
         selection = cursor.execute('''SELECT username FROM users''')
         user_list = [x[0] for x in selection]
         if username not in user_list:
-            cursor.execute('''INSERT INTO users VALUES(?, ?)''', (username, password))
+            cursor.execute('''INSERT INTO users VALUES(?,?)''', (username, password))
+            connection.commit()
         
     def login(self, username, password):
+        check = ''
         cursor = connection.cursor()
         returned = cursor.execute('SELECT password FROM users WHERE username=?', (username,))
         for item in returned:
-            item = item[0]
-        if password == item:
+            check = item[0]
+        if password == check:
             return True
         else:
             return False
 
     def remove(self):
         cursor = connection.cursor()
-        cursor.execute('''DELETE FROM users WHERE username=?''', (self.username))
+        cursor.execute('''DELETE FROM users WHERE username=?''', (self.username,))
+        connection.commit()
