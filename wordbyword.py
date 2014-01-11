@@ -142,7 +142,28 @@ def logout(response):
         response.redirect('/login')
 
 def create_account(response):
-        pass
+        logged_name = response.get_secure_cookie('username')
+        if logged_name is not None:
+                response.write('You already are logged in as: '+logged_name.decode())
+                return
+        user = response.get_field('name')
+        password = response.get_field('password')
+        if user and password:
+                response.set_secure_cookie('username', user)
+                print(user, password)
+        else:
+                user = password = None
+        #p = Parser.from_file('templates/create_account.html')
+        #html = p.expand({ 'user' : user })
+        response.write('''
+<h1>Create account</h1>
+<form method="post">
+<input name="name"><br>
+<input name="password" type="password"><br>
+<input type="submit">
+</form>
+''')
+        
 
 server = Server()
 server.register("/", stories)
