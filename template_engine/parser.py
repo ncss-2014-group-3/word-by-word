@@ -1,9 +1,9 @@
 import re
-from .PythonNode import PythonNode
-from .GroupNode import GroupNode
-from .TextNode import TextNode
-from .ForNode import ForNode
-from .IfNode import IfNode
+from PythonNode import PythonNode
+from GroupNode import GroupNode
+from TextNode import TextNode
+from ForNode import ForNode
+from IfNode import IfNode
 
 TOKENS = {
     '{{' : 'startvar',
@@ -149,7 +149,7 @@ ParseException: No end for
                 child = self.parse_if()
             elif keyword == 'for':
                 child = self.parse_for()
-            elif keyword == 'end':
+            elif keyword in ('end', 'else'):
                 self.prev()
                 return GroupNode([])
                 
@@ -205,6 +205,13 @@ ParseException: No end for
         
         keyword, tag_contents = self.split_tag()
 
+        if keyword == 'else':
+            if tag_contents != '':
+                raise ParseException('Unhandled data in else tag')
+            self.next()
+            if self.peek() != 'endtag':
+                raise ParseException('No endtag on else')
+            
         if keyword != 'end' or tag_contents != 'if':
             raise ParseException('No end if')
         self.next()
