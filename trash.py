@@ -26,6 +26,12 @@ class Word:
 		self.value = lambda: random.choice(["foo", "bar", "baz", "qux", "test"])
 		self.id = lambda: random.randint(0, 50)
 
+class Story:
+	def __init__(self, w):
+		self.title = lambda: "This is a test"
+		self.first_word = lambda: w
+		self.current = lambda: "Once upon a time"
+
 w2 = Word()
 w2._children = [
 	Word(),
@@ -38,3 +44,5 @@ w._children = [
 	Word(),
 	w2
 ]
+
+s = Story(w)
