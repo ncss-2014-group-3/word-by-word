@@ -1,6 +1,6 @@
 import sqlite3
 
-class NewStoryGen :
+class NewStoryGen:
     def __init__(self,db_name):
         conn = sqlite3.connect(db_name)
         self.cur = conn.cursor()
