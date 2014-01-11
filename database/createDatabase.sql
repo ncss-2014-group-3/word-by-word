@@ -15,6 +15,7 @@ CREATE TABLE words (
     ,storyID    INTEGER NOT NULL
     ,word   TEXT    NOT NULL
     ,author TEXT    NOT NULL
+    ,FOREIGN KEY(author) REFERENCES users(username)
 );
 
 
@@ -23,4 +24,10 @@ CREATE TABLE votes (
     ,username TEXT NOT NULL
     ,PRIMARY KEY (wordID, username)
     ,FOREIGN KEY(wordID) REFERENCES words(wordID)
+    ,FOREIGN KEY(username) REFERENCES users(username)
+);
+
+CREATE TABLE users (
+    username TEXT NOT NULL PRIMARY KEY
+    ,password TEXT NOT NULL
 );
