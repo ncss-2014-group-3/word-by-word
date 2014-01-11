@@ -232,15 +232,22 @@ ParseException: No end for
 
     def parse_include(self):
         tag_contents = self.peek().strip()
-        keyword, tag_contents = tag_contents.split(sep = None, maxsplit = 1)
-        
-        with open(tag_contents) as f:
-            text = f.read()
-            result = Parser(text).expand()
-
         self.next()
-        return TextNode(result)
 
+        keyword, file_name, *context_args = tag_contents.split()
+        context = {}
+        if context_args:
+            for c in context_args:
+                k, v = c.split("=", maxsplit=1)
+                context[k] = v
+
+        if not context:
+            result = Parser.from_file(file_name).expand(context)
+            return TextNode(result)
+        
+        return IncludeNode(file_name, context)
+
+from .IncludeNode import IncludeNode
 
 if __name__ == '__main__':
     import doctest

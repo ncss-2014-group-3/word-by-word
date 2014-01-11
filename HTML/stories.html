@@ -1,0 +1,30 @@
+<!doctype html>
+
+<html>
+    <head>
+        <title>page Title</title>
+        <link rel="stylesheet"
+        type="text/css"
+        href="stories.css">
+    </head>
+    
+    <body>
+        <header> </header>
+        <article>
+           <h1>List of Stories</h1>
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th>Count</th>
+                </tr>
+                <tr class='list_stories'>
+                {% for story in stories %}
+                    <td>{{ story.title }}</td>
+                    <td>{{ story.total_votes }}</td>
+                {% end for %}
+                </tr>
+            </table>
+        </article>
+        <footer></footer>
+    </body>
+</html>

@@ -1,0 +1,9 @@
+{% include templates/header.html %}        
+<article>    
+    <h1 id="main-title">{{ story.title }}</h1>
+    <h3 id="current-sentence"></h3>
+    <content id="story-tree">
+        {% include templates/word.html word=story.first_word %}
+    </content>
+</article>
+{% include templates/footer.html %}
