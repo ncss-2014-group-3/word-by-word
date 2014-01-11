@@ -6,11 +6,12 @@ class Word:
     @classmethod
     def from_id(cla, word_id):
         c = connection.cursor()
-        c.execute("SELECT wordID, storyID, word, parentID FROM words WHERE wordID = ?", (word_id,))
+        c.execute("""SELECT wordID, storyID, word, parentID
+                    FROM words
+                    WHERE wordID = ?""", (word_id,))
         result = c.fetchone()
         if result:
             return cla(result[0],result[1], result[2], result[3])
-            
         return False
         
     def __init__(self, id, story_id, value, parent_id = None):
@@ -18,6 +19,14 @@ class Word:
         self.parent_id = parent_id
         self.story_id = story_id
         self.value = value
+        
+        c = connection.cursor()
+        c.execute("""SELECT count(*) FROM votes WHERE wordID = ?""", (self.id,))
+        result = c.fetchone()
+        self._dir_votes = 0
+        if result is not None:
+            #print(self.value, result[0], self.id)
+            self._dir_votes = result[0]
         if not id:
             self.save()
 
@@ -43,13 +52,39 @@ class Word:
         for child in self.children:
             count += child.word_count
         return count
+        
+    @property
+    def votes(self):
+        child_scores = 0
+        for child in self.children:
+            child_scores += child.votes
+        return self._dir_votes + child_scores
+    
+    def add_vote(self):
+        self._dir_votes += 1
+        c = connection.cursor()
+        c.execute("""
+        INSERT INTO votes VALUES (?)
+        """, (self.id,))
+        connection.commit()
+    
+    def remove_vote(self):
+        '''self._dir_votes -= 1
+        c = connection.cursor()
+        c.execute("""
+        DELETE FROM votes WHERE wordID = ?
+        LIMIT 1
+        """, (self.id,))
+        connection.commit()'''
+        print('ERR NOT IMPLIMENTED')
     
     @property
     def children(self):
         c = connection.cursor()
         
         c.execute("""
-            SELECT * FROM
+            SELECT *
+            FROM
                 words
             WHERE
                 parentID = """ + str(self.id) + """
