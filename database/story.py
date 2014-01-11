@@ -24,7 +24,7 @@ class Story:
             stories_list.append(Story.from_id(s[0]))
         return stories_list
             
-    def __init__(self, title, first_word, story_id=None):
+    def __init__(self, title, first_word, author=None, story_id=None):
         """
         Creates a story
         arguments: 
@@ -41,7 +41,7 @@ class Story:
             self.story_id = self._cursor.lastrowid
             connection.commit()
         if type(first_word) == str:
-            self.first_word = Word(False, self.story_id, first_word) #author add
+            self.first_word = Word(False, self.story_id, first_word, author) #author add
         else:
             self.first_word = first_word
     
@@ -65,8 +65,8 @@ class Story:
         return self.first_word.word_count
         
     def save(self):
-        self._cursor.execte("""UPDATE stories SET
+        self._cursor.execute("""UPDATE stories SET
             name = ?
             WHERE storyID = ?
-        """, self.title, self.story_id)
+        """, (self.title, self.story_id))
         connection.commit()
