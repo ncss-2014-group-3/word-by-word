@@ -6,18 +6,19 @@ body {
     
 }
 
-p view{
+p.view{
 	margin-top:30px;
     margin-bottom: 20px;
     text-align:justify;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: 'Signika', sans-serif;
 }
 
-p edit{
+p.edit{
 	margin-top:30px;
     margin-bottom: 20px;
     text-align:justify;
-    font-family: 'Rokkitt';
+    font-family: 'Rokkitt', serif;
+    font-size:21px;
 }
 
 a {
