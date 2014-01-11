@@ -1,62 +1,17 @@
-{% include 'templates/header.html' %}
+{% include templates/header.html %}
 <article>
    <h1>List of Stories</h1>
     <table>
         <tr>
             <th>Title</th>
-            <th>Blurb</th>
-            <th>Count</th>
+            <th>Votes</th>
         </tr>
-        <tr>
-            <td>Once a pun...</td>
-            <td>This is about a pun gone wrong.</td>
-            <td>340</td>
-        </tr>
-        <tr>
-            <td>Twilight</td>
-            <td>Lots of blood and vegetarians!</td>
-            <td>20000</td>
-        </tr>
-        <tr>
-            <td>Zombies and Prejudice</td>
-            <td>Pride and Prejudice without the Pride</td>
-            <td>6778</td>
-        </tr>
-        <tr>
-            <td>Mills Meets Boons</td>
-            <td>A love story gone wrong.</td>
-            <td>6789</td>
-        </tr>
-        <tr>
-            <td>Hairy Potter</td>
-            <td>Harry Potter all grown up.</td>
-            <td>609</td>
-        </tr>
-        <tr>
-            <td>The Thirsty Games</td>
-            <td>The games played during a drought.</td>
-            <td>609</td>
-        </tr>
-        <tr>
-            <td>Ring Ring Why Don't You Give Me a Hobbit?</td>
-            <td>Lord of the Rings featuring ABBA Revival.</td>
-            <td>609</td>
-        </tr>
-        <tr>
-            <td>Justin Beaver and Selena Gomer Bull</td>
-            <td>A love story from a pond in Canada.</td>
-            <td>609</td>
-        </tr>
-        <tr>
-            <td>To Bleed or Not to Bleed</td>
-            <td>That is the question.</td>
-            <td>609</td>
-        </tr>
-        <tr>
-            <td>Two Directions</td>
-            <td>Because one is never enough...</td>
-            <td>1D</td>
-        </tr>
+        {% for story in stories %}
+            <tr>
+                <td>{{ story.title }}</td>
+                <td>{{ story.total_votes }}</td>
+            </tr>
+        {% end for %}
     </table>
 </article>
-{% include 'templates/footer.html' %}
+{% include templates/footer.html %}
