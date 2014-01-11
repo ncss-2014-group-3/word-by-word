@@ -95,7 +95,3 @@ class Word:
                 """, (self._parent_id, self._story_id, self._value))
             connection.commit()
             self._id = c.lastrowid
-        
-        
-        
-   
