@@ -7,6 +7,7 @@ body {
 
 p {
 	margin-bottom: 14px;
+    text-align:justify;
 }
 
 a {
@@ -26,7 +27,7 @@ article {
 
 /* headings */
 h1 {
-	font-size: 32px;
+	font-size: 29px;
 	font-weight: bold;
 	margin-bottom: 32px;
 	line-height: 29px;
@@ -117,13 +118,7 @@ form input[type=submit] {
 	margin-top: 10px;
 }
 
-table {
-    font-size:16px;
-    width:100%;
-    text-align:justify;
-    border:1px dotted #C2C2C2;
-    
-}
+
 
 header {
 	background-color: black;
@@ -137,12 +132,13 @@ header {
 		display: inline-block;
 		line-height: 80px;
 		margin-left: 20px;
-		font-size: 24px;
+		font-size: 38px;
+        margin-top:15px;
 	}
 
 	header nav {
 		position: absolute;
-		bottom: 20px;
+		bottom: 15px;
 		right: 0px;
 		height: 14px;
 		line-height: 14px;
@@ -158,3 +154,22 @@ footer {
     height:50px;
     color:black;
 } 
+
+table {
+    font-size:16px;
+    width:100%;
+    text-align:justify;
+    border:1px solid #a8a8a8;
+    padding:5px 10px 5px 10px;
+    
+    
+}
+
+input { 
+    font-family:Helvetica, sans-serif;
+    font-size:14px;
+}
+
+fieldset p {
+    margin-left:-10px;
+}

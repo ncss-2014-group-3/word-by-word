@@ -9,18 +9,16 @@ class Story:
         cursor.execute('''SELECT name FROM stories WHERE storyID=?''', (id,))
         row = cursor.fetchone()
         if row is None:
-            return False
-        cursor.execute('''  SELECT * FROM words
-                            WHERE parentID IS NULL
-                            AND storyID=?''', (id,))
-        word_row = cursor.fetchone()
-        if word_row is None:
-            return False
-        return cla(row[0], Word(word_row[0],id,word_row[2]),id)
+            return None
+        first_word = Word.from_story_id(id)
+        if first_word is None:
+            return None
+        return cla(row[0], first_word, id)
 
     @classmethod
-    def story_list(self):
-        stories = self._cursor.execute('''SELECT storyID FROM stories''')
+    def story_list(cls):
+        cursor = connection.cursor()
+        stories = cursor.execute('''SELECT storyID FROM stories''')
         stories_list = []
         for s in stories:
             stories_list.append(Story.from_id(s[0]))
