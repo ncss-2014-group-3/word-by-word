@@ -1,13 +1,7 @@
 from tornado.ncss import Server
 from template_engine.parser import Parser
 
-                     
-#import db
-import re
-from template_engine.parser import Parser
-
-#import database
-#db = Database
+from database import story
 
 #	function:	stories()
 #	arguments:	response
@@ -47,11 +41,8 @@ def style(response):
 	with open('style.css', 'r') as f:
 		response.write(f.read())
 
-def hello(response, name):
-    response.write("Hello " + name + " ")
 
 def create(response):
-    invalid_word = False
     #get the variables we need using get_field
     title = response.get_field("title")
     firstword = response.get_field("firstword")
@@ -68,27 +59,38 @@ def create(response):
             errors.append("You didn't enter a starting word!")  
         if ' ' in firstword:
             errors.append("Please only enter one word.")
+        if len(firstword) > 20:
+            errors.append("Your word is too long. Word must be below 21 characters long.")
         if errors:
-            errors.append("Please try again.")
 
-    p = Parser.from_file("templates/createastory.html")
-    variables = { 'title': title, 'firstword': firstword, 'errors': errors }
-                  
-    view = p.expand(variables)
-    response.write(view)  
+            #if there are errors, relay back to user
+            errors.append("Please try again.")
+            p = Parser.from_file("templates/createastory.html")
+            variables = {'errors': errors }
+                          
+            view = p.expand(variables)
+            response.write(view)
+            return
+            
+        else:
+            #write to the database
+            new_story = story.Story(title, firstword)
+            story_id = new_story.story_id
+            response.redirect("/story/" + str(story_id))
+    else:
+            
+        p = Parser.from_file("templates/createastory.html")
+                              
+        view = p.expand()
+        response.write(view)
+
            
       
-
-def greet(response):
-    fname = response.get_field('fname', 'James')
-    lname = response.get_field('lname', 'Curran')
-    response.write("Hello " + fname + " " + lname + "!")
 
     
 server = Server()
 server.register("/", stories)
 server.register("/style.css", style)
-server.register("/hello/([a-z]+)", hello)
 server.register("/story", create)
-server.register("/greet", greet)
+
 server.run()
