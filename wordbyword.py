@@ -71,31 +71,13 @@ def create(response):
         if errors:
             errors.append("Please try again.")
 
-    p = Parser.from_file("HTML/createastory.html")
+    p = Parser.from_file("templates/createastory.html")
     variables = { 'title': title, 'firstword': firstword, 'errors': errors }
                   
-    p.expand(variables)
-        
-       
- 
-
-    
-    response.write("""
-    <html>
-    <head>
-    <title> Create A Story </title>
-    </head>
-
-
-    <body>
-    <strong>This is the create page</strong>
-    </body>
-
-    </html>
-    """)
-
-
-    
+    view = p.expand(variables)
+    response.write(view)  
+           
+      
 
 def greet(response):
     fname = response.get_field('fname', 'James')
