@@ -2,10 +2,10 @@ body {
 
 	margin:0;
     padding:0;
-    font-family: 'alegreya_sansblack';
+    font-family:Arial;
 	font-size: 14px;
 	line-height: 21px;
-    background-color:#eee;
+    background-color:#eaeaea;
 }
 
 .center {
@@ -33,20 +33,9 @@ p.edit{
 }
 
 a {
-	color: #ff9000;
+	color: #E67300;
     text-decoration:none;
-    -webkit-transition-duration:0.4s;
-    -o-webkit-transition-duration:0.4s;
-    -moz-transition-duration:0.4s;
-    transition-duration:0.4s;
-}
 
-a.hover{
-    -webkit-transition-duration:0.4s;
-    -o-webkit-transition-duration:0.4s;
-    -moz-transition-duration:0.4s;
-    transition-duration:0.4s;
-    opacity:0.6;
 }
 
 a:hover  {
@@ -67,15 +56,18 @@ article {
 }
 
 /* headings */
-h1 {
+article h1 {
 	font-size: 35px;
+    color:#555;
 	font-weight: bold;
 	margin-bottom: 20px;
 	line-height: 29px;
-
+    text-align:center;
+    padding:5px 0;
+    border-bottom:1px solid #aaa;
 }
 
-h2 {
+article h2 {
 	font-size: 25px;
 	font-weight: bold;
 	margin-bottom: 19px;
@@ -84,7 +76,7 @@ h2 {
 	margin-top: 25px;
 }
 
-h3 {
+article h3 {
 	font-size: 17px;
 	font-weight: bold;
 	line-height: 19px;
@@ -125,6 +117,9 @@ ul {
 	list-style-type: disc;
 }
 
+a {
+    display:block;
+}   
 
 /* form */
 fieldset {
@@ -140,6 +135,17 @@ legend {
 
 form label, form input {
 	display: inline-block;
+    outline:none;
+}
+
+form input[type=text], form input[type=email]{
+    padding:3px 8px;
+    box-shadow:inset 1px 1px 1px 0px rgba(50,50,50,0.2);
+    -webkit-transition: box-shadow 0.1s;
+}
+
+form input[type=text]:focus {
+    box-shadow:inset 1px 1px 6px 0px rgba(50,50,50,0.3);
 }
 
 form label {
@@ -156,21 +162,36 @@ form input[type=text].lastname {
 	text-transform: uppercase;
 }
 
-form input[type=submit] {
+form input[type=submit], button {
 	float:left;
 	margin-top: 10px;
+    background-color:#ccc;
+    border:none;
+    cursor:pointer;
+    padding:3px 20px;
+    box-shadow: 1px 1px 1px rgba(20,20,20,0.5);
+}
+form input[type=submit]:active {
+    position:relative;
+    top:1px;
+    left:1px;
+    box-shadow: 0px 0px 1px rgba(20,20,20,0.5);
 }
 
 
 
+
 header {
-	background-color: #ccc;
+	background-color: #464646;
     padding-top:10px;
+    font-family: 'alegreya_sansblack';
 }
 	header h1 {
 		font-size: 50px;
         margin:0;
         text-align:center;
+        font-weight:bold;
+        padding-top:15px;
         font-family: 'alegreya_sansblack', 'Rokkitt';
 	}
     header h1 a {
@@ -180,7 +201,7 @@ header {
 
 	header nav {
 		float:right;
-        margin-top:15px;
+        margin-bottom:5px;
 	}
     
     header nav ul {
@@ -194,27 +215,22 @@ header {
     }
     header nav ul li a {
         font-size:18px;
-        font-family:'Love Ya Like A Sister', cursive;
+        letter-spacing:1px;
     }
 	
 		header nav a {
 		}
         
-        header nav a:hover{
-            background-color:#D4D4D4;
-            border:2px solid #D4D4D4;
-        }
         
 footer {
-    background-color:black;
+    background-color:#464646;
     height:20px;
     color:white;
     text-align: center;
     padding:6px;
-    margin-top: 50px;
 } 
 
-table {
+table.borders {
     font-size:16px;
     width:800px;
     text-align:justify;
@@ -241,29 +257,62 @@ td .summary {
     margin-top:-33px;
 }
 
-th {
-    background:white;
-}
-td, th {
+table.borders td, th {
     word-wrap:break-word;
     border-right:1px dotted #a8a8a8;
     padding:10px 4px 10px 4px;
     line-height:18px;
 }
-tr:nth-child(odd)
-{
-background:white;
-}
-tr:nth-child(even)
-{
-background:#e5e5e5;
-}
+
 input { 
     font-family:Helvetica, sans-serif;
     font-size:14px;
     padding: 3px;
 }
 
-fieldset p {
-    margin-left:-10px;
+
+#tblCreateStory {
+    
+}
+#tblCreateStory tr  td{
+    padding:5px;
+}
+
+#errorBox {
+    background-color:#faa;
+    padding:10px;
+    margin:15px;
+}
+
+#errorBox ul {
+    margin:0;
+    padding:0;
+    padding-left:15px;
+}
+#headCaption {
+    text-align:center;
+    color:white;
+    margin-top: 15px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
+
+#storyList {
+    box-sizing:border-box;
+    width:790px;
+}
+
+#storyList tr:nth-child(odd)
+{
+background:white;
+}
+#storyList tr:nth-child(even)
+{
+background:#e5e5e5;
+}
+
+#storyList a {
+    color:#000;
+    text-decoration:underline;
+    font-weight:normal;
 }
