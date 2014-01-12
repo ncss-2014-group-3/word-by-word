@@ -1,6 +1,8 @@
 import sqlite3
 from . import connection
 from database import userStats
+import hashlib
+
 
 class User:
     @classmethod
@@ -84,3 +86,13 @@ class User:
         returned = cursor.execute('''SELECT email FROM users WHERE username=? ''', (self.username,))
         email = returned.fetchone()[0]
         return email
+        
+    @property
+    def image_url(self):
+        size = 200
+        return 'http://www.gravatar.com/avatar/' + hashlib.md5(self.email.encode()).hexdigest() + '.png?s='+str(size)
+
+    @property
+    def own_stories(self):
+        pass
+        

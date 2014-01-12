@@ -81,21 +81,30 @@ class Story:
     def author(self):
         return self.first_word.author
 
-    def first_words(self, num=10):
-        words = [self.first_word]
-        while len(words) < num:
-            nword = words[-1].favourite_child
-            if nword:
-                words.append(nword)
-            else:
+    def walk_first_words(self, num=10):
+        word = self.first_word
+        for _ in range(num):
+            yield word
+            word = word.favourite_child
+            if not word:
                 break
-        for w in words:
+
+    def first_words(self, num=10):
+        nwords = []
+        for w in self.walk_first_words(num):
             nwords.append(w.value)
         return ' '.join(nwords)
-        
+
     def save(self):
         self._cursor.execute('''UPDATE stories SET
             name = ?
             WHERE storyID = ?
         ''', (self.title, self.story_id))
         connection.commit()
+
+    def prune(self, n=5):
+        len_deepest = self.first_word._deepest_child()
+        last_fixed = len_deepest - n
+        for w in self.walk_first_words(last_fixed):
+            for child in w.children[1:]:
+                child.remove()

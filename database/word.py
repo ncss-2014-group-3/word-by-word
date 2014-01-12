@@ -2,6 +2,21 @@ import sqlite3
 
 from . import connection, dict_factory
 
+def cached_property(f):
+    """returns a cached property that is calculated by function f"""
+    def get(self):
+        try:
+            return self._property_cache[f]
+        except AttributeError:
+            self._property_cache = {}
+            x = self._property_cache[f] = f(self)
+            return x
+        except KeyError:
+            x = self._property_cache[f] = f(self)
+            return x
+        
+    return property(get)
+
 class Word:
     @classmethod
     def from_story_id(cla, story_id):
@@ -71,7 +86,7 @@ class Word:
         dir_votes = 0
         for child in self._children_unsorted:
             cur = set()
-            child_scores += child._votes(cur)
+            child_scores += child.get_votes(cur)
             seen = seen | cur
         for voter in self._get_voters():
             if voter not in seen:
@@ -84,7 +99,7 @@ class Word:
         dir_votes += child_scores
         return dir_votes
 
-    votes = property(get_votes)
+    votes = cached_property(get_votes)
 
     def _get_voters(self):
         cursor = connection.cursor()
@@ -165,10 +180,10 @@ class Word:
 
     def _deepest_child(self):
         # Depth first, brah.
-        m = 1
+        m = 0
         for child in self.children:
-            m = 1 + max(m, child._deepest_child())
-        return m
+            m = max(m, child._deepest_child())
+        return m + 1
 
     def fixed(self, n=5):
         return self._deepest_child() > n

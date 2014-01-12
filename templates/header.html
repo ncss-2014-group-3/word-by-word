@@ -11,27 +11,28 @@
     </head>
     <body>
         <header>
-            <div class="center">
-                <h1>
-                    <a href="/">Word By Word</a>
-                </h1>
-                <div id="headCaption">
-                    Write a word. Read a story.
-                </div>
-                <nav>
-                    <ul>
-                        <li>Welcome, {{ user.username }}</li><br>
-                        <li><a href="/">All Stories</a></li><br>
-                        {% if user is not None %}
-                            <li><a href="/story">Create a Story</a></li><br>
-                            <li><a href="/user/{{ user.username }}">{{ user.username }}'s Profile</a></li><br>
-                            <li><a href="/logout">Logout</a></li><br>
-                        {% else %}
-                            <li><a href="/login">Login</a></li><br>
-                            <li><a href="/register">Register</a></li>
-                        {% end if %}
-                    </ul>
-                </nav>
+            <h1>
+                <a href="/">Word By Word</a>
+            </h1>
+                
+            <div id="headCaption">
+                Write a word.<br/>Read a story.
             </div>
+            <nav>
+                <ul>
+                    {% if user is not None %}
+                        <li>Welcome, {{ user.username }}</li><br>
+                    {% end if %}
+                    <li><a href="/">Top Stories</a></li><br>
+                    {% if user is not None %}
+                        <li><a href="/story">Create a Story</a></li><br>
+                        <li><a href="/user/{{ user.username }}">{{ user.username }}'s Profile</a></li><br>
+                        <li><a href="/logout">Logout</a></li><br>
+                    {% else %}
+                        <li><a href="/login">Login</a></li><br>
+                        <li><a href="/register">Register</a></li>
+                    {% end if %}
+                </ul>
+            </nav>
             <div class="clear"></div>
         </header>
