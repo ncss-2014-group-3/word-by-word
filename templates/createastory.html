@@ -17,24 +17,32 @@
                 <tr>
                     <td align="right">Title:</td>
                     {% if len(errors) != 0 %}
-                        <td><input type="text"
-                        name="title" {% if title %} value={{ title }} {% end if %} placeholder="Enter story title here"></td>
+                        {% if "You didn't enter a title!" not in errors %}
+                            <td><input type="text"
+                                name="title" {% if title %} value={{ title }} {% end if %} placeholder="Enter story title here" autocomplete="off" autofocus="autofocus"></td>
+                        {% else %}
+                            <td><input type="text"
+                                name="title" placeholder="Enter story title here" autocomplete="off" autofocus="autofocus"></td>
+                        {% end if %}
                     {% else %}
                         <td><input type="text"
-                        name="title" placeholder="Enter story title here"></td>
+                            name="title" placeholder="Enter story title here" autocomplete="off" autofocus="autofocus"></td>
                     {% end if %}
                 </tr>
                 <tr>
                     <td align="right">Word:</td>
-                    <td>
-                        {% if len(errors) != 0 %}
-                            <input type="text"
-                                name="firstword" {% if firstword %} value={{ firstword }} {% end if %} placeholder="Eg: Once...">
+                    {% if len(errors) != 0 %}
+                        {% if "You didn't enter a starting word!" not in errors %}
+                            <td><input type="text"
+                                name="firstword" {% if firstword %} value={{ firstword }} {% end if %} placeholder="Eg: Once..." autocomplete="off"></td>
                         {% else %}
-                            <input type="text"
-                                name="firstword" placeholder="Eg: Once...">
+                            <td><input type="text"
+                                name="firstword" placeholder="Eg: Once..." autocomplete="off"></td>
                         {% end if %}
-                    </td>
+                    {% else %}
+                        <td><input type="text"
+                                name="firstword" placeholder="Eg: Once..."></td>
+                    {% end if %}
                 </tr>
                 <tr>
                     <td>&nbsp;</td>

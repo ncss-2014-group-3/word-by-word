@@ -38,7 +38,7 @@ a:hover  {
 }
 
 article {
-    width: 900px;
+    width: 950px;
     margin-left: 280px;
     min-height:100%;
     padding: 40px 45px;
@@ -55,10 +55,10 @@ article#view-story {
 
 /* headings */
 article h1 {
-    position: absolute;
+    position: fixed;
     top: 150px;
     left: 0;
-
+    overflow:hidden;
     width: 260px;
 	margin-bottom: 20px;
     padding: 30px 10px;
@@ -197,8 +197,8 @@ form input[type=submit]:active {
 
 
 header {
+    position:fixed;
 	background-color: #ff7128;
-	position: absolute;
     float:left;
 	width: 280px;
     height:100%;
@@ -258,7 +258,8 @@ footer {
     font-size:12px;
     float:center;
     bottom:5px;
-    position:absolute;
+    position:fixed;
+    left: 16px;
     
 }
 
@@ -401,7 +402,7 @@ input {
 }
 
 #userProfile tr td:last-child {
-    width:200px;
+    width:000px;
 }
 
 #userProfile tr:nth-child(2n-1){
@@ -415,7 +416,8 @@ input {
 
 #profileImage {
     float:left;
-    margin-left:40px;
+    margin-left:0px;
+    margin-top:30px;
 }
 #profileImage img {
     width: 200px;

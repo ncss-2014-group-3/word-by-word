@@ -213,8 +213,8 @@ def register(response):
         if username and password is not None:
                 if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$', email) is None:
                     errors.append('Invalid email')
-                if re.match(r'^\w+$', username) is None:
-                    errors.append('Invalid username, usernames must be alphanumeric with underscores')
+                if re.match(r'^\w{3,12}$', username) is None:
+                    errors.append('Invalid username, usernames must be 3-12 characters and alphanumeric, optionally containing underscores')
                 if user.User.from_username(username) is not None:
                    errors.append('Invalid username, username already taken')
                 if len(password) < 5:

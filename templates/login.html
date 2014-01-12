@@ -1,0 +1,40 @@
+{% include templates/header.html user=user%}
+
+<article>
+    {% if user is not None %}
+        <h1>Welcome {{user.username}}</h1>
+    {% else %}
+        <h1>Login</h1>
+        {% if login_fail %} 
+            <div id="errorBox">
+                <ul>
+                    <li>Login failed: Incorrect username or password</li>
+                </ul>
+            </div>
+        {% end if %} 
+        <form id="form1" name="form1" method="post" action="/login">
+            <table id="tbl_input_user">
+                <tr>
+                    <td align="right">Username:</td>
+                    <td><input name="name" id="name" type="text" 
+                    title="Please Enter A User Name" placeholder="Enter username here" autocomplete="off" autofocus="autofocus"></td>
+                </tr>
+                <tr>
+                    <td align="right">Password:</td>
+                    <td>
+                        <input name="password" id="password"
+                        type="password" title="Please Enter A Password" placeholder="Enter password here" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><input name="submit" type="submit" value="Login"/></td>
+                </tr>
+            </table>
+        </form>
+
+    {% end if %}
+</article>
+  
+    
+{% include templates/footer.html %}
