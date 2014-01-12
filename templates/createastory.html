@@ -11,18 +11,29 @@
             </ul>
         </div>
     {% end if %}
+    
     <form action="/story" method="post">
             <table id="tblCreateStory">
                 <tr>
                     <td align="right">Title:</td>
-                    <td><input type="text"
-                    name="title" placeholder="Enter story title here"></td>
+                    {% if len(errors) != 0 %}
+                        <td><input type="text"
+                        name="title" {% if title %} value={{ title }} {% end if %} placeholder="Enter story title here"></td>
+                    {% else %}
+                        <td><input type="text"
+                        name="title" placeholder="Enter story title here"></td>
+                    {% end if %}
                 </tr>
                 <tr>
                     <td align="right">Word:</td>
                     <td>
-                        <input type="text"
-                            name="firstword" placeholder="Eg: Once...">
+                        {% if len(errors) != 0 %}
+                            <input type="text"
+                                name="firstword" {% if firstword %} value={{ firstword }} {% end if %} placeholder="Eg: Once...">
+                        {% else %}
+                            <input type="text"
+                                name="firstword" placeholder="Eg: Once...">
+                        {% end if %}
                     </td>
                 </tr>
                 <tr>
