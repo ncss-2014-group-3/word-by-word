@@ -33,7 +33,7 @@ class User:
         if row:
             return False # user exists
         elif row is None: # User does not exist, insert a new user into database
-            cursor.execute('''INSERT INTO users VALUES(?,?,?,?)''', (username, password, fullname))
+            cursor.execute('''INSERT INTO users VALUES(?,?,?)''', (username, password, fullname))
             connection.commit()
             return cla(username) # return User object
     
