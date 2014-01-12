@@ -18,11 +18,13 @@ class Story:
     @classmethod
     def story_list(cls, limit=0):
         cursor = connection.cursor()
-        stories = cursor.execute('''SELECT stories.storyID FROM stories
-            INNER JOIN votes ON stories.storyID=votes.storyID
-            GROUP BY storyID
-            ORDER BY COUNT(storyID)
-            LIMIT ?''', (limit,))
+        stories = cursor.execute('''SELECT storyID FROM stories''')
+## BROKEN
+##        stories = cursor.execute('''SELECT stories.storyID FROM stories
+##            INNER JOIN votes ON stories.storyID=votes.storyID
+##            GROUP BY storyID
+##            ORDER BY COUNT(storyID)
+##            LIMIT ?''', (limit,))
         stories_list = []
         for s in stories:
             stories_list.append(Story.from_id(s[0]))
