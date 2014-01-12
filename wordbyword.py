@@ -109,11 +109,11 @@ def view_story(response, sid):
     if not username:
         errors.append('You must be logged in to post a word.')
         p = Parser.from_file("templates/viewstory.html")
-        variables = {'errors': errors, "story": s}
+        variables = {'errors': errors, "story": s, 'user': get_current_user(response)}
         view = p.expand(variables)
         response.write(view)
     
-    response.write(p.expand({"story": s, "errors":[]}))
+    response.write(p.expand({"story": s, "errors":[], 'user': get_current_user(response)}))
 
 def add_word(response, sid, wid):
     s = story.Story.from_id(sid)
@@ -143,7 +143,7 @@ def add_word(response, sid, wid):
     errors.append("Please try again.")
 
     p = Parser.from_file("templates/viewstory.html")
-    variables = {'errors': errors, "story": s}
+    variables = {'errors': errors, "story": s, 'user': get_current_user(response)}
     view = p.expand(variables)
     response.write(view)
 
