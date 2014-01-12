@@ -90,4 +90,5 @@ class User:
     @property
     def image_url(self):
         size = 300
-        return 'http://www.gravatar.com/avatar/' + hashlib.md5(self.email.encode()).hexdigest() + '?s='+str(size)
+        return 'http://www.gravatar.com/avatar/' + hashlib.md5(self.email.encode()).hexdigest() + '.png?s='+str(size)
+        
