@@ -56,7 +56,7 @@ def create(response):
 
     username = response.get_secure_cookie('username')
     if not username:
-        errors.append('You must be logged in to post a word')
+        errors.append('You must be logged in to post a story.')
         p = Parser.from_file("templates/createastory.html")
         variables = {'errors': errors }
         view = p.expand(variables)
@@ -77,7 +77,7 @@ def create(response):
             errors.append("Your word is too long. Word must be below 21 characters long.")
         author = get_current_user(response)
         if author is None:
-            errors.append('You must be logged in to post a word')
+            errors.append('You must be logged in to post a story.')
         if not errors:
             #write to the database
             new_story = story.Story(title, firstword, author)
