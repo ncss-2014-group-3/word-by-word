@@ -40,3 +40,13 @@
 #story-tree form {
     display:inline-block;
 }
+
+form input.up-arrow {
+    background-color:transparent;
+	margin-top: 0px;
+    border:none;
+    cursor:pointer;
+    padding:3px 3px;
+    color:black;
+    box-shadow: none;
+}
