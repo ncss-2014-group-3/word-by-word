@@ -4,7 +4,7 @@ from . import connection, dict_factory
 
 def cached_property(f):
     """returns a cached property that is calculated by function f"""
-    def get(self):
+    def get(self): #webscale
         try:
             return self._property_cache[f]
         except AttributeError:
