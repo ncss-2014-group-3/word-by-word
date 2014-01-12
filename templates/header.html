@@ -20,6 +20,9 @@
             </div>
             <nav>
                 <ul>
+                    {% if user is not None %}
+                        <li>Welcome, {{ user.username }}</li><br>
+                    {% end if %}
                     <li><a href="/">Top Stories</a></li><br>
                     {% if user is not None %}
                         <li><a href="/story">Create a Story</a></li><br>
