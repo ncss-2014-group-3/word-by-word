@@ -78,13 +78,36 @@ class Word:
         for child in self.children:
             count += child.word_count
         return count
-        
-    @cached_property
-    def votes(self):
+
+    def get_votes(self, seen=None):
+        if seen is None:
+            seen = set()
         child_scores = 0
-        for child in self.children:
-            child_scores += child.votes
-        return self._dir_votes + child_scores
+        dir_votes = 0
+        for child in self._children_unsorted:
+            cur = set()
+            child_scores += child.get_votes(cur)
+            seen = seen | cur
+        for voter in self._get_voters():
+            if voter not in seen:
+                #print('votes1',dir_votes,'voter',voter) # <-- test
+                dir_votes += 1
+                #print('votes2',dir_votes,'voter',voter) # <-- test
+                seen.add(voter)
+        
+        #print('votes3',dir_votes,'voter',voter) # <-- test
+        dir_votes += child_scores
+        return dir_votes
+
+    votes = cached_property(get_votes)
+
+    def _get_voters(self):
+        cursor = connection.cursor()
+        cursor.execute('''SELECT author FROM words WHERE wordID=?''', (self.id,))
+        users = []
+        for user in cursor.fetchall():
+            users.append(user)
+        return users
     
     def add_vote(self, voter):
         self._dir_votes += 1
@@ -117,6 +140,21 @@ class Word:
         children.sort(key=lambda w:w.votes, reverse=True)
         
         return children
+    @property
+    def _children_unsorted(self):
+        c = connection.cursor()
+        c.execute("""
+            SELECT words.wordID, storyID, word, author, parentID
+            FROM words
+            WHERE parentID = ?
+        """, (self.id,))
+        
+        children = []
+        for childWord in c:
+            #id, parentID, storyID, word
+            children.append(Word(childWord[0], childWord[1], childWord[2], childWord[3], childWord[4]))        
+        return children
+        
     def _deepest_child(self):
         # Depth first, brah.
         m = 1
