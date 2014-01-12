@@ -18,6 +18,7 @@
     <content id="story-tree">
         {% include templates/word.html user=user word=story.first_word story=story %}
     </content>
+    <div id="diagram-tree" />
 </article>
 <script>
 function show_popup(e) {
@@ -56,20 +57,18 @@ function height(node)
 }
 
 // Creates canvas 320 × 200 at 10, 50
-var paper = Raphael(100, 300, 700, 500);
+var paper = Raphael(document.getElementById("diagram-tree"), 810, 500);
 
 // Creates circle at x = 50, y = 40, with radius 10
 var circle = paper.circle(50, 40, 1000);
 // Sets the fill attribute of the circle to red (#f00)
-circle.attr("fill", "#f00");
+circle.attr("fill", 'transparent');
 
 // Sets the stroke attribute of the circle to white
 circle.attr("stroke", "#fff");
 
 draw(paper, words, 50,50);
-var path=paper.path("M10,20L30,40");
-			path.attr("stroke", "#fff");
-			path.attr("stroke-width", 4);
+
 //var curve = paper.path(path).attr({"stroke-width": 4, "stroke-linecap": "round"});
 function draw(paper, node, left, top) {
 	var node_height = height(node);
@@ -87,7 +86,7 @@ function draw(paper, node, left, top) {
 		var child_height = height(node.children[i]);
 		var child_width = draw(paper, node.children[i], child_left, top_sum);
 		var path = paper.path("M" + (left + (0.5 * node_width) + 5)  + "," + node_top + "L" + (child_left - (0.5 * child_width)) + "," + (top_sum + (0.5 * child_height)));
-		path.attr("stroke", "#fff");
+		path.attr("stroke", "#ff7128");
 		path.attr("stroke-width", 4);
 		top_sum += child_height;
 	}
