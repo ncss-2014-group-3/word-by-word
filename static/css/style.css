@@ -43,7 +43,8 @@ a:hover  {
 
 article {
     width:800px;
-    margin-left:300px;
+    position:absolute;
+    left:300px;
     min-height:1000px;
     padding:10px 5px 20px 5px;
     background-color:#fff;
