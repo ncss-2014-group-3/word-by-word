@@ -40,7 +40,7 @@ a:hover  {
 article {
     width: 900px;
     margin-left: 280px;
-    min-height:1000px;
+    min-height:100%;
     padding: 40px 45px;
     box-sizing:border-box;
 }
