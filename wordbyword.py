@@ -66,7 +66,6 @@ def create(response):
         if len(firstword) > 20:
             errors.append("Your word is too long. Word must be below 21 characters long.")
         author = get_current_user(response)
-        print('author =', author)
         if author is None:
             errors.append('You must be logged in to post a word')
         if not errors:
@@ -112,7 +111,6 @@ def add_word(response, sid, wid):
         errors.append("Your word is too long. Word must be below 21 characters long.")
 
     author = get_current_user(response)
-    print('author =', author)
     if author is None:
         errors.append('You must be logged in to post a word')
         
@@ -130,7 +128,6 @@ def add_word(response, sid, wid):
 
 def upvote(response, story_id, word_id):
     author = get_current_user(response)
-    print('author =', author)
     errors = []
     if author is None:
         errors.append('You must be logged in to post a word')
@@ -138,7 +135,7 @@ def upvote(response, story_id, word_id):
         #Write to databse
         w = word.Word.from_id(word_id)
         w.add_vote(author)
-        response.redirect("/story/" + str(story_id))
+    response.redirect("/story/" + str(story_id))
 
 def login(response):
         username = response.get_field('name')
@@ -153,7 +150,7 @@ def login(response):
                         if user.User.login(username, password):
                                 print('login success, user =', username)
                                 response.set_secure_cookie('username', username)
-                                response.redirect('/login')
+                                response.redirect('/')
                                 return
                         else:
                                 login_fail = True
@@ -184,6 +181,8 @@ def register(response):
                                 response.set_secure_cookie('username', username)
                                 user.User.create(username, password)
                                 print(user, password)
+                                response.redirect('/')
+                                return
                         else:
                                 username = password = None
                 else:
@@ -191,9 +190,8 @@ def register(response):
                         good_username = good_password = True
                         username_taken = False
         else:
-                good_username = good_password = True
-                username_taken = False
-                username = logged_name.decode()
+                response.redirect('/')
+                return
                 
         p = Parser.from_file('templates/register.html')
         html = p.expand({
