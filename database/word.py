@@ -87,17 +87,12 @@ class Word:
     @property
     def children(self):
         c = connection.cursor()
-        
         c.execute("""
-            SELECT wordID, storyID, word, author, parentID
-            FROM
-                words
-            INNER JOIN votes ON wordID
-            WHERE
-                parentID = ?
-            ORDER BY
-                COUNT(wordID)
-        """, (self.id,))
+            SELECT words.wordID, storyID, word, author, parentID
+            FROM words
+            WHERE parentID = ?
+            ORDER BY (SELECT COUNT(*) FROM votes WHERE wordID=?)
+        """, (self.id,self.id))
         
         children = []
         for childWord in c:
@@ -119,7 +114,7 @@ class Word:
                 ,author = ?
                 WHERE
                     wordID = ?
-                """, (self.story_id, self.value, self.parent_id, self.author, self.id))
+                """, (self.story_id, self.value, self.parent_id, self.author.username, self.id))
             connection.commit()
         else:
             #print('[save] insert')
