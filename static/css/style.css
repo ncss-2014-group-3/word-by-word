@@ -1,9 +1,9 @@
 body {
 	margin: 0px auto;
-	font-family: Helvetica, Arial, sans-serif;
+	
 	font-size: 14px;
 	line-height: 21px;
-    
+    font-family: 'alegreya_sansblack';
 }
 
 p.view{
@@ -24,6 +24,18 @@ p.edit{
 a {
 	color: inherit;
     text-decoration:none;
+    -webkit-transition-duration:0.4s;
+    -o-webkit-transition-duration:0.4s;
+    -moz-transition-duration:0.4s;
+    transition-duration:0.4s;
+}
+
+a.hover{
+    -webkit-transition-duration:0.4s;
+    -o-webkit-transition-duration:0.4s;
+    -moz-transition-duration:0.4s;
+    transition-duration:0.4s;
+    opacity:0.6;
 }
 
 article {
@@ -141,30 +153,44 @@ header {
 	margin-bottom: 30px;
 	line-height: 80px;
 	position: relative;
+    width:100%;
 }
 	header h1 {
 		display: inline-block;
 		line-height: 80px;
-		margin-left: 20px;
+        margin-right:600px;
 		font-size: 38px;
-        margin-top:15px;
+        margin-top:10px;
+        font-family: 'alegreya_sansblack', 'Rokkitt';
 	}
 
 	header nav {
 		position: absolute;
 		bottom: 15px;
-		right: 0px;
+		right: 10px;
 		height: 14px;
 		line-height: 14px;
 	}
 	
 		header nav a {
 			margin-right: 20px;
+            font-size:16px;
+            font-family:'Love Ya Like A Sister', cursive;
+            background-color:white;
+            color:black;
+            padding:3px;
+            border:2px solid white;
+            border-radius: 4px;
 		}
+        
+        header nav a:hover{
+            background-color:#D4D4D4;
+            border:2px solid #D4D4D4;
+        }
         
 footer {
     background-color:black;
-
+    
     height:50px;
     color:white;
 } 
@@ -181,7 +207,9 @@ td, th {
     word-wrap:break-word;
     border-right:1px dotted #a8a8a8;
     border-bottom:1px dotted #a8a8a8;
-    padding:10px 4px 10px 4px;
+    padding-top:7px;
+    padding-left:7px;
+    padding-bottom:7px;
     line-height:18px;
 }
 input { 
