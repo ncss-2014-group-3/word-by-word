@@ -5,9 +5,9 @@
         Welcome {{user}}
     {% end if %}
     {% if user is None %}
-       <h1>Login</h1>
+        <h1>Login</h1>
         <form id="form1" name="form1" method="post" action="/login">
-            <table id="tbl_create_user">
+            <table id="tbl_input_user">
                 <tr>
                     <td>Name:</td>
                     <td><input name="name" id="name" type="text" 
@@ -31,7 +31,7 @@
             <ul>
                 <li>Login Failed: incorrect username and password</li>
             </ul>
-        </div>
+            </div>
         {% end if %} 
 
     {% end if %}

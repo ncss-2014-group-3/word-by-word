@@ -1,29 +1,46 @@
-<html>
-    <head>
-    <title>Login</title>
-    <link rel="stylesheet" href="login.css" type="text/css">
-    </head>
+{% include templates/header.html %}
 
+<article>
+    {% if user is not None %}
+        Welcome {{user}}
+    {% end if %}
+    {% if user is None %}
+        <h1>Create account</h1>
+        <form method="post">
+            <table id="tbl_input_user">
+                <tr>
+                    <td>Name:</td>
+                    <td><input name="name" id="name" type="text" 
+                    title="Please Enter A User Name" placeholder="Enter Name Here"></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td>
+                        <input name="password" id="password" 
+                        type="password" title="Please Enter A Password" placeholder="Enter Password Here" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><input name="submit" type="submit" value="Submit"/></td>
+                </tr>
+            </table>
+        </form>
+        <div id="errorBox">
+            <ul>
+                {% if good_username == False %}
+                    <li>Bad Username. (Username must contain letters, numbers or _ etc.)</li>
+                {% end if %} 
+                {% if username_taken == True %}
+                    <li>Username already taken. Please try another username!</li>
+                {% end if %} 
+                {% if good_password == False %}
+                    <li>Bad password.(Must be at least 5 letters!)</li>
+                {% end if %} 
+            </ul>
+        </div>
 
-    <body>
-{% if user is not None %}
-Welcome {{user}}
-{% end if %}
-{% if user is None %}
-<h1>Create account</h1>
-<form method="post">
-<label>Name:</label><input name="name" id="name" type="text" title="Please Type Something"/><br>
-<label>Password:</label><input name="password" id="password" type="password" title=" Please Enter Something"><br>
-<input name="submit" type="submit" value="Submit"/>
-</form>
-{% if good_username == False %} Bad Username. (Username must contain letters, numbers or _ etc.) <br>{% end if %} 
-{% if username_taken == True %} Username already taken. Please try another username! <br>{% end if %} 
-{% if good_password == False %} Bad password.(Must be at least 5 letters!) <br>{% end if %} 
+    {% end if %}
 
-{% end if %}
-
-  
-    
-    </body>
-
-    </html>
+</article>
+{% include templates/footer.html %}
