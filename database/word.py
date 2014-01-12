@@ -74,6 +74,8 @@ class Word:
     
     def add_vote(self, voter):
         self._dir_votes += 1
+        if self.remove_vote(voter): # omg this is so hacky
+            self._dir_votes -= 1
         c = connection.cursor()
         c.execute("""
         INSERT INTO votes VALUES (?,?)
@@ -83,7 +85,7 @@ class Word:
     def remove_vote(self, voter):
         cursor = connection.cursor()
         cursor.execute('''DELETE FROM votes WHERE wordID=? AND username=?''', (self.id, voter.username))
-        cursor.commit()
+        connection.commit()
     
     @property
     def children(self):
