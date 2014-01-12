@@ -42,6 +42,7 @@ class Stats:
         
     @property
     def most_upvoted_word(self):
+        print('asdf')
         c = connection.cursor()
         result = c.execute("""
             SELECT
@@ -49,11 +50,12 @@ class Stats:
                 ,(SELECT count(*) FROM votes WHERE votes.wordID = words.wordID) as wordVotes
             FROM words
             WHERE words.author = ?
-            ORDER BY wordVotes
+            ORDER BY wordVotes DESC
             LIMIT 1
         """, (self.username,))
-        if not len(result.fetchone()):
-            return result.fetchone()[0]
+        results = result.fetchone()
+        if results is not None:
+            return results[0]
         else:
             return "No upvoted words"
         
@@ -69,20 +71,24 @@ class Stats:
     @property
     def frequent_word(self):
         c = connection.cursor()
-        result = c.execute("""
+        query = c.execute("""
             SELECT word, count(word) as wordCount FROM words
             WHERE author = ?
             GROUP BY word
             ORDER BY wordCount DESC
             LIMIT 1
         """, (self.username,))
-        return result.fetchone()[0]
+        result = query.fetchone()
+        if result is not None:
+            return result[0]
+        else:
+            return "No frequent words"
         
     
     @property
     def top_story(self):
         c = connection.cursor()
-        result = c.execute("""
+        query = c.execute("""
             SELECT
                 name,
                 (
@@ -96,10 +102,13 @@ class Stats:
                 ) as sauthor
             FROM stories
             WHERE sauthor = ?
-            ORDER BY totalVotes
+            ORDER BY totalVotes DESC
             LIMIT 1
         """, (self.username,))
-        return result.fetchone()[0]
+        result = query.fetchone()
+        if result is not None:
+            return result[0]
+        return "No top stories"
         
         
         
