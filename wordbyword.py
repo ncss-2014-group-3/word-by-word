@@ -4,50 +4,40 @@ import os
 
 import tornado.web
 from tornado.ncss import Server
-
 from template_engine.parser import Parser
 from database import story
-
-import database
-from database import story
 from database import word
-
+import database
 # Create the database
-#database.create()
-
-
-#	function:	stories()
-#	arguments:	response
-#	description:
-#		When the page is called for listing the stories avaliable.
+# database.create()
+#   function:   stories()
+#   arguments:  response
+#   description:
+#       When the page is called for listing the stories avaliable.
 def stories(response):
-	#list will contain:
-	# title, burb and word count
-	#stories = db.story_list()
-
-	#require db.story_list_data()
-	# arguments: no args
-	# returns: title, short burb and word count
-
-	stories = story.Story.story_list()
-
-	# story_list_data should return:
-	#   titles and word count
-
-	variables = {'stories': stories}
-
-	#render the page from the template
-	#create the parser object from template file
-	p = Parser.from_file('templates/stories.html')
-	#render the html code in var result
-	result = p.expand(variables) # dict in expand
-	#render the result to the client
-	response.write(result)
+    #list will contain:
+    # title, burb and word count
+    #stories = db.story_list()
+    #require db.story_list_data()
+    # arguments: no args
+    # returns: title, short burb and word count
+    stories = story.Story.story_list()
+    #v = stories[0].first_word.add_child("word2")
+    #print(v)
+    # story_list_data should return:
+    #   titles and word count
+    variables = {'stories': stories}
+    #render the page from the template
+    #create the parser object from template file
+    p = Parser.from_file('templates/stories.html')
+    #render the html code in var result
+    result = p.expand(variables) # dict in expand
+    #render the result to the client
+    response.write(result)
 
 def style(response):
-	with open('style.css', 'r') as f:
-		response.write(f.read())
-
+    with open('style.css', 'r') as f:
+        response.write(f.read())
 
 def create(response):
 	#get the variables we need using get_field
@@ -93,24 +83,22 @@ def upvote(response, word_id, story_id):
         response.redirect("/story/" + str(story_id))
 
 def view_story(response, sid):
-	s = story.Story.from_id(sid)
-	if not s:
-		raise tornado.web.HTTPError(404)
-	p = Parser.from_file("templates/viewstory.html")
-	response.write(p.expand({"story": s}))
-
-def bad_static(response, file_name):
-	try:
-		with open(os.path.join("static", file_name)) as f:
-			response.write(f.read())
-	except IOError:
-		raise tornado.web.HTTPError(404)
+    s = story.Story.from_id(sid)
+    if not s:
+        raise tornado.web.HTTPError(404)
+    p = Parser.from_file("templates/viewstory.html")
+    # html = """
+    # """.format(
+    #   title=story.title,
+    #   current="",#story.current,
+    #   tree=render_word(story.first_word, title=True))
+    # print("?", html)
+    response.write(p.expand({"story": s}))
 
 if __name__ == "__main__":
 	server = Server()
 	server.register("/", stories)
 	server.register("/style.css", style)
-	server.register("/static/([^/]+)", bad_static)
 	server.register("/story", create)
 	server.register("/story/(\d+)", view_story)
 	server.register("/story/(\d+)/word/(\d+)/vote", upvote)
