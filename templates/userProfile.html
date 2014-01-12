@@ -1,0 +1,41 @@
+{% include templates/header.html %}
+<article>
+    {% if user %}
+        <h1>{{user.username}}'s profile</h1>
+        
+        <table>
+            <tr>
+                <td>Total words entered:</td>
+                <td>0</td>
+            <tr>
+            <tr>
+                <td>Total stories created:</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>Total stories contributed to:</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>Most up-voted word:</td>
+                <td>frog</td>
+            </tr>
+            <tr>
+                <td>Most frequently used word:</td>
+                <td>penis</td>
+            </tr>
+            <tr>
+                <td>Top created story:</td>
+                <td>My fav story</td>
+            </tr>
+        </table>
+    {% else %}
+        <div id="errorBox">
+            User not found
+        </div>
+    {% end if %}
+    
+</article>
+{% include templates/footer.html %}
+
+

@@ -53,6 +53,16 @@ def create(response):
     # a list of strings of things that went wrong
     #we will give this to the template.
     errors = []
+
+    username = response.get_secure_cookie('username')
+    if not username:
+        errors.append('You must be logged in to post a story.')
+        p = Parser.from_file("templates/createastory.html")
+        variables = {'errors': errors }
+        view = p.expand(variables)
+        response.write(view)
+        errors = []
+        
     if response.request.method == "POST":
         if not title:
             #we didn't get given a title
@@ -67,7 +77,7 @@ def create(response):
             errors.append("Your word is too long. Word must be below 21 characters long.")
         author = get_current_user(response)
         if author is None:
-            errors.append('You must be logged in to post a word')
+            errors.append('You must be logged in to post a story.')
         if not errors:
             #write to the database
             new_story = story.Story(title, firstword, author)
@@ -93,12 +103,23 @@ def view_story(response, sid):
     #   current="",#story.current,
     #   tree=render_word(story.first_word, title=True))
     # print("?", html)
+
+    errors = []
+    username = response.get_secure_cookie('username')
+    if not username:
+        errors.append('You must be logged in to post a word.')
+        p = Parser.from_file("templates/viewstory.html")
+        variables = {'errors': errors, "story": s}
+        view = p.expand(variables)
+        response.write(view)
+    
     response.write(p.expand({"story": s, "errors":[]}))
 
 def add_word(response, sid, wid):
     s = story.Story.from_id(sid)
     w = word.Word.from_id(wid)
     errors = []
+    
     new_word = response.get_field("word").strip()
     #response.redirect("/story/" + str(s.story_id))
     if not new_word:
@@ -112,7 +133,7 @@ def add_word(response, sid, wid):
 
     author = get_current_user(response)
     if author is None:
-        errors.append('You must be logged in to post a word')
+        errors.append('You must be logged in to post a word.')
         
     if not errors: #if there are no errors
         w.add_child(new_word, author)

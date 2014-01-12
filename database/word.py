@@ -48,7 +48,6 @@ class Word:
         new_word = Word(False, self.story_id, value, author, self.id)
         new_word.save()
         return new_word
-
     def remove(self):
         for child in self.children:
             child.remove()
@@ -74,7 +73,7 @@ class Word:
     
     def add_vote(self, voter):
         self._dir_votes += 1
-        if self.remove_vote(voter): # omg this is so hacky
+        if self.remove_vote(voter):
             self._dir_votes -= 1
         c = connection.cursor()
         c.execute("""
@@ -103,6 +102,16 @@ class Word:
         children.sort(key=lambda w:w.votes, reverse=True)
         
         return children
+    def _deepest_child(self):
+        # Depth first, brah.
+        m = 1
+        for child in self.children:
+            m = 1 + max(m, child._deepest_child())
+        return m
+
+    def fixed(self, n=5):
+        return self._deepest_child() > n
+
 
     @property
     def favourite_child(self):
