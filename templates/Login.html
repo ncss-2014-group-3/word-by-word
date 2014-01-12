@@ -3,7 +3,14 @@
 <article>
     {% if user is not None %}
         Welcome {{user}}
-    {% end if %}
+    {% end if %}]
+    {% if login_fail %} 
+            <div id="errorBox">
+            <ul>
+                <li>Login Failed: incorrect username and password</li>
+            </ul>
+            </div>
+        {% end if %} 
     {% if user is None %}
         <h1>Login</h1>
         <form id="form1" name="form1" method="post" action="/login">
@@ -26,13 +33,6 @@
                 </tr>
             </table>
         </form>
-        {% if login_fail %} 
-            <div id="errorBox">
-            <ul>
-                <li>Login Failed: incorrect username and password</li>
-            </ul>
-            </div>
-        {% end if %} 
 
     {% end if %}
 </article>
