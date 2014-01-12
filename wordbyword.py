@@ -157,7 +157,7 @@ def login(response):
                                 username = password = None
                 else:
                         username = password = None
-                
+        username = user.User.from_username(username)
         p = Parser.from_file('templates/login.html')
         html = p.expand({ 'user' : username, 'login_fail' : login_fail })
         response.write(html)
