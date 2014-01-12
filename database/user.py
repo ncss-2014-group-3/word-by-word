@@ -50,15 +50,17 @@ class User:
         cursor.execute('''UPDATE users SET password=?, fullname=? WHERE username=?''', (new_password, fullname, username))
         connection.commit()
 
-    def get_score(self, username):
+    @property
+    def score(self):
         cursor = connection.cursor()
         returnedvotes = cursor.execute('''SELECT COUNT(wordID) FROM votes WHERE wordID IN
-                                        (SELECT wordID FROM words WHERE author=?)''', (username,))
+                                        (SELECT wordID FROM words WHERE author=?)''', (self.username,))
         score = returnedvotes.fetchone()[0]
         return score
 
-    def get_email(self, username):
+    @property
+    def email(self):
         cursor = connection.cursor()
-        returned = cursor.execute('''SELECT email FROM users WHERE username=? ''', (username,))
+        returned = cursor.execute('''SELECT email FROM users WHERE username=? ''', (self.username,))
         email = returned.fetchone()[0]
         return email
