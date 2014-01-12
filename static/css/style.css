@@ -176,13 +176,22 @@ table {
     border:1px solid #a8a8a8;
     border-collapse:collapse;
 }
-
+th {
+    background:white;
+}
 td, th {
     word-wrap:break-word;
     border-right:1px dotted #a8a8a8;
-    border-bottom:1px dotted #a8a8a8;
     padding:10px 4px 10px 4px;
     line-height:18px;
+}
+tr:nth-child(odd)
+{
+background:white;
+}
+tr:nth-child(even)
+{
+background:#e5e5e5;
 }
 input { 
     font-family:Helvetica, sans-serif;
