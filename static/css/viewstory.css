@@ -4,6 +4,7 @@
 
 .child {
 	border: 1px dashed #f1f1f1;
+	background: rgba(0, 0, 0, 0.04);
 	width: auto;
 	/*border-collapse: collapse;*/
 }
@@ -21,5 +22,5 @@
 	}
 
 .reply input[name="word"] {
-	width: 60px;
+	width: 100px;
 }
