@@ -84,7 +84,7 @@ class Word:
     def remove_vote(self, voter):
         cursor = connection.cursor()
         cursor.execute('''DELETE FROM votes WHERE wordID=? AND username=?''', (self.id, voter.username))
-        cursor.commit()
+        connection.commit()
     
     @property
     def children(self):
@@ -124,15 +124,6 @@ class Word:
             LIMIT 1''', (self.id,self.id))
         row = cursor.fetchone()
         return None if row is None else Word(row[0], row[1], row[2], row[3], row[4])
-
-    def first_words(self, num=10):
-        words = [self]
-        while len(words) < num:
-            words.append(words[-1].favourite_child)
-            nwords
-        for w in words:
-            nwords.append(w.value)
-        return ' '.join(nwords)
     
     def save(self):
         c = connection.cursor()
