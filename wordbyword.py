@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import html
 import os
+import re
 
 import tornado.web
 from tornado.ncss import Server
@@ -104,14 +105,17 @@ def login(response):
                 username = logged_name.decode()
                 print('logged in, user =', username)
         else:
-                if user and password and user.User.login(username, password):
+                if user and password:
+                        if user.User.login(username, password):
                                 print('login success, user =', username)
                                 response.set_secure_cookie('username', username)
                                 response.redirect('/login')
                                 return
+                        else:
+                                login_fail = True
+                                username = password = None
                 else:
                         username = password = None
-                        login_fail = True
                 
         p = Parser.from_file('templates/login.html')
         html = p.expand({ 'user' : username, 'login_fail' : login_fail })
@@ -121,28 +125,39 @@ def logout(response):
         response.clear_cookie('username')
         response.redirect('/login')
 
-def create_account(response):
+def register(response):
         logged_name = response.get_secure_cookie('username')
-        if logged_name is not None:
-                response.write('You already are logged in as: '+logged_name.decode())
-                return
-        username = response.get_field('name')
-        password = response.get_field('password')
-        if user and password:
-                response.set_secure_cookie('username', username)
-                print(user, password)
+        if logged_name is None:
+                username = response.get_field('name')
+                password = response.get_field('password')
+                print('user,pass =', username, password)
+                if username and password is not None:
+                        good_username = True if re.match(r'^\w+$', username) else False
+                        username_taken = True if user.User.from_username(username) else False
+                        good_password = (len(password) > 4)
+                        print(good_username, good_password, username_taken)
+                        if good_username and good_password and not username_taken:
+                                response.set_secure_cookie('username', username)
+                                user.User.create(username, password)
+                                print(user, password)
+                        else:
+                                username = password = None
+                else:
+                        username = password = None
+                        good_username = good_password = True
+                        username_taken = False
         else:
-                username = password = None
-        #p = Parser.from_file('templates/create_account.html')
-        #html = p.expand({ 'user' : username })
-        response.write('''
-<h1>Create account</h1>
-<form method="post">
-<input name="name"><br>
-<input name="password" type="password"><br>
-<input type="submit">
-</form>
-''')
+                good_username = good_password = True
+                username_taken = False
+                username = logged_name.decode()
+                
+        p = Parser.from_file('templates/register.html')
+        html = p.expand({
+                'user' : username,
+                'good_username': good_username,
+                'good_password': good_password,
+                'username_taken': username_taken})
+        response.write(html)
 
 if __name__ == "__main__":
     server = Server()
@@ -154,5 +169,5 @@ if __name__ == "__main__":
     server.register("/story/(\d+)/(\d+)/reply", add_word)
     server.register('/login', login)
     server.register('/logout', logout)
-    server.register('/create_account', create_account)
+    server.register('/register', register)
     server.run()

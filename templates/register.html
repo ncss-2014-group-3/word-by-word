@@ -16,10 +16,9 @@ Welcome {{user}}
 <label>Password:</label><input name="password" id="password" type="password" title=" Please Enter Something"><br>
 <input name="submit" type="submit" value="Submit"/>
 </form>
-{% if good_username == False %} Bad Username. (Username must contain letters, numbers or _ etc.)
-{% if username_taken == True %} Username already taken. Please try another username!
-{% if good_password == False %} Bad password.(Must be at least 5 letters!)
-{% end if %} 
+{% if good_username == False %} Bad Username. (Username must contain letters, numbers or _ etc.) <br>{% end if %} 
+{% if username_taken == True %} Username already taken. Please try another username! <br>{% end if %} 
+{% if good_password == False %} Bad password.(Must be at least 5 letters!) <br>{% end if %} 
 
 {% end if %}
 
