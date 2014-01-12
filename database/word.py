@@ -100,6 +100,18 @@ class Word:
             children.append(Word(childWord[0], childWord[1], childWord[2], childWord[3], childWord[4]))
         
         return children
+
+    @property
+    def favourite_child(self):
+        cursor = connection.cursor()
+        cursor.execute('''
+            SELECT words.wordID, storyID, word, author, parentID
+            FROM words
+            WHERE parentID = ?
+            ORDER BY (SELECT COUNT(*) FROM votes WHERE wordID=?)
+            LIMIT 1''', (self.id,self.id))
+        row = cursor.fetchone()
+        return None if row is None else Word(row[0], row[1], row[2], row[3], row[4])
     
     def save(self):
         c = connection.cursor()
