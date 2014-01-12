@@ -127,6 +127,6 @@ class Word:
             #print('[save] insert')
             c.execute("""
                 INSERT INTO words VALUES (NULL,?,?,?,?)
-                """, (self.parent_id, self.story_id, self.value, self.author))
+                """, (self.parent_id, self.story_id, self.value, self.author.username))
             connection.commit()
             self.id = c.lastrowid
