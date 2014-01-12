@@ -80,14 +80,9 @@ class Word:
         connection.commit()
     
     def remove_vote(self, voter):
-        '''self._dir_votes -= 1
-        c = connection.cursor()
-        c.execute("""
-        DELETE FROM votes WHERE wordID = ?
-        LIMIT 1
-        """, (self.id,))
-        connection.commit()'''
-        print('ERR NOT IMPLIMENTED')#todo
+        cursor = connection.cursor()
+        cursor.execute('''DELETE FROM votes WHERE wordID=? AND username=?''', (self.id, voter.username))
+        cursor.commit()
     
     @property
     def children(self):
