@@ -4,19 +4,11 @@
 
 .tree {
 	border: none;
-
-#story-tree .child {
-	border: 1px dashed #f1f1f1;
-	background: rgba(0, 0, 0, 0.04);
-	width: auto;
 }
-
-.child {
+    
+#story-tree .child {
 	background-color:rgba(255, 94, 3, 0.1);
 }
-
-.child td {
-	border-radius: 20px;
 
 #story-tree .child td {
 	border-left: none;
@@ -43,27 +35,6 @@
 
 .reply input[name="word"] {
 	width: 60px;
-}
-
-/** {
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}*/
-
-* {
-	vertical-align: middle !important;
-	width: 80px;
-    border:1px solid #aaa;
-    border-radius:5px;
-    padding:1px 3px;
-    margin:0;
-    background-color:transparent;
-    box-shadow:none;
-    font-size:12px;
 }
 
 #story-tree form {
