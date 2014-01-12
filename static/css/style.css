@@ -324,11 +324,10 @@ input {
 
 #storyList tr:nth-child(odd)
 {
-background:white;
+    background:#e5e5e5;
 }
-#storyList tr:nth-child(even)
-{
-background:#e5e5e5;
+#storyList th{   
+    font-weight: bold;
 }
 
 #storyList a {
