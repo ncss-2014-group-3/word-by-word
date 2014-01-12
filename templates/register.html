@@ -4,17 +4,17 @@
     {% if user is not None %}
         Welcome {{user}}
     {% end if %}
-    {% if len(errors) != 0 %}
-        <div id="errorBox">
-            <ul>
-                {% for error in errors %}
-                    <li> {{ error }} </li>
-                {% end for %}
-            </ul>
-        </div>
-    {% end if %}
     {% if user is None %}
         <h1>Create account</h1>
+        {% if len(errors) != 0 %}
+            <div id="errorBox">
+                <ul>
+                    {% for error in errors %}
+                        <li> {{ error }} </li>
+                    {% end for %}
+                </ul>
+            </div>
+        {% end if %}
         <form method="post">
             <table id="tbl_input_user">
                 <tr>
