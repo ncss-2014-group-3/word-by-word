@@ -137,6 +137,8 @@ ParseException: No end for
 ' var != 1'
 >>> Parser('{%if var == 1 %} var = 1 {% else%} var != 1{%end if %}').expand({'var':1})
 ' var = 1 '
+>>> Parser('{% for i,e in enumerate("abcde") %}{{e}} is the {{i}}th letter, {%end for%}').expand()
+'a is the 0th letter, b is the 1th letter, c is the 2th letter, d is the 3th letter, e is the 4th letter, '
 """
         tree = self.parse_group()
         return tree.render(context)
