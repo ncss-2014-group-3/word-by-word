@@ -1,16 +1,14 @@
-import sqlite3, hashlib
+import sqlite3
 from . import connection
 
 class User:
     @classmethod
     def from_username(cla, username):
         cursor = connection.cursor()
-        returned = cursor.execute('SELECT username FROM users WHERE username=?', (username,))
+        returned = cursor.execute('SELECT username,fullname FROM users WHERE username=?', (username,))
         row = returned.fetchone()
         if row: # user exists
-            returned2 = cursor.execute('SELECT fullname FROM users where username=?', (username,))
-            fullnamerow = returned2.fetchone()
-            return cla(username, fullnamerow[0]) # return User object
+            return cla(username) # return User object
         else: # user does not exist
             return None
 
@@ -39,16 +37,15 @@ class User:
             connection.commit()
             return cla(username, fullname) # return User object
     
-    def __init__(self, username, fullname = 'User'):
+    def __init__(self, username):
         self.username = username
-        self.fullname = fullname
 
     def remove(self):
         cursor = connection.cursor()
         cursor.execute('''DELETE FROM users WHERE username=?''', (self.username,))
         connection.commit()
 
-    def update(self, username, old_password, new_password):
+    def update(self, username, new_password, fullname='User'):
         cursor = connection.cursor()
-        cursor.execute('''UPDATE users SET password=? WHERE username=? AND password=?''', (new_password, username, old_password))
+        cursor.execute('''UPDATE users SET password=?, fullname=? WHERE username=?''', (new_password, fullname, username))
         connection.commit()
