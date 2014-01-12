@@ -6,14 +6,14 @@ class Story:
     @classmethod
     def from_id(cla,id):
         cursor = connection.cursor()
-        cursor.execute('''SELECT name FROM stories WHERE storyID=?''', (id,))
+        cursor.execute('''SELECT name FROM stories WHERE storyID = ?''', (id,))
         row = cursor.fetchone()
         if row is None:
             return None
         first_word = Word.from_story_id(id)
         if first_word is None:
             return None
-        return cla(row[0], first_word, id)
+        return cla(row[0], first_word, id, first_word.author)
 
     @classmethod
     def story_list(cls):
@@ -24,7 +24,7 @@ class Story:
             stories_list.append(Story.from_id(s[0]))
         return stories_list
             
-    def __init__(self, title, first_word, author=None, story_id=None):
+    def __init__(self, title, first_word, author, story_id=None):
         """
         Creates a story
         arguments: 
@@ -63,10 +63,14 @@ class Story:
     @property
     def word_count(self):
         return self.first_word.word_count
+
+    @property
+    def author(self):
+        return self.first_word.author
         
     def save(self):
-        self._cursor.execute("""UPDATE stories SET
+        self._cursor.execute('''UPDATE stories SET
             name = ?
             WHERE storyID = ?
-        """, (self.title, self.story_id))
+        ''', (self.title, self.story_id))
         connection.commit()
