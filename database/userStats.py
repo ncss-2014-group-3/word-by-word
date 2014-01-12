@@ -54,7 +54,7 @@ class Stats:
             LIMIT 1
         """, (self.username,))
         results = result.fetchone()
-        if len(results) > 0:
+        if results is not None:
             return results[0]
         else:
             return "No upvoted words"
@@ -71,20 +71,24 @@ class Stats:
     @property
     def frequent_word(self):
         c = connection.cursor()
-        result = c.execute("""
+        query = c.execute("""
             SELECT word, count(word) as wordCount FROM words
             WHERE author = ?
             GROUP BY word
             ORDER BY wordCount DESC
             LIMIT 1
         """, (self.username,))
-        return result.fetchone()[0]
+        result = query.fetchone()
+        if result is not None:
+            return result[0]
+        else:
+            return "No frequent words"
         
     
     @property
     def top_story(self):
         c = connection.cursor()
-        result = c.execute("""
+        query = c.execute("""
             SELECT
                 name,
                 (
@@ -101,7 +105,10 @@ class Stats:
             ORDER BY totalVotes DESC
             LIMIT 1
         """, (self.username,))
-        return result.fetchone()[0]
+        result = query.fetchone()
+        if result is not None:
+            return result[0]
+        return "No top stories"
         
         
         
