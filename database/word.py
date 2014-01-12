@@ -71,15 +71,15 @@ class Word:
             child_scores += child.votes
         return self._dir_votes + child_scores
     
-    def add_vote(self):
+    def add_vote(self, voter):
         self._dir_votes += 1
         c = connection.cursor()
         c.execute("""
-        INSERT INTO votes VALUES (?)
-        """, (self.id,))
+        INSERT INTO votes VALUES (?,?)
+        """, (self.id,voter.username))
         connection.commit()
     
-    def remove_vote(self):
+    def remove_vote(self, voter):
         '''self._dir_votes -= 1
         c = connection.cursor()
         c.execute("""
@@ -87,7 +87,7 @@ class Word:
         LIMIT 1
         """, (self.id,))
         connection.commit()'''
-        print('ERR NOT IMPLIMENTED')
+        print('ERR NOT IMPLIMENTED')#todo
     
     @property
     def children(self):
