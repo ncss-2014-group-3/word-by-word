@@ -35,18 +35,7 @@ p.edit{
 a {
 	color: #E67300;
     text-decoration:none;
-    -webkit-transition-duration:0.4s;
-    -o-webkit-transition-duration:0.4s;
-    -moz-transition-duration:0.4s;
-    transition-duration:0.4s;
-}
 
-a.hover{
-    -webkit-transition-duration:0.4s;
-    -o-webkit-transition-duration:0.4s;
-    -moz-transition-duration:0.4s;
-    transition-duration:0.4s;
-    opacity:0.6;
 }
 
 a:hover  {
@@ -211,6 +200,7 @@ header {
 
 	header nav {
 		float:right;
+        margin-bottom:5px;
 	}
     
     header nav ul {
@@ -230,10 +220,6 @@ header {
 		header nav a {
 		}
         
-        header nav a:hover{
-            background-color:#D4D4D4;
-            border:2px solid #D4D4D4;
-        }
         
 footer {
     background-color:#464646;
