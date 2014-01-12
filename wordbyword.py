@@ -8,6 +8,10 @@ from tornado.ncss import Server
 from template_engine.parser import Parser
 from database import story, word, user
 import database
+
+def get_current_user(response):
+    return user.User(response.get_secure_cookie('username'))
+
 # Create the database
 # database.create()
 #   function:   stories()
@@ -58,12 +62,16 @@ def create(response):
             errors.append("Please only enter one word.")
         if len(firstword) > 20:
             errors.append("Your word is too long. Word must be below 21 characters long.")
+        author = get_current_user(response)
+        if author is None:
+            errors.append('You must be logged in to post a word')
         if not errors:
             #write to the database
-            new_story = story.Story(title, firstword)
+            new_story = story.Story(title, firstword, author)
             story_id = new_story.story_id
             response.redirect("/story/" + str(story_id))
             return
+                
         #if there are errors, relay back to user
         errors.append("Please try again.")
     p = Parser.from_file("templates/createastory.html")
