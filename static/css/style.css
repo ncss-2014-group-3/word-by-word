@@ -392,5 +392,17 @@ input {
 
 
 
-
-
+form input {
+    width:300px;
+    margin-bottom:5px;
+    line-height:18px;
+    padding:2px 5px;
+    webkit-border-radius: 5px;
+    moz-border-radius: 5px;
+    border-radius: 5px;
+    border:1px solid #CCC;
+}
+form label{
+    width: 80px;
+    display: inline-block
+ }
