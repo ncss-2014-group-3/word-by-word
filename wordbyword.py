@@ -111,13 +111,20 @@ def add_word(response, sid, wid):
     view = p.expand(variables)
     response.write(view)
 
+def upvote(response, word_id, story_id):
+	if response.request.method == "POST":
+		#Write to databse
+		word = Word.from_id(word_id)
+		word.add_vote()
+		response.redirect("/story/" + str(story_id))
 
 if __name__ == "__main__":
-    server = Server()
-    server.register("/", stories)
-    server.register("/style.css", style)
-    server.register("/story", create)
-    server.register("/story/(\d+)", view_story)
-    server.register("/story/(\d+)/(\d+)/reply", add_word)
-    server.run()
 
+	server = Server()
+	server.register("/", stories)
+	server.register("/style.css", style)
+	server.register("/story", create)
+	server.register("/story/(\d+)", view_story)
+	server.register("/story/(\d+)/word/(\d+)/vote", upvote)
+	server.register("/story/(\d+)/(\d+)/reply", add_word)
+	server.run()

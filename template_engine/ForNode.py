@@ -6,7 +6,7 @@ class ForNode:
 
     def render(self, context):
         var, iterator = self.for_condition.split(' in ', maxsplit=1)
-        import pdb; pdb.set_trace()
+
         iterator = eval(iterator, {}, context)
 
         result = ''
@@ -21,6 +21,7 @@ class ForNode:
             result += self.else_group.render(context)
         if name in context:
             del context[name]
+
         return result
         
     def __repr__(self):

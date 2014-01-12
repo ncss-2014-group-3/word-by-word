@@ -1,9 +1,19 @@
 body {
-	margin: 0px auto;
+	margin:0;
+    padding:0;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 14px;
 	line-height: 21px;
-    
+    background-color:#eee;
+}
+
+.center {
+    width:800px;
+    margin:0 auto;
+}
+
+.clear {
+    clear:both;
 }
 
 p.view{
@@ -22,15 +32,21 @@ p.edit{
 }
 
 a {
-	color: inherit;
+	color: #ff9000;
     text-decoration:none;
+}
+
+a:hover  {
+    text-decoration:underline;
 }
 
 article {
     width:800px;
-    margin-left:auto;
-    margin-right:auto;
-    min-height:900px;
+    margin:0 auto;
+    min-height:800px;
+    padding:10px 5px 20px 5px;
+    background-color:#fff;
+    box-sizing:border-box;
 }
 
 .bigger {
@@ -135,47 +151,77 @@ form input[type=submit] {
 
 
 header {
-	background-color: black;
-	color: white;
-	height: 80px;
-	margin-bottom: 30px;
-	line-height: 80px;
-	position: relative;
+	background-color: #ccc;
+    padding-top:10px;
 }
 	header h1 {
-		display: inline-block;
-		line-height: 80px;
-		margin-left: 20px;
-		font-size: 38px;
-        margin-top:15px;
+		font-size: 50px;
+        margin:0;
+        text-align:center;
 	}
+    header h1 a {
+        color:#fff;
+        text-decoration:none !important;
+    }
 
 	header nav {
-		position: absolute;
-		bottom: 15px;
-		right: 0px;
-		height: 14px;
-		line-height: 14px;
+		float:right;
+        margin-top:15px;
 	}
+    
+    header nav ul {
+        list-style:none;
+        margin:0;
+        padding:0;
+    }
+    header nav ul li {
+        float:left;
+        margin-left:15px;
+    }
+    header nav ul li a {
+        font-size:18px;
+    }
 	
 		header nav a {
-			margin-right: 20px;
+            
 		}
         
 footer {
     background-color:black;
-
-    height:50px;
+    height:20px;
     color:white;
+    text-align: center;
+    padding:6px;
+    margin-top: 50px;
 } 
 
 table {
     font-size:16px;
-    width:100%;
+    width:800px;
     text-align:justify;
     border:1px solid #a8a8a8;
     border-collapse:collapse;
+    position:relative;
 }
+
+
+tr.story-row:hover td .summary {
+    display:block;
+    width:250px;
+    height:50px;
+    background:#ddd;
+    box-sizing:border-box;
+    padding: 15px 5px;
+    border-radius: 3px;
+}
+
+td .summary {
+    display:none;
+    position:absolute;
+    right:-260px;
+    margin-top:-33px;
+}
+
 th {
     background:white;
 }
@@ -196,6 +242,7 @@ background:#e5e5e5;
 input { 
     font-family:Helvetica, sans-serif;
     font-size:14px;
+    padding: 3px;
 }
 
 fieldset p {

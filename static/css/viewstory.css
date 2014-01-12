@@ -4,8 +4,9 @@
 
 .child {
 	border: 1px dashed #f1f1f1;
+	background: rgba(0, 0, 0, 0.04);
 	width: auto;
-	/*border-collapse: collapse;*/
+
 }
 
 .child td {
@@ -18,8 +19,10 @@
 }
 	.up {
 		color: green;
+
+		font-size: 1.5em;
 	}
 
 .reply input[name="word"] {
-	width: 60px;
+	width: 100px;
 }
