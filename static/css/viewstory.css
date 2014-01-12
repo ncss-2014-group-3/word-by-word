@@ -94,6 +94,7 @@ div.popup{
 	position: absolute;
 	background-color: white;
 	z-index: 100;
+	font-size: 1em;
 }
 .word{
 	padding: 5px;

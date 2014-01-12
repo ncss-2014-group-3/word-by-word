@@ -88,7 +88,16 @@ function draw(paper, node, left, top) {
 		show_popup(node.id, bbox.x, bbox.y);
 	});
 
+	$('#word-' + node.id).mouseover(function() {
+		var bbox = text.getBBox();
+		show_popup(node.id, bbox.x, bbox.y);
+	});
+
 	text.mouseout(function() {
+		hide_popup(node.id);
+	});
+
+	$('#word-' + node.id).mouseout(function() {
 		hide_popup(node.id);
 	});
 
