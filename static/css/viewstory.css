@@ -7,8 +7,8 @@
 }
 
 #story-tree .child {
-	border: 1px dashed #f1f1f1;
-	background: rgba(0, 0, 0, 0.04);
+	border: 1px dotted #ffc04d;
+	background: rgba(255, 165, 0, 0.08);
 	width: auto;
 }
 
@@ -19,6 +19,9 @@
 .child td {
 	border-radius: 20px;
 }
+	.child td:first-child .word {
+		padding: 5px;
+	}
 
 #story-tree .child td {
 	border-left: none;
@@ -47,15 +50,6 @@
 .reply input[name="word"] {
 	width: 60px;
 }
-
-/** {
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}*/
 
 * {
 	vertical-align: middle !important;
