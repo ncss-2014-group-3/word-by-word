@@ -42,6 +42,7 @@ def stories(response):
     #render the result to the client
     response.write(result)
 
+    
 def style(response):
     with open('style.css', 'r') as f:
         response.write(f.read())
