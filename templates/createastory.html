@@ -1,34 +1,34 @@
-<!doctype html>
+{% include templates/header.html %}
+<article>
+    <h1>Create A Story!</h1>
+    <form action="/story" method="post">
+        <fieldset>
+            <legend>
+                Start story
+            </legend>
+            <p>
+                <label> Title: </label>
+                <input type="text"
+                name="title" placeholder="Enter Story Title Here">
+            </p>
+            <p>
+                <label> Word: </label>
+                <input type="text"
+                name="firstword" placeholder="Eg: Once...">
+            </p>
+            <p>
+                <input type="submit" value="Submit" action="/story" method="POST">
+            </p>
+           
+        </fieldset>
+     </form>  
 
-<html>
-    <head>
-        <title>Word By Word</title>
-    </head>
-    <body>
-        {% include templates/header.html %}
-        <article>
-            <h1>Create A Story!</h1>
-            <form action="/story" method="post">
-                <fieldset>
-                    <legend>
-                        Start story
-                    </legend>
-                    <p>
-                        <label> Title: </label>
-                        <input type="text"
-                        name="title" placeholder="Enter Story Title Here">
-                    </p>
-                    <p>
-                        <label> Word: </label>
-                        <input type="text"
-                        name="firstword" placeholder="  Eg: Once...">
-                    </p>
-                    <p>
-                        <input type="submit" value="Submit" action="/story" method="POST">
-                    </p>
-                </fieldset>
-             </form>   
-        </article>
-        {% include templates/footer.html %}
-    </body>
-</html>
+        <div>
+         {% for error in errors %}
+            <ul>
+              <li> {{ error }} </li>
+            </ul>
+         {% end for %}
+         </div>
+</article>
+{% include templates/footer.html %}

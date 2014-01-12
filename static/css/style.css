@@ -1,0 +1,269 @@
+body {
+
+	margin:0;
+    padding:0;
+    font-family: 'alegreya_sansblack';
+	font-size: 14px;
+	line-height: 21px;
+    background-color:#eee;
+}
+
+.center {
+    width:800px;
+    margin:0 auto;
+}
+
+.clear {
+    clear:both;
+}
+
+p.view{
+	margin-top:30px;
+    margin-bottom: 20px;
+    text-align:justify;
+    font-family: 'Signika', sans-serif;
+}
+
+p.edit{
+	margin-top:30px;
+    margin-bottom: 20px;
+    text-align:justify;
+    font-family: 'Rokkitt', serif;
+    font-size:21px;
+}
+
+a {
+	color: #ff9000;
+    text-decoration:none;
+    -webkit-transition-duration:0.4s;
+    -o-webkit-transition-duration:0.4s;
+    -moz-transition-duration:0.4s;
+    transition-duration:0.4s;
+}
+
+a.hover{
+    -webkit-transition-duration:0.4s;
+    -o-webkit-transition-duration:0.4s;
+    -moz-transition-duration:0.4s;
+    transition-duration:0.4s;
+    opacity:0.6;
+}
+
+a:hover  {
+    text-decoration:underline;
+}
+
+article {
+    width:800px;
+    margin:0 auto;
+    min-height:800px;
+    padding:10px 5px 20px 5px;
+    background-color:#fff;
+    box-sizing:border-box;
+}
+
+.bigger {
+	font-size: 30px;
+}
+
+/* headings */
+h1 {
+	font-size: 35px;
+	font-weight: bold;
+	margin-bottom: 20px;
+	line-height: 29px;
+
+}
+
+h2 {
+	font-size: 25px;
+	font-weight: bold;
+	margin-bottom: 19px;
+	line-height: 21px;
+	padding-top: 18px;
+	margin-top: 25px;
+}
+
+h3 {
+	font-size: 17px;
+	font-weight: bold;
+	line-height: 19px;
+	margin-bottom: 17px;
+	margin-top: 25px;
+}
+
+
+/* definition list */
+dl {
+	width: 400px;
+	margin-bottom: 20px;
+}
+
+	dt {
+		font-weight: bold;
+		display: inline-block;
+		width: 80px;
+	}
+	
+	dd {
+		display: inline-block;
+		width: 300px;
+	}
+
+
+/* lists */
+ol, ul {
+	padding-left: 16px;
+	margin-bottom: 20px;
+}
+
+ol {
+	list-style-type: decimal;
+}
+
+ul {
+	list-style-type: disc;
+}
+
+
+/* form */
+fieldset {
+	/*border: 1px solid black;*/
+	padding: 20px;
+    margin-bottom:40px;
+}
+
+legend {
+	font-weight: bold;
+    font-style:italic;
+}
+
+form label, form input {
+	display: inline-block;
+}
+
+form label {
+	width: 70px;
+}
+
+form input[type=text] {
+	width: 300px;
+	border: 1px solid #ddd;
+	height: 20px;
+}
+
+form input[type=text].lastname {
+	text-transform: uppercase;
+}
+
+form input[type=submit] {
+	float:left;
+	margin-top: 10px;
+}
+
+
+
+header {
+	background-color: #ccc;
+    padding-top:10px;
+}
+	header h1 {
+		font-size: 50px;
+        margin:0;
+        text-align:center;
+        font-family: 'alegreya_sansblack', 'Rokkitt';
+	}
+    header h1 a {
+        color:#fff;
+        text-decoration:none !important;
+    }
+
+	header nav {
+		float:right;
+        margin-top:15px;
+	}
+    
+    header nav ul {
+        list-style:none;
+        margin:0;
+        padding:0;
+    }
+    header nav ul li {
+        float:left;
+        margin-left:15px;
+    }
+    header nav ul li a {
+        font-size:18px;
+        font-family:'Love Ya Like A Sister', cursive;
+    }
+	
+		header nav a {
+		}
+        
+        header nav a:hover{
+            background-color:#D4D4D4;
+            border:2px solid #D4D4D4;
+        }
+        
+footer {
+    background-color:black;
+    height:20px;
+    color:white;
+    text-align: center;
+    padding:6px;
+    margin-top: 50px;
+} 
+
+table {
+    font-size:16px;
+    width:800px;
+    text-align:justify;
+    border:1px solid #a8a8a8;
+    border-collapse:collapse;
+    position:relative;
+}
+
+
+tr.story-row:hover td .summary {
+    display:block;
+    width:250px;
+    height:50px;
+    background:#ddd;
+    box-sizing:border-box;
+    padding: 15px 5px;
+    border-radius: 3px;
+}
+
+td .summary {
+    display:none;
+    position:absolute;
+    right:-260px;
+    margin-top:-33px;
+}
+
+th {
+    background:white;
+}
+td, th {
+    word-wrap:break-word;
+    border-right:1px dotted #a8a8a8;
+    padding:10px 4px 10px 4px;
+    line-height:18px;
+}
+tr:nth-child(odd)
+{
+background:white;
+}
+tr:nth-child(even)
+{
+background:#e5e5e5;
+}
+input { 
+    font-family:Helvetica, sans-serif;
+    font-size:14px;
+    padding: 3px;
+}
+
+fieldset p {
+    margin-left:-10px;
+}

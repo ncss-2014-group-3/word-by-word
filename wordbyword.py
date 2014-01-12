@@ -1,45 +1,37 @@
+# -*- coding: utf-8 -*-
+import html
+import os
+
+import tornado.web
 from tornado.ncss import Server
 from template_engine.parser import Parser
-
-                     
-#import db
-import re
-from template_engine.parser import Parser
-
-#import database
-#db = Database
-
-#	function:	stories()
-#	arguments:	response
-#	description:
-#		When the page is called for listing the stories avaliable.
+from database import story
+from database import word
+import database
+# Create the database
+# database.create()
+#   function:   stories()
+#   arguments:  response
+#   description:
+#	   When the page is called for listing the stories avaliable.
 def stories(response):
 	#list will contain:
 	# title, burb and word count
 	#stories = db.story_list()
-
 	#require db.story_list_data()
 	# arguments: no args
 	# returns: title, short burb and word count
-
-
-
-	stories = [
-	("The big bug","big bug wanted a big hug",1002),
-	("Harry Potter","the boy who lived",5000),
-	("The Green Sheep","thomas's bedtime story",1450),
-	("The long snake","pun on python coding",6354),  
-	("the small ant","got squashed",3),
-	("the broken wheel","went round and round and fell down",789),
-	]
-	# story_list_data should return: 
-	#	titles
-
+	stories = story.Story.story_list()
+	#v = stories[0].first_word.add_child("word2")
+	#print(v)
+	# story_list_data should return:
+	#   titles and word count
+	variables = {'stories': stories}
 	#render the page from the template
-	#create the parser object from template f vcile
-	p = Parser.from_file('templates/list-of-stories.html')
+	#create the parser object from template file
+	p = Parser.from_file('templates/stories.html')
 	#render the html code in var result
-	result = p.expand({'stories': []}) # dict in expand
+	result = p.expand(variables) # dict in expand
 	#render the result to the client
 	response.write(result)
 
@@ -47,75 +39,62 @@ def style(response):
 	with open('style.css', 'r') as f:
 		response.write(f.read())
 
-def hello(response, name):
-    response.write("Hello " + name + " ")
-
 def create(response):
-    invalid_word = False
-    #get the variables we need using get_field
-    title = response.get_field("title")
-    firstword = response.get_field("firstword")
-    # a list of strings of things that went wrong
-    #we will give this to the template.
-    errors = []
-    if response.request.method == "POST":
-        if title is None:
-            #we didn't get given a title
-            errors.append("You didn't enter a title!")
-        if len(title) > 50:
-            errors.append("Your title was too long!")
-        if firstword is None:
-            errors.append("You didn't enter a starting word!")  
-        if ' ' in firstword:
-            errors.append("Please only enter one word.")
-        if errors:
-            errors.append("Please try again.")
+	#get the variables we need using get_field
+	title = response.get_field("title")
+	firstword = response.get_field("firstword")
+	# a list of strings of things that went wrong
+	#we will give this to the template.
+	errors = []
+	if response.request.method == "POST":
+		if not title:
+			#we didn't get given a title
+			errors.append("You didn't enter a title!")
+		if len(title) > 50:
+			errors.append("Your title was too long!")
+		if not firstword:
+			errors.append("You didn't enter a starting word!")
+		if ' ' in firstword:
+			errors.append("Please only enter one word.")
+		if len(firstword) > 20:
+			errors.append("Your word is too long. Word must be below 21 characters long.")
 
-    p = Parser.from_file("HTML/createastory.html")
-    variables = { 'title': title, 'firstword': firstword, 'errors':errors }
-                  
-    p.expand(variables)
-        
-       
-            
-        
-    #word_che
-    if " " in title:
-        if check == True:
-            print("yeyeyeye")        
-    elif " " not in title:        
-        if check == True:
-            print("yeyeyeye")
-        else:
-            print("OH GOD SWEET JESUS NO!")
-    title = title[0].upper() + title[1:]
-    print(title)
-    print(start_word)
-    #write them to the database
-    #db.create_story(title, start_word)
+		if not errors:
+			#write to the database
+			new_story = story.Story(title, firstword)
+			story_id = new_story.story_id
+			response.redirect("/story/" + str(story_id))
+			return
 
-    
-    response.write("""
-    <html>
-    <head>
-    <title> Create A Story </title>
-    </head>
+		#if there are errors, relay back to user
+		errors.append("Please try again.")
 
+	p = Parser.from_file("templates/createastory.html")
+	variables = {'errors': errors }
 
-    <body>
-    <strong>This is the create page</strong>
-    </body>
+	view = p.expand(variables)
+	response.write(view)
 
-    </html>
-    """)
+def upvote(response, word_id, story_id):
+	if response.request.method == "POST":
+		#Write to databse
+		word = Word.from_id(word_id)
+		word.add_vote()
+		response.redirect("/story/" + str(story_id))
 
+def view_story(response, sid):
+	s = story.Story.from_id(sid)
+	if not s:
+		raise tornado.web.HTTPError(404)
+	p = Parser.from_file("templates/viewstory.html")
+	response.write(p.expand({"story": s}))
 
-    
-
-def greet(response):
-    fname = response.get_field('fname', 'James')
-    lname = response.get_field('lname', 'Curran')
-    response.write("Hello " + fname + " " + lname + "!")
+def add_word(response, sid, wid):
+	s = story.Story.from_id(sid)
+	w = word.Word.from_id(wid)
+	new_word = response.get_field("word")
+	w.add_child(new_word)
+	response.redirect("/story/" + str(s.story_id))
 
 def login(response):
         user = response.get_field('name')
@@ -163,15 +142,16 @@ def create_account(response):
 <input type="submit">
 </form>
 ''')
-        
 
-server = Server()
-server.register("/", stories)
-server.register("/style.css", style)
-server.register("/hello/([a-z]+)", hello)
-server.register("/story", create)
-server.register("/greet", greet)
-server.register('/login', login)
-server.register('/logout', logout)
-server.register('/create_account', create_account)
-server.run()
+if __name__ == "__main__":
+    server = Server()
+    server.register("/", stories)
+    server.register("/style.css", style)
+    server.register("/story", create)
+    server.register("/story/(\d+)", view_story)
+    server.register("/story/(\d+)/word/(\d+)/vote", upvote)
+    server.register("/story/(\d+)/(\d+)/reply", add_word)
+    server.register('/login', login)
+    server.register('/logout', logout)
+    server.register('/create_account', create_account)
+    server.run()

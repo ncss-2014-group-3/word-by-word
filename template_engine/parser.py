@@ -60,10 +60,20 @@ Creates a new Parser object from a string that can be expanded. """
         if not self.end():
             self._upto += 1
 
+    def match(self, token, error=None):
+        if error is None:
+            error = token
+        if self.peek() is None or self.peek().strip() != token:
+            raise ParseException('No {}'.format(error))
+        self.next()
+
     def split_tag(self):
-        tag_contents = self.peek().strip()
-        keyword, tag_contents = tag_contents.split(sep = None, maxsplit = 1)
-        return keyword, tag_contents
+        tag_contents = self.peek()
+        if tag_contents is not None:
+            keyword, *tag_contents = tag_contents.strip().split()
+            return keyword, ' '.join(tag_contents)
+        else:
+            return None,None
 
     @classmethod
     def from_file(cls, file_name):
@@ -94,11 +104,11 @@ Context is a dictionary representing the variables in the local scope.
 >>> Parser('{% hello').expand()
 Traceback (most recent call last):
   ...
-ParseException: No end tag
+ParseException: No endtag
 >>> Parser('{% if 1 == 1 %}hello').expand()
 Traceback (most recent call last):
   ...
-ParseException: No end if
+ParseException: No end if/else
 >>> text = '{% if var >= 1%}{%if var == 1 %}var = 1, {% end if %}var >= 1{% end if %}'
 >>> Parser(text).expand({ 'var' : 1})
 'var = 1, var >= 1'
@@ -117,11 +127,24 @@ TypeError: unorderable types: str() >= int()
 >>> Parser('{% for i in range(5) %} {{ i }}').expand()
 Traceback (most recent call last):
   ...
-ParseException: No end for
+ParseException: No end for/else
 >>> Parser('{%for i in (\'dog\', \'cat\', \'frog\') %}{{ i }} {% end for %}').expand()
 'dog cat frog '
 >>> Parser('{% for i in range(9) %}{% for j in \'abcd\'%}{{ str(i) + j }},{%end for %}{% end for %}').expand()
 '0a,0b,0c,0d,1a,1b,1c,1d,2a,2b,2c,2d,3a,3b,3c,3d,4a,4b,4c,4d,5a,5b,5c,5d,6a,6b,6c,6d,7a,7b,7c,7d,8a,8b,8c,8d,'
+>>> Parser('{%if var == 1 %} var = 1 {% else%} var != 1{%end if %}').expand({'var':0})
+' var != 1'
+>>> Parser('{%if var == 1 %} var = 1 {% else%} var != 1{%end if %}').expand({'var':1})
+' var = 1 '
+>>> Parser('{% for i,e in enumerate("abcde") %}{{e}} is the {{i}}th letter, {%end for%}').expand()
+'a is the 0th letter, b is the 1th letter, c is the 2th letter, d is the 3th letter, e is the 4th letter, '
+>>> text = '{%for a in [i for i in range(10) if i == var] %} {{a}} == {{var}} {%else%}No numbers in 0..9 equal {{var}}{%end for%}'
+>>> Parser(text).expand({'var':100})
+'No numbers in 0..9 equal 100'
+>>> Parser(text).expand({'var':5})
+' 5 == 5 '
+>>> Parser('{{[s for s in range(9) if s == var]}}').expand({'var':5})
+'[5]'
 """
         tree = self.parse_group()
         return tree.render(context)
@@ -134,29 +157,23 @@ ParseException: No end for
         if self.peek() == 'startvar':
             self.next()
             child = self.parse_python()
-            if self.peek() != 'endvar':
-                raise ParseException('No closing "}}"')
-            self.next()
+            self.match('endvar')
             
         elif self.peek() == 'starttag':
             self.next()
             tag_contents = self.peek().strip()
             keyword = tag_contents.split()[0]
-            #import pdb; pdb.set_trace()
             if keyword == 'include':
                 child = self.parse_include()
             elif keyword == 'if':
                 child = self.parse_if()
             elif keyword == 'for':
                 child = self.parse_for()
-            elif keyword == 'end':
+            elif keyword in ('end', 'else'):
                 self.prev()
                 return GroupNode([])
                 
-            if self.peek() != 'endtag':
-                raise ParseException('No end tag')
-                
-            self.next()
+            self.match('endtag')
         else:
             child = self.parse_text()
 
@@ -170,46 +187,46 @@ ParseException: No end for
         
 
         self.next()
-        if self.peek() != 'endtag':
-            raise ParseException('No end tag')
-        self.next()
+        self.match('endtag')
         group = self.parse_group()
 
-        if self.peek() != 'starttag':
-            raise ParseException('No end for')
-
-        self.next()
+        self.match('starttag', 'end for/else')
         
         keyword, tag_contents = self.split_tag()
-
-        if keyword != 'end' or tag_contents != 'for':
-            raise ParseException('No end for')
-        self.next()
+        if keyword == 'else':
+            self.match('else')
+            self.match('endtag')
+            else_group = self.parse_group()
+            self.match('starttag')
+        else:
+            else_group = None
         
-        return ForNode(for_condition, group)
+        self.match('end for')
+        
+        return ForNode(for_condition, group, else_group)
     
     def parse_if(self):
         keyword, predicate = self.split_tag()
+        self.next()
+        self.match('endtag')
         
-
-        self.next()
-        if self.peek() != 'endtag':
-            raise ParseException('No end tag')
-        self.next()
         group = self.parse_group()
-
-        if self.peek() != 'starttag':
-            raise ParseException('No end if')
-
-        self.next()
+        self.match('starttag', 'end if/else')
         
         keyword, tag_contents = self.split_tag()
 
-        if keyword != 'end' or tag_contents != 'if':
-            raise ParseException('No end if')
-        self.next()
+        if keyword == 'else':
+            self.match('else')
+            self.match('endtag')
+            else_group = self.parse_group()
+            self.match('starttag')
+        else:
+            else_group = None
+            
         
-        return IfNode(predicate, group)
+        self.match('end if')
+        
+        return IfNode(predicate, group, else_group)
 
     def parse_python(self):
         if self.peek() == 'endvar':
@@ -225,15 +242,22 @@ ParseException: No end for
 
     def parse_include(self):
         tag_contents = self.peek().strip()
-        keyword, tag_contents = tag_contents.split(sep = None, maxsplit = 1)
-        
-        with open(tag_contents) as f:
-            text = f.read()
-            result = Parser(text).expand()
-
         self.next()
-        return TextNode(result)
 
+        keyword, file_name, *context_args = tag_contents.split()
+        context = {}
+        if context_args:
+            for c in context_args:
+                k, v = c.split("=", maxsplit=1)
+                context[k] = v
+
+        if not context:
+            result = Parser.from_file(file_name).expand(context)
+            return TextNode(result)
+        
+        return IncludeNode(file_name, context)
+
+from .IncludeNode import IncludeNode
 
 if __name__ == '__main__':
     import doctest

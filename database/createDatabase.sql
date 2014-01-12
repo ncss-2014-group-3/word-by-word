@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS stories;
 DROP TABLE IF EXISTS words;
 DROP TABLE IF EXISTS wordchild;
 DROP TABLE IF EXISTS votes;
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE stories (
      storyID INTEGER PRIMARY KEY
@@ -18,5 +19,13 @@ CREATE TABLE words (
 
 CREATE TABLE votes (
     wordID  INTEGER NOT NULL
+    ,username TEXT NOT NULL
+    ,PRIMARY KEY (wordID, username)
     ,FOREIGN KEY(wordID) REFERENCES words(wordID)
+    ,FOREIGN KEY(username) REFERENCES users(username)
+);
+
+CREATE TABLE users (
+    username TEXT NOT NULL PRIMARY KEY
+    ,password TEXT NOT NULL
 );
