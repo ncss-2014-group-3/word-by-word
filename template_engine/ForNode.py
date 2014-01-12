@@ -9,7 +9,8 @@ class ForNode:
 
         result = ''
         for item in iterator:
-            context[var] = item
+            exec('{} = {}'.format(var, repr(item)), {}, context)
+            #context[var] = item
             result += self.group.render(context)
         
         return result
