@@ -21,12 +21,16 @@
     <div id="diagram-tree" />
 </article>
 <script>
-function show_popup(e) {
-	$(e.target).find('.popup').show();
+function show_popup(id, x, y) {
+	var offset = $('#diagram-tree').position();
+	var popup = $('#word-' + id);
+	popup.css('left', (x + offset.left) + 'px');
+	popup.css('top', (y + offset.top + 25) + 'px');
+	popup.show();
 }
 
-function hide_popup(e) {
-	$(e.target).closest('.word').find('.popup').hide();
+function hide_popup(id) {
+	$('#word-' + id).hide();
 }
 
 var link_to_children = function(word_id) {
@@ -76,11 +80,17 @@ function draw(paper, node, left, top) {
 	var text = paper.text(left, node_top, node.value);
 	text.attr('font', '20px gotham');
 	var node_width = text.getBBox().width;
-	var child_left = left + node_width + 20;
+	var child_left = left + node_width + 40;
 	var top_sum = top;
 
-	text.mouseover(show_popup);
-	text.mouseout(hide_popup);
+	text.mouseover(function() {
+		var bbox = text.getBBox();
+		show_popup(node.id, bbox.x, bbox.y);
+	});
+
+	text.mouseout(function() {
+		hide_popup(node.id);
+	});
 
 	for (var i = 0; i < node.children.length; i++) {
 		var child_height = height(node.children[i]);
