@@ -150,7 +150,7 @@ def login(response):
                         if user.User.login(username, password):
                                 print('login success, user =', username)
                                 response.set_secure_cookie('username', username)
-                                response.redirect('/login')
+                                response.redirect('/')
                                 return
                         else:
                                 login_fail = True
