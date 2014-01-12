@@ -5,15 +5,17 @@
 			<span class="word">{{ word.value }} <sup>{{ word.votes }}</sup></span>
             <div class="upvotes">
                 <form method="POST" action="/story/{{ story.story_id }}/word/{{ word.id }}/vote">
-					<input type="submit" value = "&uarr;">
+					<input type="submit" value="&uarr;">
 				</form>
 				<!-- <span class="num">0</span> -->
 			</div>
+			{% if not word.fixed() %}
 			<div class="reply">
 				<form class = "up" method="POST" action="/story/{{ story.story_id }}/{{ word.id }}/reply">
 					<input type="text" name="word">
 				</form>
 			</div>
+			{% end if %}
 
 		</td>
 		{% if word.children %}
