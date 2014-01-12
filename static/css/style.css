@@ -38,7 +38,7 @@ a:hover  {
 }
 
 article {
-    width: 900px;
+    width: 950px;
     margin-left: 280px;
     min-height:100%;
     padding: 40px 45px;
@@ -401,7 +401,7 @@ input {
 }
 
 #userProfile tr td:last-child {
-    width:200px;
+    width:000px;
 }
 
 #userProfile tr:nth-child(2n-1){
@@ -415,7 +415,8 @@ input {
 
 #profileImage {
     float:left;
-    margin-left:40px;
+    margin-left:0px;
+    margin-top:30px;
 }
 #profileImage img {
     width: 200px;
