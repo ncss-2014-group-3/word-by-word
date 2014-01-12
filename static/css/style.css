@@ -1,7 +1,7 @@
 body {
 	margin:0;
     padding:0;
-    font-family:Arial;
+    font-family:gotham;
 	font-size: 14px;
 	line-height: 21px;
     background-color:#eaeaea;
@@ -20,7 +20,7 @@ p.view{
 	margin-top:30px;
     margin-bottom: 20px;
     text-align:justify;
-    font-family: 'gothamblack', sans-serif;
+    font-family: 'gotham', sans-serif;
 }
 
 p.edit{
@@ -43,11 +43,12 @@ a:hover  {
 
 article {
     width:800px;
-    margin:0 auto;
-    min-height:800px;
+    margin-left:300px;
+    min-height:1000px;
     padding:10px 5px 20px 5px;
     background-color:#fff;
     box-sizing:border-box;
+    
 }
 
 .bigger {
@@ -58,11 +59,12 @@ article {
 article h1 {
 	font-size: 35px;
     color:#555;
-	font-weight: bold;
+	font-weight: none;
 	margin-bottom: 20px;
 	line-height: 29px;
     text-align:center;
     padding:5px 0;
+    font-family:'gotham';
     /*border-bottom:1px solid #aaa;*/
 }
 
@@ -191,22 +193,41 @@ form input[type=submit]:active {
 
 
 
-
 header {
-	background-color: #464646;
-    padding-top:10px;
-    font-family: 'alegreya_sansblack';
+	background-color: #ff7128;
+	position: absolute;
+    float:left;
+	width: 300px;
+    height:100%;
+    z-index:-997;
 }
+
+	
 	header h1 {
-		font-size: 50px;
-        margin:0;
-        text-align:center;
-        font-weight:bold;
-        padding-top:15px;
-        font-family: 'alegreya_sansblack', 'Rokkitt';
+		background-color: #FFF3D5;
+		position: absolute;
+		top: 150px;
+		left: 0px;
+		right: 0px;
+		text-align: center;
+		font-size:32px;
+		font-weight: 500;
+		text-transform: uppercase;
+		padding: 30px 0px;
+		line-height: 40px;
+        font-family: 'gotham', serif;
+        z-index:-998;
 	}
+	
+		header h1 span {
+			font-weight: 300;
+			font-size: 20px;
+            
+			
+		}
+        
     header h1 a {
-        color:#fff;
+        color:#000;
         text-decoration:none !important;
     }
 
@@ -234,12 +255,13 @@ header {
         
         
 footer {
-    background-color:#464646;
-    height:20px;
-    color:white;
-    text-align: center;
-    padding:6px;
-} 
+    font-family:'gotham', sans serif;
+    font-size:12px;
+    float:center;
+    bottom:5px;
+    position:absolute;
+    
+}
 
 table.borders {
     font-size:16px;
@@ -329,11 +351,14 @@ input {
     padding-left:15px;
 }
 #headCaption {
-    text-align:center;
-    color:white;
-    margin-top: 15px;
+    text-align:left;
+    margin-left:15px;
+    color:black;
+    position:absolute;
+    margin-top: 220px;
     letter-spacing:2px;
     text-transform:uppercase;
+    font-family: 'AlegreyaSans', sans-serif;
 }
 
 #storyList {
