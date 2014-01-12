@@ -6,6 +6,13 @@
     {% end if %}
     {% if user is None %}
         <h1>Login</h1>
+        {% if login_fail %} 
+            <div id="errorBox">
+                <ul>
+                    <li>Login Failed: incorrect username and password</li>
+                </ul>
+            </div>
+        {% end if %} 
         <form id="form1" name="form1" method="post" action="/login">
             <table id="tbl_input_user">
                 <tr>
@@ -16,7 +23,7 @@
                 <tr>
                     <td>Password:</td>
                     <td>
-                        <input name="password" id="password" 
+                        <input name="password" id="password" type = "text"
                         type="password" title="Please Enter A Password" placeholder="Enter Password Here" />
                     </td>
                 </tr>
@@ -26,15 +33,6 @@
                 </tr>
             </table>
         </form>
-        <button><a href="/register">Sign Up Now</a></button>
-        {% if login_fail %} 
-            <div id="errorBox">
-            <ul>
-                <li>Login Failed: incorrect username and password</li>
-            </ul>
-            </div>
-        {% end if %} 
-
     {% end if %}
 </article>
   
