@@ -18,10 +18,10 @@
                     <td align="right">Title:</td>
                     {% if len(errors) != 0 %}
                         <td><input type="text"
-                        name="title" {% if title %} value={{ title }} {% end if %} placeholder="Enter story title here"></td>
+                        name="title" {% if title %} value={{ title }} {% end if %} placeholder="Enter story title here" autocomplete="off" autofocus="autofocus"></td>
                     {% else %}
                         <td><input type="text"
-                        name="title" placeholder="Enter story title here"></td>
+                        name="title" placeholder="Enter story title here" autocomplete="off" autofocus="autofocus"></td>
                     {% end if %}
                 </tr>
                 <tr>
@@ -29,10 +29,10 @@
                     <td>
                         {% if len(errors) != 0 %}
                             <input type="text"
-                                name="firstword" {% if firstword %} value={{ firstword }} {% end if %} placeholder="Eg: Once...">
+                                name="firstword" {% if firstword %} value={{ firstword }} {% end if %} placeholder="Eg: Once..." autocomplete="off">
                         {% else %}
                             <input type="text"
-                                name="firstword" placeholder="Eg: Once...">
+                                name="firstword" placeholder="Eg: Once..." autocomplete="off">
                         {% end if %}
                     </td>
                 </tr>
