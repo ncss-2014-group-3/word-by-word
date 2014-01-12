@@ -6,6 +6,7 @@ import tornado.web
 from tornado.ncss import Server
 from template_engine.parser import Parser
 from database import story
+from database import word
 import database
 # Create the database
 # database.create()
@@ -22,7 +23,7 @@ def stories(response):
     # returns: title, short burb and word count
     stories = story.Story.story_list()
     #v = stories[0].first_word.add_child("word2")
-    print(v)
+    #print(v)
     # story_list_data should return:
     #   titles and word count
     variables = {'stories': stories}
@@ -33,9 +34,11 @@ def stories(response):
     result = p.expand(variables) # dict in expand
     #render the result to the client
     response.write(result)
+
 def style(response):
     with open('style.css', 'r') as f:
         response.write(f.read())
+
 def create(response):
     #get the variables we need using get_field
     title = response.get_field("title")
@@ -67,6 +70,7 @@ def create(response):
     variables = {'errors': errors }
     view = p.expand(variables)
     response.write(view)
+
 def view_story(response, sid):
     s = story.Story.from_id(sid)
     if not s:
@@ -79,10 +83,20 @@ def view_story(response, sid):
     #   tree=render_word(story.first_word, title=True))
     # print("?", html)
     response.write(p.expand({"story": s}))
+
+def add_word(response, sid, wid):
+    s = story.Story.from_id(sid)
+    w = word.Word.from_id(wid)
+    new_word = response.get_field("word")
+    w.add_child(new_word)
+    response.redirect("/story/" + str(s.story_id))
+
 if __name__ == "__main__":
     server = Server()
     server.register("/", stories)
     server.register("/style.css", style)
     server.register("/story", create)
     server.register("/story/(\d+)", view_story)
+    server.register("/story/(\d+)/(\d+)/reply", add_word)
     server.run()
+
