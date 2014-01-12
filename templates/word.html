@@ -5,7 +5,11 @@
 			<span class="word">{{ word.value }}</span>
             <div class="upvotes">
                 <form method="POST" action="/story/{{ story.story_id }}/word/{{ word.id }}/vote">
-					<input type="submit" value="{{ word.votes }} &uarr;" class="up-arrow">
+                    {% if user is not None %}
+                        <input type="submit" value="{{ word.votes }} &uarr;" class="up-arrow">
+                    {% else %}
+                        {{ word.votes }}
+                    {% end if %}
 				</form>
 				<!-- <span class="num">0</span> -->
 			</div>
@@ -20,7 +24,7 @@
 		{% if word.children %}
 			<td class="children">
 			{% for child in word.children %}
-				{% include templates/word.html word=child story=story %}
+				{% include templates/word.html user=user word=child story=story %}
 			{% end for %}
 			</td>
 		{% end if %}
