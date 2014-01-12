@@ -164,34 +164,33 @@ def login(response):
 
 def logout(response):
         response.clear_cookie('username')
-        response.redirect('/login')
+        response.redirect('/')
 
 def register(response):
         logged_name = response.get_secure_cookie('username')
-        if logged_name is None:
-                username = response.get_field('name')
-                password = response.get_field('password')
-                print('user,pass =', username, password)
-                if username and password is not None:
-                        good_username = True if re.match(r'^\w+$', username) else False
-                        username_taken = True if user.User.from_username(username) else False
-                        good_password = (len(password) > 4)
-                        print(good_username, good_password, username_taken)
-                        if good_username and good_password and not username_taken:
-                                response.set_secure_cookie('username', username)
-                                user.User.create(username, password)
-                                print(user, password)
-                                response.redirect('/')
-                                return
-                        else:
-                                username = password = None
-                else:
-                        username = password = None
-                        good_username = good_password = True
-                        username_taken = False
-        else:
+        if logged_name is not None:
                 response.redirect('/')
                 return
+        username = response.get_field('name')
+        password = response.get_field('password')
+        print('user,pass =', username, password)
+        if username and password is not None:
+                good_username = True if re.match(r'^\w+$', username) else False
+                username_taken = True if user.User.from_username(username) else False
+                good_password = (len(password) > 4)
+                print(good_username, good_password, username_taken)
+                if good_username and good_password and not username_taken:
+                        response.set_secure_cookie('username', username)
+                        user.User.create(username, password)
+                        print(user, password)
+                        response.redirect('/')
+                        return
+                else:
+                        username = password = None
+        else:
+                username = password = None
+                good_username = good_password = True
+                username_taken = False
                 
         p = Parser.from_file('templates/register.html')
         html = p.expand({
