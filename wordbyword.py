@@ -256,6 +256,6 @@ if __name__ == "__main__":
     server.register('/login', login)
     server.register('/logout', logout)
     server.register('/register', register)
-    server.register('/ownstories', own_stories)
+    server.register('/mystories', own_stories)
     server.register('/user/(\w+)', profile)
     server.run()
