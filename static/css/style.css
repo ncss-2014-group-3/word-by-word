@@ -140,13 +140,13 @@ form label, form input {
     outline:none;
 }
 
-form input[type=text], form input[type=email]{
+form input[type=text], form input[type=email], form input[type=password]{
     padding:3px 8px;
     box-shadow:inset 1px 1px 1px 0px rgba(50,50,50,0.2);
     -webkit-transition: box-shadow 0.1s;
 }
 
-form input[type=text]:focus {
+input[type=text]:focus, input[type=password]:focus{
     box-shadow:inset 1px 1px 6px 0px rgba(50,50,50,0.3);
 }
 
