@@ -181,6 +181,8 @@ def register(response):
                                 response.set_secure_cookie('username', username)
                                 user.User.create(username, password)
                                 print(user, password)
+                                response.redirect('/')
+                                return
                         else:
                                 username = password = None
                 else:
@@ -188,9 +190,8 @@ def register(response):
                         good_username = good_password = True
                         username_taken = False
         else:
-                good_username = good_password = True
-                username_taken = False
-                username = logged_name.decode()
+                response.redirect('/')
+                return
                 
         p = Parser.from_file('templates/register.html')
         html = p.expand({
