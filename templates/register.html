@@ -35,19 +35,6 @@
                 </tr>
             </table>
         </form>
-        <div id="errorBox">
-            <ul>
-                {% if good_username == False %}
-                    <li>Bad Username. (Username must contain letters, numbers or _ etc.)</li>
-                {% end if %} 
-                {% if username_taken == True %}
-                    <li>Username already taken. Please try another username!</li>
-                {% end if %} 
-                {% if good_password == False %}
-                    <li>Bad password.(Must be at least 5 letters!)</li>
-                {% end if %} 
-            </ul>
-        </div>
 
     {% end if %}
 
