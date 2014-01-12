@@ -1,4 +1,6 @@
+import random
 import sqlite3
+
 from .word import Word
 from . import connection
 
@@ -87,3 +89,21 @@ class Story:
             WHERE storyID = ?
         ''', (self.title, self.story_id))
         connection.commit()
+
+    def fixed_words(self):
+        # TODO: Ensure this returns the "best" branch.
+        # e.g. use sorted() based on w.votes
+        def random_child(w):
+            if w.children:
+                w1 = random.choice(w.children)
+                return w1
+            else:
+                return None
+        children = []
+        x = self.first_word
+        while len(children) <= 10 and x is not None:
+            x = random_child(x)
+            children.append(x)
+        if children[-1] is None:
+            children.pop()
+        return " ".join(map(str, children))
