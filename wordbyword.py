@@ -204,7 +204,8 @@ def register(response):
                 'user' : username,
                 'good_username': good_username,
                 'good_password': good_password,
-                'username_taken': username_taken})
+                'username_taken': username_taken,
+                'errors': errors})
         response.write(html)
 
 if __name__ == "__main__":
