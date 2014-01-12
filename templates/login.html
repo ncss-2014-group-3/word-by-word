@@ -1,11 +1,17 @@
-{% include templates/header.html %}
+{% include templates/header.html user=user%}
 
 <article>
     {% if user is not None %}
-        Welcome {{user}}
-    {% end if %}
-    {% if user is None %}
+        <h1>Welcome {{user}}</h1>
+    {% else %}
         <h1>Login</h1>
+        {% if login_fail %} 
+            <div id="errorBox">
+                <ul>
+                    <li>Login Failed: incorrect username or password</li>
+                </ul>
+            </div>
+        {% end if %} 
         <form id="form1" name="form1" method="post" action="/login">
             <table id="tbl_input_user">
                 <tr>
@@ -16,23 +22,16 @@
                 <tr>
                     <td>Password:</td>
                     <td>
-                        <input name="password" id="password" 
+                        <input name="password" id="password"
                         type="password" title="Please Enter A Password" placeholder="Enter Password Here" />
                     </td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
-                    <td><input name="submit" type="submit" value="Submit"/></td>
+                    <td><input name="submit" type="submit" value="Login"/></td>
                 </tr>
             </table>
         </form>
-        {% if login_fail %} 
-            <div id="errorBox">
-            <ul>
-                <li>Login Failed: incorrect username and password</li>
-            </ul>
-            </div>
-        {% end if %} 
 
     {% end if %}
 </article>

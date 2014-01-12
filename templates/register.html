@@ -1,4 +1,4 @@
-{% include templates/header.html %}
+{% include templates/header.html user=user%}
 
 <article>
     {% if user is not None %}
@@ -6,6 +6,15 @@
     {% end if %}
     {% if user is None %}
         <h1>Create account</h1>
+        {% if len(errors) != 0 %}
+            <div id="errorBox">
+                <ul>
+                    {% for error in errors %}
+                        <li> {{ error }} </li>
+                    {% end for %}
+                </ul>
+            </div>
+        {% end if %}
         <form method="post">
             <table id="tbl_input_user">
                 <tr>
@@ -26,20 +35,6 @@
                 </tr>
             </table>
         </form>
-        <div id="errorBox">
-            <ul>
-                {% if good_username == False %}
-                    <li>Bad Username. (Username must contain letters, numbers or _ etc.)</li>
-                {% end if %} 
-                {% if username_taken == True %}
-                    <li>Username already taken. Please try another username!</li>
-                {% end if %} 
-                {% if good_password == False %}
-                    <li>Bad password.(Must be at least 5 letters!)</li>
-                {% end if %} 
-            </ul>
-        </div>
-
     {% end if %}
 
 </article>

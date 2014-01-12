@@ -1,6 +1,9 @@
-{% include templates/header.html %}
+{% include templates/header.html user=user %}
+
 <article>
    <h1>Most Popular Stories</h1>
+   <p class = "view"><h2>Welcome to Word By Word!</h2> A collaborative website where you can create a story with your friends.
+    View a story and vote on your favourite words. <br>If a branch gets enough votes, it'll get bumped to the top! Don't like what people have done so far? Start a new story or a new branch within an existing story and see where it takes you. </p> <br>
     <table class="borders" id="storyList">
         <tr id='bold'>
             <th>Title</th>
@@ -13,7 +16,7 @@
                     <td><a href="/story/{{story.story_id}}">{{ story.title }}</a>
                         <div class="summary">
                             <div class="text">
-                            {{story.fixed_words()}}
+                            {{story.first_words(10)}}
                             </div>
                         </div>
                     </td>

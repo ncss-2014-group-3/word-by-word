@@ -1,5 +1,6 @@
 import sqlite3
 from . import connection
+from database import userStats
 
 class User:
     @classmethod
@@ -39,6 +40,7 @@ class User:
     
     def __init__(self, username):
         self.username = username
+        self.stats = userStats.Stats(username)
 
     def remove(self):
         cursor = connection.cursor()
@@ -49,3 +51,10 @@ class User:
         cursor = connection.cursor()
         cursor.execute('''UPDATE users SET password=?, fullname=? WHERE username=?''', (new_password, fullname, username))
         connection.commit()
+
+    def get_score(self, username):
+        cursor = connection.cursor()
+        returnedvotes = cursor.execute('''SELECT COUNT(wordID) FROM votes WHERE wordID IN
+                                        (SELECT wordID FROM words WHERE author=?)''', (username,))
+        score = returnedvotes.fetchone()[0]
+        return score
