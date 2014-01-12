@@ -111,11 +111,11 @@ def add_word(response, sid, wid):
     view = p.expand(variables)
     response.write(view)
 
-def upvote(response, word_id, story_id):
+def upvote(response, story_id, word_id):
 	if response.request.method == "POST":
 		#Write to databse
-		word = Word.from_id(word_id)
-		word.add_vote()
+		w = word.Word.from_id(word_id)
+		w.add_vote()
 		response.redirect("/story/" + str(story_id))
 
 if __name__ == "__main__":
