@@ -1,6 +1,6 @@
 import sqlite3
 from . import connection
-import database.userStats
+from database import userStats
 
 class User:
     @classmethod
