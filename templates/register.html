@@ -1,29 +1,55 @@
-<html>
-    <head>
-    <title>Login</title>
-    <link rel="stylesheet" href="login.css" type="text/css">
-    </head>
+{% include templates/header.html user=user%}
 
+<article>
+    {% if user is not None %}
+        Welcome {{user}}
+    {% end if %}
+    {% if user is None %}
+        <h1>Create account</h1>
+        {% if len(errors) != 0 %}
+            <div id="errorBox">
+                <ul>
+                    {% for error in errors %}
+                        <li> {{ error }} </li>
+                    {% end for %}
+                </ul>
+            </div>
+        {% end if %}
+        <form method="post">
+            <table id="tbl_input_user">
+                <tr>
+                    <td align="right">*Username:</td>
+                    <td><input name="name" id="name" type="text" 
+                    title="Please Enter A User Name" placeholder="Enter name here"></td>
+                </tr>
+                <tr>
+                    <td align="right">*Password:</td>
+                    <td>
+                        <input name="password" id="password" 
+                        type="password" title="Please Enter A Password" placeholder="Enter password here" />
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">Full Name:</td>
+                    <td><input name="fullname" id="fullname" type="text" 
+                    title="Please Enter Your Full Name" placeholder="Enter full name here"></td>
+                </tr>
+                <tr>
+                    <td align="right">Email:</td>
+                    <td><input name="email" id="email" type="text" 
+                    title="Please Enter Your Email" placeholder="Enter email here"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Fields denoted by * are mandatory</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><input name="submit" type="submit" value="Submit"/></td>
+                </tr>
+            </table>
+        </form>
+    {% end if %}
 
-    <body>
-{% if user is not None %}
-Welcome {{user}}
-{% end if %}
-{% if user is None %}
-<h1>Create account</h1>
-<form method="post">
-<label>Name:</label><input name="name" id="name" type="text" title="Please Type Something"/><br>
-<label>Password:</label><input name="password" id="password" type="password" title=" Please Enter Something"><br>
-<input name="submit" type="submit" value="Submit"/>
-</form>
-{% if good_username == False %} Bad Username. (Username must contain letters, numbers or _ etc.) <br>{% end if %} 
-{% if username_taken == True %} Username already taken. Please try another username! <br>{% end if %} 
-{% if good_password == False %} Bad password.(Must be at least 5 letters!) <br>{% end if %} 
-
-{% end if %}
-
-  
-    
-    </body>
-
-    </html>
+</article>
+{% include templates/footer.html %}

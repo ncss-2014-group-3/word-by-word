@@ -4,44 +4,57 @@
 
 .tree {
 	border: none;
-	width: auto;
-
 }
 
-.child {
-	background-color: rgba(128,216,186, 0.1) !important;
+#story-tree .child {
+	border: 1px dotted #ffc04d;
+	background: rgba(255, 165, 0, 0.08);
+	width: auto;
+}
+    
+#story-tree .child {
+	background-color:rgba(255, 94, 3, 0.1);
 }
 
 .child td {
 	border-radius: 20px;
+}
+	.child td:first-child .word {
+		padding: 5px;
+	}
+
+#story-tree .child td {
 	border-left: none;
 	border-right: none;
 }
 
-.upvotes {
+#story-tree .word {
+}
+
+#story-tree .upvotes {
 	display: inline-block;
 }
 	.up {
-		color: green;
-		font-size: 1em;
+		color: orange;
+		font-size: 1.5em;
 	}
+
+
+.reply {
+    display:inline;
+    
+    margin:3px 10px;
+    width:80px;
+}
 
 .reply input[name="word"] {
 	width: 60px;
 }
 
-/** {
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}*/
-
-* {
+#story-tree {
 	vertical-align: middle !important;
 }
+
 
 div#new_add_word.reply form.up input {
 	position: absolute;
@@ -91,4 +104,17 @@ td.children {
 table.child {
 	margin-bottom: 5px;
 	border-left: 1px solid black;
+}
+#story-tree form {
+    display:inline-block;
+}
+
+form input.up-arrow {
+    background-color:transparent;
+	margin-top: 0px;
+    border:none;
+    cursor:pointer;
+    padding:3px 3px;
+    color:black;
+    box-shadow: none;
 }

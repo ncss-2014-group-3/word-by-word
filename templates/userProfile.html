@@ -1,0 +1,60 @@
+{% include templates/header.html user=user%}
+<article id="userProfile">
+    {% if user %}
+        <h1>{{user.username}}'s profile</h1>
+        
+        <div id="profileImage">
+            <img src="{{user.image_url}}" alt="{{user.username}}" />
+        </div>
+        
+        <div id="userStats">
+            <table>
+                <tr>
+                    <td>Username:</td>
+                    <td>{{user.username}}</td>
+                </tr>
+                <tr>
+                    <td>E-mail:</td>
+                    <td>{{user.email}}</td>
+                </tr>
+                <tr>
+                    <td>Total words entered:</td>
+                    <td>{{user.stats.total_words}}</td>
+                </tr>
+                <tr>
+                    <td>Total stories created:</td>
+                    <td>{{user.stats.total_stories_created}}</td>
+                </tr>
+                <tr>
+                    <td>Total stories contributed to:</td>
+                    <td>{{user.stats.total_stories_contributed}}</td>
+                </tr>
+                <tr>
+                    <td>Total votes:</td>
+                    <td>{{user.stats.total_votes}}</td>
+                </tr>
+                <tr>
+                    <td>Most up-voted word:</td>
+                    <td>{{user.stats.most_upvoted_word}}</td>
+                </tr>
+                <tr>
+                    <td>Most frequently used word:</td>
+                    <td>{{user.stats.frequent_word}}</td>
+                </tr>
+                <tr>
+                    <td>Top created story:</td>
+                    <td>{{user.stats.top_story}}</td>
+                </tr>
+            </table>
+        </div>
+    {% else %}
+        <h1>User not found</h1>
+        <div id="errorBox">
+            User not found
+        </div>
+    {% end if %}
+    
+</article>
+{% include templates/footer.html %}
+
+

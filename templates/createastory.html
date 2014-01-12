@@ -1,4 +1,5 @@
-{% include templates/header.html %}
+{% include templates/header.html user=user%}
+
 <article>
     <h1>Create a Story</h1>
     {% if len(errors) != 0 %}
@@ -10,27 +11,37 @@
             </ul>
         </div>
     {% end if %}
+    
     <form action="/story" method="post">
             <table id="tblCreateStory">
                 <tr>
-                    <td>Title:</td>
-                    <td><input type="text"
-                    name="title" placeholder="Enter Story Title Here"></td>
+                    <td align="right">Title:</td>
+                    {% if len(errors) != 0 %}
+                        <td><input type="text"
+                        name="title" {% if title %} value={{ title }} {% end if %} placeholder="Enter story title here"></td>
+                    {% else %}
+                        <td><input type="text"
+                        name="title" placeholder="Enter story title here"></td>
+                    {% end if %}
                 </tr>
                 <tr>
-                    <td>Word:</td>
+                    <td align="right">Word:</td>
                     <td>
-                        <input type="text"
-                            name="firstword" placeholder="Eg: Once...">
+                        {% if len(errors) != 0 %}
+                            <input type="text"
+                                name="firstword" {% if firstword %} value={{ firstword }} {% end if %} placeholder="Eg: Once...">
+                        {% else %}
+                            <input type="text"
+                                name="firstword" placeholder="Eg: Once...">
+                        {% end if %}
                     </td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
-                    <td><input type="submit" value="Submit"></td>
+                    <td><input type="submit" value="Create"></input><button onclick="location.href='../'" type="button"><a href="../">Cancel</a></button></td>
                 </tr>
             </table>
-     </form>  
-
+    </form>
         
 </article>
 {% include templates/footer.html %}

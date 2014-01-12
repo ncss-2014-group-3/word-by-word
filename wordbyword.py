@@ -33,7 +33,7 @@ def stories(response):
     #print(v)
     # story_list_data should return:
     #   titles and word count
-    variables = {'stories': stories}
+    variables = {'stories': stories, 'user': get_current_user(response)}
     #render the page from the template
     #create the parser object from template file
     p = Parser.from_file('templates/stories.html')
@@ -42,6 +42,20 @@ def stories(response):
     #render the result to the client
     response.write(result)
 
+def my_stories(response):
+    # pretty much the same as stories above
+    username = get_current_user(response)
+    errors = []
+    if username is None:
+        response.redirect("/")
+        return
+    else:
+        stories = username.own_stories
+        variables = {'stories': stories, 'user': get_current_user(response)}
+        p = Parser.from_file('templates/mystories.html')
+        result = p.expand(variables) # dict in expand
+        response.write(result)
+    
 def style(response):
     with open('style.css', 'r') as f:
         response.write(f.read())
@@ -53,6 +67,14 @@ def create(response):
     # a list of strings of things that went wrong
     #we will give this to the template.
     errors = []
+
+    username = response.get_secure_cookie('username')
+    if not username:
+        errors.append('You must be logged in to post a story')
+        p = Parser.from_file("templates/createastory.html")
+        variables = {'errors': errors, 'user': get_current_user(response)}
+        view = p.expand(variables)
+        
     if response.request.method == "POST":
         if not title:
             #we didn't get given a title
@@ -62,13 +84,12 @@ def create(response):
         if not firstword:
             errors.append("You didn't enter a starting word!")
         if ' ' in firstword:
-            errors.append("Please only enter one word.")
-        if len(firstword) > 20:
-            errors.append("Your word is too long. Word must be below 21 characters long.")
+            errors.append("Please only enter one word")
+        if len(firstword) > 25:
+            errors.append("Your word is too long. Word must be below 26 characters long")
         author = get_current_user(response)
-        print('author =', author)
         if author is None:
-            errors.append('You must be logged in to post a word')
+            errors.append('You must be logged in to create a story')
         if not errors:
             #write to the database
             new_story = story.Story(title, firstword, author)
@@ -79,8 +100,9 @@ def create(response):
         #if there are errors, relay back to user
         errors.append("Please try again.")
     p = Parser.from_file("templates/createastory.html")
-    variables = {'errors': errors }
+    variables = {'errors': errors, 'user': get_current_user(response), 'title': title, 'firstword':firstword}
     view = p.expand(variables)
+    
     response.write(view)
 
 def view_story(response, sid):
@@ -94,25 +116,35 @@ def view_story(response, sid):
     #   current="",#story.current,
     #   tree=render_word(story.first_word, title=True))
     # print("?", html)
-    response.write(p.expand({"story": s, "errors":[]}))
+
+    errors = []
+    user_obj = get_current_user(response)
+    if not user_obj:
+        errors.append('You must be logged in to post a word')
+        p = Parser.from_file("templates/viewstory.html")
+        variables = {'errors': errors, "story": s, "user": user_obj}
+        view = p.expand(variables)
+        response.write(view)
+    
+    response.write(p.expand({"story": s, "errors":[], "user": user_obj}))
 
 def add_word(response, sid, wid):
     s = story.Story.from_id(sid)
     w = word.Word.from_id(wid)
     errors = []
+    
     new_word = response.get_field("word").strip()
     #response.redirect("/story/" + str(s.story_id))
     if not new_word:
-        errors.append("You didn't enter a word!")
+        errors.append("Please enter a word")
 
     if " " in new_word:
-        errors.append("Please only enter one word.")
+        errors.append("Please only enter one word")
 
-    if len(new_word) > 20:
-        errors.append("Your word is too long. Word must be below 21 characters long.")
+    if len(new_word) > 25:
+        errors.append("Your word is too long. Word must be below 26 characters long")
 
     author = get_current_user(response)
-    print('author =', author)
     if author is None:
         errors.append('You must be logged in to post a word')
         
@@ -124,21 +156,21 @@ def add_word(response, sid, wid):
     errors.append("Please try again.")
 
     p = Parser.from_file("templates/viewstory.html")
-    variables = {'errors': errors, "story": s}
+    variables = {'errors': errors, "story": s, 'user': get_current_user(response)}
     view = p.expand(variables)
     response.write(view)
 
 def upvote(response, story_id, word_id):
     author = get_current_user(response)
-    print('author =', author)
     errors = []
     if author is None:
-        errors.append('You must be logged in to post a word')
+        errors.append('You must be logged in to upvote a word')
     if response.request.method == "POST" and not errors:
         #Write to databse
         w = word.Word.from_id(word_id)
         w.add_vote(author)
-        response.redirect("/story/" + str(story_id))
+    response.redirect("/story/" + str(story_id))
+
 def login(response):
         username = response.get_field('name')
         password = response.get_field('password')
@@ -152,7 +184,7 @@ def login(response):
                         if user.User.login(username, password):
                                 print('login success, user =', username)
                                 response.set_secure_cookie('username', username)
-                                response.redirect('/login')
+                                response.redirect('/')
                                 return
                         else:
                                 login_fail = True
@@ -166,41 +198,53 @@ def login(response):
 
 def logout(response):
         response.clear_cookie('username')
-        response.redirect('/login')
+        response.redirect('/')
 
 def register(response):
         logged_name = response.get_secure_cookie('username')
-        if logged_name is None:
-                username = response.get_field('name')
-                password = response.get_field('password')
-                print('user,pass =', username, password)
-                if username and password is not None:
-                        good_username = True if re.match(r'^\w+$', username) else False
-                        username_taken = True if user.User.from_username(username) else False
-                        good_password = (len(password) > 4)
-                        print(good_username, good_password, username_taken)
-                        if good_username and good_password and not username_taken:
-                                response.set_secure_cookie('username', username)
-                                user.User.create(username, password)
-                                print(user, password)
-                        else:
-                                username = password = None
+        if logged_name is not None:
+                response.redirect('/')
+                return
+        username = response.get_field('name')
+        password = response.get_field('password')
+        email = response.get_field('email')
+        print('user,pass =', username, password)
+        errors = []
+        if username and password is not None:
+                if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$', email) is None:
+                    errors.append('Invalid email')
+                if re.match(r'^\w+$', username) is None:
+                    errors.append('Invalid username, usernames must be alphanumeric with underscores')
+                if user.User.from_username(username) is not None:
+                   errors.append('Invalid username, username already taken')
+                if len(password) < 5:
+                    errors.append('Invalid password, passwords must be at least 5 characters long')
+                if not errors:
+                        response.set_secure_cookie('username', username)
+                        user.User.create(username, password, email=email)
+                        response.redirect('/')
+                        return
+
                 else:
                         username = password = None
-                        good_username = good_password = True
-                        username_taken = False
         else:
-                good_username = good_password = True
-                username_taken = False
-                username = logged_name.decode()
+                username = password = None
                 
         p = Parser.from_file('templates/register.html')
         html = p.expand({
                 'user' : username,
-                'good_username': good_username,
-                'good_password': good_password,
-                'username_taken': username_taken})
+                'errors': errors})
         response.write(html)
+
+def profile(response, username):
+        #get request, the list of stories they have made, list of stories they have contributed to maybe, last visit?, 
+        display_user = user.User.from_username(username)
+        
+        p = Parser.from_file("templates/userProfile.html")
+        variables = { "user":display_user}
+        view = p.expand(variables)
+        response.write(view)
+        
 if __name__ == "__main__":
     server = Server()
     server.register("/", stories)
@@ -212,4 +256,6 @@ if __name__ == "__main__":
     server.register('/login', login)
     server.register('/logout', logout)
     server.register('/register', register)
+    server.register('/mystories', my_stories)
+    server.register('/user/(\w+)', profile)
     server.run()

@@ -2,6 +2,21 @@ import sqlite3
 
 from . import connection, dict_factory
 
+def cached_property(f):
+    """returns a cached property that is calculated by function f"""
+    def get(self):
+        try:
+            return self._property_cache[f]
+        except AttributeError:
+            self._property_cache = {}
+            x = self._property_cache[f] = f(self)
+            return x
+        except KeyError:
+            x = self._property_cache[f] = f(self)
+            return x
+        
+    return property(get)
+
 class Word:
     @classmethod
     def from_story_id(cla, story_id):
@@ -64,16 +79,25 @@ class Word:
         for child in self.children:
             count += child.word_count
         return count
-        
-    @property
+
+    @cached_property
     def votes(self):
-        child_scores = 0
-        for child in self.children:
-            child_scores += child.votes
-        return self._dir_votes + child_scores
+        return len(self._get_voters())
+
+    def _get_voters(self):
+        users = set()
+        cursor = connection.cursor()
+        cursor.execute('''SELECT username FROM votes WHERE wordID=?''', (self.id,))
+        for user in cursor.fetchall():
+            users.add(user)
+        for child in self._children_unsorted:
+            users.update(child._get_voters())
+        return users
     
     def add_vote(self, voter):
         self._dir_votes += 1
+        if self.remove_vote(voter):
+            self._dir_votes -= 1
         c = connection.cursor()
         c.execute("""
         INSERT INTO votes VALUES (?,?)
@@ -83,7 +107,7 @@ class Word:
     def remove_vote(self, voter):
         cursor = connection.cursor()
         cursor.execute('''DELETE FROM votes WHERE wordID=? AND username=?''', (self.id, voter.username))
-        cursor.commit()
+        connection.commit()
     
     @property
     def children(self):
@@ -92,15 +116,40 @@ class Word:
             SELECT words.wordID, storyID, word, author, parentID
             FROM words
             WHERE parentID = ?
-            ORDER BY (SELECT COUNT(*) FROM votes WHERE wordID=?)
-        """, (self.id,self.id))
+        """, (self.id,))
         
         children = []
         for childWord in c:
             #id, parentID, storyID, word
             children.append(Word(childWord[0], childWord[1], childWord[2], childWord[3], childWord[4]))
+        children.sort(key=lambda w:w.votes, reverse=True)
         
         return children
+    @property
+    def _children_unsorted(self):
+        c = connection.cursor()
+        c.execute("""
+            SELECT words.wordID, storyID, word, author, parentID
+            FROM words
+            WHERE parentID = ?
+        """, (self.id,))
+        
+        children = []
+        for childWord in c:
+            #id, parentID, storyID, word
+            children.append(Word(childWord[0], childWord[1], childWord[2], childWord[3], childWord[4]))        
+        return children
+        
+    def _deepest_child(self):
+        # Depth first, brah.
+        m = 1
+        for child in self.children:
+            m = 1 + max(m, child._deepest_child())
+        return m
+
+    def fixed(self, n=5):
+        return self._deepest_child() > n
+
 
     def as_json(self):
         return {
@@ -124,7 +173,22 @@ class Word:
             LIMIT 1''', (self.id,self.id))
         row = cursor.fetchone()
         return None if row is None else Word(row[0], row[1], row[2], row[3], row[4])
-    
+
+    def _deepest_child(self):
+        # Depth first, brah.
+        m = 0
+        for child in self.children:
+            m = max(m, child._deepest_child())
+        return m + 1
+
+    def fixed(self, n=5):
+        return self._deepest_child() > n
+
+    def fixed_children(self):
+        if not self.children:
+            return True
+        return any(w.fixed() for w in self.children)
+
     def save(self):
         c = connection.cursor()
         if self.id:

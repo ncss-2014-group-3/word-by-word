@@ -16,13 +16,20 @@ class Story:
         return cla(row[0], first_word, first_word.author, id)
 
     @classmethod
-    def story_list(cls, limit=0):
+    def story_list(cls, limit=10):
         cursor = connection.cursor()
-        stories = cursor.execute('''SELECT stories.storyID FROM stories
-            INNER JOIN words ON words.storyID = stories.storyID
-            INNER JOIN votes ON votes.wordID = words.wordID
+        stories = cursor.execute('''
+            SELECT
+                stories.storyID,
+                (
+                    SELECT COUNT(*)
+                    FROM votes
+                    INNER JOIN words ON words.storyID = stories.storyID
+                    WHERE votes.wordID = words.wordID
+                ) AS n_votes
+            FROM stories
             GROUP BY stories.storyID
-            ORDER BY COUNT(username) DESC
+            ORDER BY n_votes DESC
             LIMIT ?''', (limit,))
         stories_list = []
         for s in stories:
@@ -59,7 +66,7 @@ class Story:
         ''', (self.story_id,))
         return result.fetchone()[0]
 
-    def remove(self): #### BUG WITH REMOVE FUNCTION - AMBIGUOUS COLUMN NAME: WORDID PLEASE FIX
+    def remove(self):
         self.first_word.remove()
         self._cursor.execute('''
             DELETE FROM stories WHERE storyID = ?
@@ -73,10 +80,31 @@ class Story:
     @property
     def author(self):
         return self.first_word.author
-        
+
+    def walk_first_words(self, num=10):
+        word = self.first_word
+        for _ in range(num):
+            yield word
+            word = word.favourite_child
+            if not word:
+                break
+
+    def first_words(self, num=10):
+        nwords = []
+        for w in self.walk_first_words(num):
+            nwords.append(w.value)
+        return ' '.join(nwords)
+
     def save(self):
         self._cursor.execute('''UPDATE stories SET
             name = ?
             WHERE storyID = ?
         ''', (self.title, self.story_id))
         connection.commit()
+
+    def prune(self, n=5):
+        len_deepest = self.first_word._deepest_child()
+        last_fixed = len_deepest - n
+        for w in self.walk_first_words(last_fixed):
+            for child in w.children[1:]:
+                child.remove()

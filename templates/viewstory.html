@@ -1,20 +1,22 @@
-{% include templates/header.html %}
-<link rel="stylesheet" type="text/css" href="/static/css/viewstory.css">
-<article>    
+{% include templates/header.html story=story user=user%}
+<article id="view-story">   
     <h1 id="main-title">{{ story.title }}</h1>
-    <h3 id="current-sentence"></h3>
-    <div>
-        {% for error in errors %}
+    {% if len(errors) > 0 %}
+        <div id="errorBox">
             <ul>
-              <li> {{ error }} </li>
+            {% for error in errors %}
+                <li> {{ error }} </li>
+            {% end for %}
             </ul>
-        {% else %}
-        	
-        {% end for %}
-    </div>
-    <p>Paragraph Text:</p>
+        </div>
+	{% end if %}
+    <p id="current-story">
+    	<h2>The story so far...</h2>
+        {{ story.first_word }} {% include templates/story_part.html word=story.first_word %}
+    </p>
+    <br>
     <content id="story-tree">
-        {% include templates/word.html word=story.first_word story=story %}
+        {% include templates/word.html user=user word=story.first_word story=story %}
     </content>
 </article>
 <script>

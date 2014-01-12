@@ -1,4 +1,3 @@
-
 				<div class="popup" id="word-{{word.id}}">
 					<div class="vote">
 						Votes: <sup>{{ word.votes }}</sup>
@@ -15,12 +14,10 @@
 						</form>
 					</div>
 				</div>
-
-
 		{% if word.children %}
 			<dir class="children" id="{{word.id}}">
 			{% for child in word.children %}
-				{% include templates/word.html word=child story=story %}
+				{% include templates/word.html user=user word=child story=story %}
 			{% end for %}
 			</dir>
 		{% end if %}

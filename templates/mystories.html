@@ -1,0 +1,36 @@
+{% include templates/header.html user=user %}
+
+<article>
+   <h1>My Stories</h1>
+   <h2>My Stories</h2>
+    <table class="borders" id="storyList">
+        <tr id='bold'>
+            <th>Title</th>
+            <th width="125">Votes</th>
+        </tr>
+        {% if len(stories) %}
+            {% for story in stories %}
+                <tr class="story-row">
+                    <td><a href="/story/{{story.story_id}}">{{ story.title }}</a>
+                        <div class="summary">
+                            <div class="text">
+                            {{story.first_words(10)}}
+                            </div>
+                        </div>
+                    </td>
+                    <td id="normal">
+                        
+                        {{ story.total_votes }}
+                        
+                     </td>
+                </tr>
+            {% end for %}
+        {% else %}
+            <tr colspan="2">
+                <th> There are no stories </th>
+                <td></td>
+            </td>
+        {% end if %}
+    </table>
+</article>
+{% include templates/footer.html %}
