@@ -6,7 +6,7 @@ class PythonNode:
 
     def render(self, context):
         try:
-            result = eval(self.code, {}, context)
+            result = eval(self.code, context)
         except (NameError, SyntaxError):
             return ''
         else:
