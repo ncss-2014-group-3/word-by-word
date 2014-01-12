@@ -19,10 +19,9 @@ class Story:
     def story_list(cls, limit=0):
         cursor = connection.cursor()
         stories = cursor.execute('''SELECT stories.storyID FROM stories
-            INNER JOIN words ON words.storyID = stories.storyID
-            INNER JOIN votes ON votes.wordID = words.wordID
-            GROUP BY stories.storyID
-            ORDER BY COUNT(username) DESC
+            INNER JOIN votes ON stories.storyID=votes.storyID
+            GROUP BY storyID
+            ORDER BY COUNT(storyID)
             LIMIT ?''', (limit,))
         stories_list = []
         for s in stories:
