@@ -57,7 +57,7 @@ def create(response):
 
     username = response.get_secure_cookie('username')
     if not username:
-        errors.append('You must be logged in to post a story.')
+        errors.append('You must be logged in to post a story')
         p = Parser.from_file("templates/createastory.html")
         variables = {'errors': errors, 'user': get_current_user(response)}
         view = p.expand(variables)
@@ -71,12 +71,12 @@ def create(response):
         if not firstword:
             errors.append("You didn't enter a starting word!")
         if ' ' in firstword:
-            errors.append("Please only enter one word.")
-        if len(firstword) > 20:
-            errors.append("Your word is too long. Word must be below 21 characters long.")
+            errors.append("Please only enter one word")
+        if len(firstword) > 25:
+            errors.append("Your word is too long. Word must be below 26 characters long")
         author = get_current_user(response)
         if author is None:
-            errors.append('You must be logged in to post a story.')
+            errors.append('You must be logged in to create a story')
         if not errors:
             #write to the database
             new_story = story.Story(title, firstword, author)
@@ -107,7 +107,7 @@ def view_story(response, sid):
     errors = []
     user_obj = get_current_user(response)
     if not user_obj:
-        errors.append('You must be logged in to post a word.')
+        errors.append('You must be logged in to post a word')
         p = Parser.from_file("templates/viewstory.html")
         variables = {'errors': errors, "story": s, "user": user_obj}
         view = p.expand(variables)
@@ -123,17 +123,17 @@ def add_word(response, sid, wid):
     new_word = response.get_field("word").strip()
     #response.redirect("/story/" + str(s.story_id))
     if not new_word:
-        errors.append("You didn't enter a word!")
+        errors.append("Please enter a word")
 
     if " " in new_word:
-        errors.append("Please only enter one word.")
+        errors.append("Please only enter one word")
 
-    if len(new_word) > 20:
-        errors.append("Your word is too long. Word must be below 21 characters long.")
+    if len(new_word) > 25:
+        errors.append("Your word is too long. Word must be below 26 characters long")
 
     author = get_current_user(response)
     if author is None:
-        errors.append('You must be logged in to post a word.')
+        errors.append('You must be logged in to post a word')
         
     if not errors: #if there are no errors
         w.add_child(new_word, author)
@@ -151,7 +151,7 @@ def upvote(response, story_id, word_id):
     author = get_current_user(response)
     errors = []
     if author is None:
-        errors.append('You must be logged in to post a word')
+        errors.append('You must be logged in to upvote a word')
     if response.request.method == "POST" and not errors:
         #Write to databse
         w = word.Word.from_id(word_id)
@@ -201,9 +201,9 @@ def register(response):
                 if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$', email) is None:
                     errors.append('Invalid email')
                 if re.match(r'^\w+$', username) is None:
-                    errors.append('Invalid username, usernames must be alphanumeric with undeerscores.')
+                    errors.append('Invalid username, usernames must be alphanumeric with underscores')
                 if user.User.from_username(username) is not None:
-                   errors.append('Invalid username, username already taken.')
+                   errors.append('Invalid username, username already taken')
                 if len(password) < 5:
                     errors.append('Invalid password, passwords must be at least 5 characters long')
                 if not errors:
