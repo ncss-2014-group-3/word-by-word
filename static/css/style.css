@@ -362,3 +362,35 @@ input {
 #normal {
     font-weight:normal;
 }
+
+#userStats {
+    float:right;
+    margin-right:20px;
+}
+
+#userProfile tr td:first-child {
+    text-align:right;
+    padding-right:5px;
+    font-weight:bold;
+    font-size:20px
+}
+
+#userProfile tr td:last-child {
+    width:200px;
+}
+
+#userProfile tr:nth-child(2n-1){
+    background-color:#ddd;
+}
+
+#userProfile tr td {
+    font-size:17px;
+    padding:5px 5px;
+}
+
+
+
+
+
+
+

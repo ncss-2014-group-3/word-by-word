@@ -42,6 +42,7 @@ class Stats:
         
     @property
     def most_upvoted_word(self):
+        print('asdf')
         c = connection.cursor()
         result = c.execute("""
             SELECT
@@ -49,11 +50,12 @@ class Stats:
                 ,(SELECT count(*) FROM votes WHERE votes.wordID = words.wordID) as wordVotes
             FROM words
             WHERE words.author = ?
-            ORDER BY wordVotes
+            ORDER BY wordVotes DESC
             LIMIT 1
         """, (self.username,))
-        if not len(result.fetchone()):
-            return result.fetchone()[0]
+        results = result.fetchone()
+        if len(results) > 0:
+            return results[0]
         else:
             return "No upvoted words"
         
@@ -96,7 +98,7 @@ class Stats:
                 ) as sauthor
             FROM stories
             WHERE sauthor = ?
-            ORDER BY totalVotes
+            ORDER BY totalVotes DESC
             LIMIT 1
         """, (self.username,))
         return result.fetchone()[0]
