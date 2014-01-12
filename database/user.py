@@ -37,6 +37,24 @@ class User:
             cursor.execute('''INSERT INTO users VALUES(?,?,?)''', (username, password, fullname))
             connection.commit()
             return cla(username) # return User object
+    @classmethod
+    def user_list(cls, limit=10):
+        cursor = connection.cursor()
+        stories = cursor.execute('''
+            SELECT username, SUM(c) AS s FROM
+            (
+                SELECT users.username, COUNT(DISTINCT words.wordID) AS C FROM USERS
+                LEFT OUTER JOIN words ON words.author = users.username
+                LEFT OUTER JOIN votes on votes,wordID = words.wordID
+                GROUP BY words.wordID
+            )
+            GROUP BY username
+            ORDER BY s DESC
+            LIMIT ?''', (limit,))
+        stories_list = []
+        for s in stories:
+            stories_list.append(Story.from_id(s[0]))
+        return stories_list
     
     def __init__(self, username):
         self.username = username
