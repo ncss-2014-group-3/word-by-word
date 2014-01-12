@@ -1,5 +1,5 @@
-<table id="child-{{ word.id }}" class="child">
-	<tr>
+<table id="child-{{ word.id }}" class="tree">
+	<tr class="child">
 		<td>
 			<div class="upvotes">
 				<span class="up">&uarr;</span>
@@ -9,7 +9,7 @@
 			<div class="reply">
 				<form method="POST" action="/story/{{ story.story_id }}/{{ word.id }}/reply">
 					<input type="text" name="word">
-					<input type="submit" name="submit">
+					<!-- <input type="submit" name="submit"> -->
 				</form>
 			</div>
 
