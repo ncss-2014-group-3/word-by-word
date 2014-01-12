@@ -5,8 +5,7 @@ import os
 import tornado.web
 from tornado.ncss import Server
 from template_engine.parser import Parser
-from database import story
-from database import word
+from database import story, word, user
 import database
 # Create the database
 # database.create()
@@ -97,23 +96,25 @@ def add_word(response, sid, wid):
 	response.redirect("/story/" + str(s.story_id))
 
 def login(response):
-        user = response.get_field('name')
+        username = response.get_field('name')
         password = response.get_field('password')
         logged_name = response.get_secure_cookie('username')
+        login_fail = False
         if logged_name is not None:
-                user = logged_name.decode()
-                print('user =', user)
+                username = logged_name.decode()
+                print('logged in, user =', username)
         else:
-                if user and password:
-                        print('username =', user)
-                        response.set_secure_cookie('username', user)
-                        response.redirect('/login')
-                        return
+                if user and password and user.User.login(username, password):
+                                print('login success, user =', username)
+                                response.set_secure_cookie('username', username)
+                                response.redirect('/login')
+                                return
                 else:
-                        user = password = None
+                        username = password = None
+                        login_fail = True
                 
         p = Parser.from_file('templates/login.html')
-        html = p.expand({ 'user' : user })
+        html = p.expand({ 'user' : username, 'login_fail' : login_fail })
         response.write(html)
 
 def logout(response):
@@ -125,15 +126,15 @@ def create_account(response):
         if logged_name is not None:
                 response.write('You already are logged in as: '+logged_name.decode())
                 return
-        user = response.get_field('name')
+        username = response.get_field('name')
         password = response.get_field('password')
         if user and password:
-                response.set_secure_cookie('username', user)
+                response.set_secure_cookie('username', username)
                 print(user, password)
         else:
-                user = password = None
+                username = password = None
         #p = Parser.from_file('templates/create_account.html')
-        #html = p.expand({ 'user' : user })
+        #html = p.expand({ 'user' : username })
         response.write('''
 <h1>Create account</h1>
 <form method="post">
