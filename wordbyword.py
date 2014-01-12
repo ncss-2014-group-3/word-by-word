@@ -193,9 +193,12 @@ def register(response):
                 return
         username = response.get_field('name')
         password = response.get_field('password')
+        email = response.get_field('email')
         print('user,pass =', username, password)
         errors = []
         if username and password is not None:
+                if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$', email) is None:
+                    errors.append('Invalid email')
                 if re.match(r'^\w+$', username) is None:
                     errors.append('Invalid username, usernames must be alphanumeric with undeerscores.')
                 if user.User.from_username(username) is not None:
@@ -204,7 +207,7 @@ def register(response):
                     errors.append('Invalid password, passwords must be at least 5 characters long')
                 if not errors:
                         response.set_secure_cookie('username', username)
-                        user.User.create(username, password)
+                        user.User.create(username, password, email=email)
                         response.redirect('/')
                         return
 
