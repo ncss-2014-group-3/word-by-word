@@ -8,6 +8,13 @@ from tornado.ncss import Server
 from template_engine.parser import Parser
 from database import story, word, user
 import database
+
+def get_current_user(response):
+    username = response.get_secure_cookie('username')
+    if username is None:
+        return None
+    return user.User.from_username(username.decode())
+
 # Create the database
 # database.create()
 #   function:   stories()
@@ -58,12 +65,17 @@ def create(response):
             errors.append("Please only enter one word.")
         if len(firstword) > 20:
             errors.append("Your word is too long. Word must be below 21 characters long.")
+        author = get_current_user(response)
+        print('author =', author)
+        if author is None:
+            errors.append('You must be logged in to post a word')
         if not errors:
             #write to the database
-            new_story = story.Story(title, firstword)
+            new_story = story.Story(title, firstword, author)
             story_id = new_story.story_id
             response.redirect("/story/" + str(story_id))
             return
+                
         #if there are errors, relay back to user
         errors.append("Please try again.")
     p = Parser.from_file("templates/createastory.html")
@@ -99,8 +111,13 @@ def add_word(response, sid, wid):
     if len(new_word) > 20:
         errors.append("Your word is too long. Word must be below 21 characters long.")
 
+    author = get_current_user(response)
+    print('author =', author)
+    if author is None:
+        errors.append('You must be logged in to post a word')
+        
     if not errors: #if there are no errors
-        w.add_child(new_word)
+        w.add_child(new_word, author)
         response.redirect("/story/" + str(s.story_id))
         return
 
@@ -112,12 +129,16 @@ def add_word(response, sid, wid):
     response.write(view)
 
 def upvote(response, story_id, word_id):
-	if response.request.method == "POST":
-		#Write to databse
-		w = word.Word.from_id(word_id)
-		w.add_vote()
-		response.redirect("/story/" + str(story_id))
-        
+    author = get_current_user(response)
+    print('author =', author)
+    errors = []
+    if author is None:
+        errors.append('You must be logged in to post a word')
+    if response.request.method == "POST" and not errors:
+        #Write to databse
+        w = word.Word.from_id(word_id)
+        w.add_vote(author)
+        response.redirect("/story/" + str(story_id))
 def login(response):
         username = response.get_field('name')
         password = response.get_field('password')
