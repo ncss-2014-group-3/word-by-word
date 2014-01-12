@@ -187,6 +187,7 @@ td, th {
 input { 
     font-family:Helvetica, sans-serif;
     font-size:14px;
+    padding: 3px;
 }
 
 fieldset p {
