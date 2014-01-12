@@ -58,7 +58,7 @@ class Story:
         ''', (self.story_id,))
         return result.fetchone()[0]
 
-    def remove(self):
+    def remove(self): #### BUG WITH REMOVE FUNCTION - AMBIGUOUS COLUMN NAME: WORDID PLEASE FIX
         self.first_word.remove()
         self._cursor.execute('''
             DELETE FROM stories WHERE storyID = ?
