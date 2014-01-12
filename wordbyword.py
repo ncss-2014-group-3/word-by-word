@@ -203,6 +203,15 @@ def register(response):
                 'username_taken': username_taken})
         response.write(html)
 
+def profile(response, username):
+        #get request, the list of stories they have made, list of stories they have contributed to maybe, last visit?, 
+        user = user.User.from_username(username)
+        
+        p = Parser.from_file("templates/userProfile.html")
+        variables = { "user":user}
+        view = p.expand(variables)
+        response.write(view)
+
 if __name__ == "__main__":
     server = Server()
     server.register("/", stories)
@@ -214,4 +223,5 @@ if __name__ == "__main__":
     server.register('/login', login)
     server.register('/logout', logout)
     server.register('/register', register)
+    server.register('/user/(\w+)', profile)
     server.run()
