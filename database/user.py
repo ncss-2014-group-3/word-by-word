@@ -1,4 +1,4 @@
-import sqlite3, hashlib
+import sqlite3
 from . import connection
 
 class User:
