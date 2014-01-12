@@ -430,6 +430,13 @@ input {
     padding:5px 5px;
 }
 
+#profileImage {
+    float:left;
+    margin-left:40px;
+}
+#profileImage img {
+}
+
 
 
 
