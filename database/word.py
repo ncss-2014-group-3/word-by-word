@@ -97,9 +97,12 @@ class Word:
             SELECT wordID, storyID, word, author, parentID
             FROM
                 words
+            INNER JOIN votes ON wordID
             WHERE
-                parentID = """ + str(self.id) + """
-        """)
+                parentID = ?
+            ORDER BY
+                COUNT(wordID)
+        """, (self.id,))
         
         children = []
         for childWord in c:
