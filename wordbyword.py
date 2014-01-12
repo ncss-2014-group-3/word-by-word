@@ -191,23 +191,12 @@ def register(response):
                         username = password = None
         else:
                 username = password = None
-                good_username = good_password = True
-                username_taken = False
                 
         p = Parser.from_file('templates/register.html')
         html = p.expand({
                 'user' : username,
                 'errors': errors})
         response.write(html)
-
-def profile(response, username):
-        #get request, the list of stories they have made, list of stories they have contributed to maybe, last visit?, 
-        display_user = user.User.from_username(username)
-        
-        p = Parser.from_file("templates/userProfile.html")
-        variables = { "user":display_user}
-        view = p.expand(variables)
-        response.write(view)
 
 if __name__ == "__main__":
     server = Server()
@@ -220,5 +209,4 @@ if __name__ == "__main__":
     server.register('/login', login)
     server.register('/logout', logout)
     server.register('/register', register)
-    server.register('/user/(\w+)', profile)
     server.run()
