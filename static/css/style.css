@@ -218,6 +218,21 @@ header {
         font-family: 'gotham', serif;
         z-index:-998;
 	}
+    
+    header h2 {
+        position: absolute;
+		top: 150px;
+		left: 0px;
+		right: 0px;
+		text-align: center;
+		font-size:32px;
+		font-weight: 500;
+		text-transform: uppercase;
+		padding: 30px 0px;
+		line-height: 40px;
+        font-family: 'gotham', serif;
+        z-index:-998;
+    }
 	
 		header h1 span {
 			font-weight: 300;
@@ -229,12 +244,16 @@ header {
     header h1 a {
         color:#000;
         text-decoration:none !important;
+        top:50px;
     }
 
 	header nav {
-		float:right;
+		float:left;
         margin-bottom:5px;
-	}
+        margin-top:270px;
+        margin-left:130px;
+        font-size:15px;
+    }
     
     header nav ul {
         list-style:none;
@@ -242,17 +261,14 @@ header {
         padding:0;
     }
     header nav ul li {
-        float:left;
+        float:right;
         margin-left:15px;
     }
     header nav ul li a {
-        font-size:18px;
+        font-size:15px;
         letter-spacing:1px;
-    }
-	
-		header nav a {
-		}
-        
+        color:white;
+    }     
         
 footer {
     font-family:'gotham', sans serif;
@@ -355,7 +371,7 @@ input {
     margin-left:15px;
     color:black;
     position:absolute;
-    margin-top: 220px;
+    margin-top: 130px;
     letter-spacing:2px;
     text-transform:uppercase;
     font-family: 'AlegreyaSans', sans-serif;
