@@ -41,7 +41,6 @@ a:hover  {
 }
 
 article {
-/*    position:absolute;*/
     margin-left: 280px;
     min-height:1000px;
     padding: 40px 45px;
@@ -240,6 +239,7 @@ header {
         list-style:none;
         margin:0;
         padding:0;
+        float:right;
     }
     header nav ul li {
         float:right;
@@ -410,6 +410,13 @@ input {
 #userProfile tr td {
     font-size:17px;
     padding:5px 5px;
+}
+
+#profileImage {
+    float:left;
+    margin-left:40px;
+}
+#profileImage img {
 }
 
 
