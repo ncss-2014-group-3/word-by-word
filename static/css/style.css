@@ -4,7 +4,7 @@ body {
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 14px;
 	line-height: 21px;
-    background-color:#eee;
+    background-color:#aaa;
 }
 
 .center {
@@ -32,7 +32,7 @@ p.edit{
 }
 
 a {
-	color: #ff9000;
+	color: #E67300;
     text-decoration:none;
 }
 
@@ -169,7 +169,7 @@ form input[type=submit], button {
 
 
 header {
-	background-color: #ccc;
+	background-color: #666666;
     padding-top:10px;
 }
 	header h1 {
