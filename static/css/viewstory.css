@@ -5,6 +5,7 @@
 .tree {
 	border: none;
 	width: auto;
+
 }
 
 .child {
@@ -22,7 +23,7 @@
 }
 	.up {
 		color: green;
-		font-size: 2em;
+		font-size: 1.5em;
 	}
 
 .reply input[name="word"] {
