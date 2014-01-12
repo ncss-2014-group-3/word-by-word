@@ -1,6 +1,13 @@
 {% include templates/header.html %}
 <article>
-    <h1>Create A Story!</h1>
+    <h1>Create A Story</h1>
+    <div id="errorBox">
+        <ul>
+            {% for error in errors %}
+                <li> {{ error }} </li>
+            {% end for %}
+        </ul>
+    </div>
     <form action="/story" method="post">
             <table id="tblCreateStory">
                 <tr>
@@ -22,12 +29,6 @@
             </table>
      </form>  
 
-        <div>
-         {% for error in errors %}
-            <ul>
-              <li> {{ error }} </li>
-            </ul>
-         {% end for %}
-         </div>
+        
 </article>
 {% include templates/footer.html %}

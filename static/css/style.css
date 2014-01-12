@@ -133,13 +133,13 @@ form label, form input {
     outline:none;
 }
 
-form input {
+form input[type=text], form input[type=email]{
     padding:3px 8px;
     box-shadow:inset 1px 1px 1px 0px rgba(50,50,50,0.2);
     -webkit-transition: box-shadow 0.1s;
 }
 
-form input:focus {
+form input[type=text]:focus {
     box-shadow:inset 1px 1px 6px 0px rgba(50,50,50,0.3);
 }
 
@@ -163,8 +163,16 @@ form input[type=submit], button {
     background-color:#ccc;
     border:none;
     cursor:pointer;
-    
+    padding:3px 20px;
+    box-shadow: 1px 1px 1px rgba(20,20,20,0.5);
 }
+form input[type=submit]:active {
+    position:relative;
+    top:1px;
+    left:1px;
+    box-shadow: 0px 0px 1px rgba(20,20,20,0.5);
+}
+
 
 
 
@@ -240,6 +248,18 @@ input {
 }
 #tblCreateStory tr  td{
     padding:5px;
+}
+
+#errorBox {
+    background-color:#faa;
+    padding:10px;
+    margin:15px;
+}
+
+#errorBox ul {
+    margin:0;
+    padding:0;
+    padding-left:15px;
 }
 
 
