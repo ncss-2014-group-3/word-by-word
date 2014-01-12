@@ -82,7 +82,7 @@ def view_story(response, sid):
     #   current="",#story.current,
     #   tree=render_word(story.first_word, title=True))
     # print("?", html)
-    response.write(p.expand({"story": s}))
+    response.write(p.expand({"story": s, "errors":[]}))
 
 def add_word(response, sid, wid):
     s = story.Story.from_id(sid)
