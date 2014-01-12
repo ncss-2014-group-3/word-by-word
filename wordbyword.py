@@ -142,7 +142,7 @@ def add_word(response, sid, wid):
     errors.append("Please try again.")
 
     p = Parser.from_file("templates/viewstory.html")
-    variables = {'errors': errors, "story": s}
+    variables = {'errors': errors, "story": s, 'user': get_current_user(response)}
     view = p.expand(variables)
     response.write(view)
 

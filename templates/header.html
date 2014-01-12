@@ -21,11 +21,9 @@
                 </div>
                 <nav>
                     <ul>
-                        {% if user is not None %}
-                            <li><a href="/story">Create a Story</a></li>
-                        {% end if %}
                         <li><a href="/">All Stories</a></li>
                         {% if user is not None %}
+                            <li><a href="/story">Create a Story</a></li>
                             <li><a href="/profile">{{ user.username }}'s Profile</a></li>
                             <li><a href="/logout">Logout</a></li>
                         {% else %}
