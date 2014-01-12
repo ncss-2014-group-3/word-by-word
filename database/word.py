@@ -126,7 +126,7 @@ class Word:
         return None if row is None else Word(row[0], row[1], row[2], row[3], row[4])
 
     def first_words(self, num=10):
-        words = []
+        words = [self]
         while len(words) < num:
             words.append(words[-1].favourite_child)
             nwords
