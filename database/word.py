@@ -126,6 +126,11 @@ class Word:
     def fixed(self, n=5):
         return self._deepest_child() > n
 
+    def fixed_children(self):
+        if not self.children:
+            return True
+        return any(w.fixed() for w in self.children)
+
     def save(self):
         c = connection.cursor()
         if self.id:

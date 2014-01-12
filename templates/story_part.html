@@ -1,0 +1,4 @@
+{% if word.fixed() and word.fixed_children() and word.children %}
+	{{ word.children[0] }}
+	{% include templates/story_part.html word=word.children[0] %}
+{% end if %}

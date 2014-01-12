@@ -1,9 +1,8 @@
 <table id="child-{{ word.id }}" class="child">
 	<tr>
+		{% if not word.fixed() %}
 		<td>
-			
 			<span class="word">{{ word.value }}</span>
-			{% if not word.fixed() %}
             <div class="upvotes">
                 <form method="POST" action="/story/{{ story.story_id }}/word/{{ word.id }}/vote">
 					<input type="submit" value="{{ word.votes }} &uarr;">
