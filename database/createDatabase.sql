@@ -21,6 +21,7 @@ CREATE TABLE votes (
     wordID  INTEGER NOT NULL
     ,username TEXT NOT NULL
     ,PRIMARY KEY (wordID, username)
+    ,FOREIGN KEY(wordID) REFERENCES words(wordID)
 );
 
 CREATE TABLE users (

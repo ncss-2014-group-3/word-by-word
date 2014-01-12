@@ -51,11 +51,12 @@ class Story:
     
     @property
     def total_votes(self):
-        self._cursor.execute('''
+        result = self._cursor.execute('''
             SELECT COUNT(*) FROM votes as v 
             INNER JOIN words as m ON v.wordID = m.wordID
             WHERE m.storyID = ?
         ''', (self.story_id,))
+        return result.fetchone()[0]
 
     def remove(self):
         self.first_word.remove()

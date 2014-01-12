@@ -3,6 +3,15 @@
 <article>    
     <h1 id="main-title">{{ story.title }}</h1>
     <h3 id="current-sentence"></h3>
+    <div>
+        {% for error in errors %}
+            <ul>
+              <li> {{ error }} </li>
+            </ul>
+        {% else %}
+        	success
+        {% end for %}
+    </div>
     <content id="story-tree">
         {% include templates/word.html word=story.first_word story=story %}
     </content>
