@@ -2,7 +2,7 @@
 
 <article>
     {% if user is not None %}
-        <h1>Welcome {{user}}</h1>
+        <h1>Welcome {{user.username}}</h1>
     {% else %}
         <h1>Login</h1>
         {% if login_fail %} 
