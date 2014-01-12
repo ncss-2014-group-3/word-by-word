@@ -28,5 +28,4 @@ CREATE TABLE users (
     username TEXT NOT NULL PRIMARY KEY
     ,password TEXT NOT NULL
     ,fullname TEXT NULL
-    ,score INTEGER NOT NULL
 );
