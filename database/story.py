@@ -18,8 +18,8 @@ class Story:
     @classmethod
     def story_list(cls, limit=0):
         cursor = connection.cursor()
-        stories = cursor.execute('''SELECT storyID FROM stories
-            INNER JOIN votes ON storyID
+        stories = cursor.execute('''SELECT stories.storyID FROM stories
+            INNER JOIN votes ON stories.storyID=votes.storyID
             GROUP BY storyID
             ORDER BY COUNT(storyID)
             LIMIT ?''', (limit,))
