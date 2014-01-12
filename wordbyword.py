@@ -60,8 +60,6 @@ def create(response):
         p = Parser.from_file("templates/createastory.html")
         variables = {'errors': errors }
         view = p.expand(variables)
-        response.write(view)
-        errors = []
         
     if response.request.method == "POST":
         if not title:
@@ -90,6 +88,7 @@ def create(response):
     p = Parser.from_file("templates/createastory.html")
     variables = {'errors': errors }
     view = p.expand(variables)
+    
     response.write(view)
 
 def view_story(response, sid):
