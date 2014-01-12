@@ -10,7 +10,7 @@ class ForNode:
 
         result = ''
         for item in iterator:
-            exec('{} = {}'.format(var, repr(item)), {}, context)
+            exec('{} = item'.format(var), {'item':item}, context)
             result += self.group.render(context)
         else:
             if self.else_group is not None:
