@@ -1,13 +1,15 @@
 {% include templates/header.html %}
 <article>
     <h1>Create A Story</h1>
-    <div id="errorBox">
-        <ul>
-            {% for error in errors %}
-                <li> {{ error }} </li>
-            {% end for %}
-        </ul>
-    </div>
+    {% if len(errors) != 0 %}
+        <div id="errorBox">
+            <ul>
+                {% for error in errors %}
+                    <li> {{ error }} </li>
+                {% end for %}
+            </ul>
+        </div>
+    {% end if %}
     <form action="/story" method="post">
             <table id="tblCreateStory">
                 <tr>
