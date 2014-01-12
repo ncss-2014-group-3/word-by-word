@@ -1,9 +1,19 @@
 body {
-	margin: 0px auto;
+	margin:0;
+    padding:0;
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 14px;
 	line-height: 21px;
-    
+    background-color:#eee;
+}
+
+.center {
+    width:800px;
+    margin:0 auto;
+}
+
+.clear {
+    clear:both;
 }
 
 p.view{
@@ -22,15 +32,21 @@ p.edit{
 }
 
 a {
-	color: inherit;
+	color: #ff9000;
     text-decoration:none;
+}
+
+a:hover  {
+    text-decoration:underline;
 }
 
 article {
     width:800px;
-    margin-left:auto;
-    margin-right:auto;
-    min-height:900px;
+    margin:0 auto;
+    min-height:800px;
+    padding:10px 5px 20px 5px;
+    background-color:#fff;
+    box-sizing:border-box;
 }
 
 .bigger {
@@ -135,31 +151,39 @@ form input[type=submit] {
 
 
 header {
-	background-color: black;
-	color: white;
-	height: 80px;
-	margin-bottom: 30px;
-	line-height: 80px;
-	position: relative;
+	background-color: #ccc;
+    padding-top:10px;
 }
 	header h1 {
-		display: inline-block;
-		line-height: 80px;
-		margin-left: 20px;
-		font-size: 38px;
-        margin-top:15px;
+		font-size: 50px;
+        margin:0;
+        text-align:center;
 	}
+    header h1 a {
+        color:#fff;
+        text-decoration:none !important;
+    }
 
 	header nav {
-		position: absolute;
-		bottom: 15px;
-		right: 0px;
-		height: 14px;
-		line-height: 14px;
+		float:right;
+        margin-top:15px;
 	}
+    
+    header nav ul {
+        list-style:none;
+        margin:0;
+        padding:0;
+    }
+    header nav ul li {
+        float:left;
+        margin-left:15px;
+    }
+    header nav ul li a {
+        font-size:18px;
+    }
 	
 		header nav a {
-			margin-right: 20px;
+            
 		}
         
 footer {
