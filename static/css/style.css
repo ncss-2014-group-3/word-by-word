@@ -198,7 +198,6 @@ header {
 
 	header nav {
 		float:right;
-        margin-top:15px;
 	}
     
     header nav ul {
@@ -266,7 +265,13 @@ input {
     padding:0;
     padding-left:15px;
 }
-
+#headCaption {
+    text-align:center;
+    color:white;
+    margin-top: 15px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+}
 
 
 
