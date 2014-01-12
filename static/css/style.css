@@ -112,6 +112,9 @@ ul {
 	list-style-type: disc;
 }
 
+a {
+    display:block;
+}   
 
 /* form */
 fieldset {
@@ -127,6 +130,17 @@ legend {
 
 form label, form input {
 	display: inline-block;
+    outline:none;
+}
+
+form input {
+    padding:3px 8px;
+    box-shadow:inset 1px 1px 1px 0px rgba(50,50,50,0.2);
+    -webkit-transition: box-shadow 0.1s;
+}
+
+form input:focus {
+    box-shadow:inset 1px 1px 6px 0px rgba(50,50,50,0.3);
 }
 
 form label {
@@ -143,9 +157,13 @@ form input[type=text].lastname {
 	text-transform: uppercase;
 }
 
-form input[type=submit] {
+form input[type=submit], button {
 	float:left;
 	margin-top: 10px;
+    background-color:#ccc;
+    border:none;
+    cursor:pointer;
+    
 }
 
 
@@ -195,7 +213,7 @@ footer {
     margin-top: 50px;
 } 
 
-table {
+table.borders {
     font-size:16px;
     width:100%;
     text-align:justify;
@@ -203,7 +221,7 @@ table {
     border-collapse:collapse;
 }
 
-td, th {
+table.borders td, th {
     word-wrap:break-word;
     border-right:1px dotted #a8a8a8;
     border-bottom:1px dotted #a8a8a8;
@@ -216,6 +234,18 @@ input {
     padding: 3px;
 }
 
-fieldset p {
-    margin-left:-10px;
+
+#tblCreateStory {
+    
 }
+#tblCreateStory tr  td{
+    padding:5px;
+}
+
+
+
+
+
+
+
+
