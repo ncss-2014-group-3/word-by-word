@@ -52,7 +52,7 @@ def own_stories(response):
     else:
         stories = username.own_stories
         variables = {'stories': stories, 'user': get_current_user(response)}
-        p = Parser.from_file('templates/ownstories.html')
+        p = Parser.from_file('templates/mystories.html')
         result = p.expand(variables) # dict in expand
         response.write(result)
     
