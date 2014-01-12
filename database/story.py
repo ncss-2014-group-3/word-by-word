@@ -16,9 +16,13 @@ class Story:
         return cla(row[0], first_word, id, first_word.author)
 
     @classmethod
-    def story_list(cls):
+    def story_list(cls, limit=0):
         cursor = connection.cursor()
-        stories = cursor.execute('''SELECT storyID FROM stories''')
+        stories = cursor.execute('''SELECT storyID FROM stories
+            INNER JOIN votes ON storyID
+            GROUP BY storyID
+            ORDER BY COUNT(storyID)
+            LIMIT ?''', (limit,))
         stories_list = []
         for s in stories:
             stories_list.append(Story.from_id(s[0]))
