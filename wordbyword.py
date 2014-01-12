@@ -10,7 +10,7 @@ from database import story
 
 import database
 from database import story
-from databse import Word
+from database import word
 
 # Create the database
 database.create()
@@ -85,14 +85,12 @@ def create(response):
     view = p.expand(variables)
     response.write(view)
 
-def upvote(response):
+def upvote(response, word_id, story_id):
     if response.request.method == "POST":
-        word_id = get_field("word_id")
-        story_id = get_field("story_id")
         #Write to databse
         word = Word.from_id(word_id)
         word.add_vote()
-        response.redirect("/story/" + str(story_id)
+        response.redirect("/story/" + str(story_id))
 
 def view_story(response, sid):
 	s = story.Story.from_id(sid)
