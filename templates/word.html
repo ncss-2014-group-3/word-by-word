@@ -2,14 +2,14 @@
 	<tr>
 		<td>
 			
-			<span class="word">{{ word.value }} <sup>{{ word.votes }}</sup></span>
+			<span class="word">{{ word.value }} {% if not word.fixed() %}<sup>{{ word.votes }}</sup>{% end if %}</span>
+			{% if not word.fixed() %}
             <div class="upvotes">
                 <form method="POST" action="/story/{{ story.story_id }}/word/{{ word.id }}/vote">
 					<input type="submit" value="&uarr;">
 				</form>
 				<!-- <span class="num">0</span> -->
 			</div>
-			{% if not word.fixed() %}
 			<div class="reply">
 				<form method="POST" action="/story/{{ story.story_id }}/{{ word.id }}/reply">
 					<input type="text" name="word" placeholder="Next word" class="auto-submit">
