@@ -11,7 +11,8 @@
         </div>
     {% end if %}
     <p id="current-story">
-    	{{ story.first_word }} {% include templates/story_part.html word=story.first_word %}
+    	<h2>The story so far...</h2>
+        {{ story.first_word }} {% include templates/story_part.html word=story.first_word %}
     </p>
     <br>
     <content id="story-tree">
