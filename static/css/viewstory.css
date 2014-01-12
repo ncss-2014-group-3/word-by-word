@@ -4,6 +4,7 @@
 
 .tree {
 	border: none;
+}
 
 #story-tree .child {
 	border: 1px dashed #f1f1f1;
@@ -17,11 +18,13 @@
 
 .child td {
 	border-radius: 20px;
+}
 
 #story-tree .child td {
 	border-left: none;
 	border-right: none;
 }
+
 #story-tree .word {
 }
 
@@ -56,14 +59,6 @@
 
 * {
 	vertical-align: middle !important;
-	width: 80px;
-    border:1px solid #aaa;
-    border-radius:5px;
-    padding:1px 3px;
-    margin:0;
-    background-color:transparent;
-    box-shadow:none;
-    font-size:12px;
 }
 
 #story-tree form {
