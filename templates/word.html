@@ -1,10 +1,25 @@
-	<table id="child-{{ word.id }}" class="child">
-		<tr>
-			<td class="word">{{ word.value }}</td>
+<table id="child-{{ word.id }}" class="child">
+	<tr>
+		<td>
+			<div class="upvotes">
+				<span class="up">&uarr;</span>
+				<!-- <span class="num">0</span> -->
+			</div>
+			<span class="word">{{ word.value }}</span>
+			<div class="reply">
+				<form method="POST" action="/story/{{ story.story_id }}/{{ word.id }}/reply">
+					<input type="text" name="word">
+					<input type="submit" name="submit">
+				</form>
+			</div>
+
+		</td>
+		{% if word.children %}
 			<td class="children">
 			{% for child in word.children %}
-				{% include templates/word.html word=child %}
+				{% include templates/word.html word=child story=story %}
 			{% end for %}
 			</td>
-		</tr>
-	</table>
+		{% end if %}
+	</tr>
+</table>

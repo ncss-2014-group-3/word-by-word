@@ -1,0 +1,25 @@
+#story-tree {
+	overflow-x: auto;
+}
+
+.child {
+	border: 1px dashed #f1f1f1;
+	width: auto;
+	/*border-collapse: collapse;*/
+}
+
+.child td {
+	border-left: none;
+	border-right: none;
+}
+
+.upvotes {
+	display: inline-block;
+}
+	.up {
+		color: green;
+	}
+
+.reply input[name="word"] {
+	width: 60px;
+}
