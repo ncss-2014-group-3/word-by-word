@@ -45,14 +45,16 @@ def stories(response):
 def own_stories(response):
     # pretty much the same as stories above
     username = get_current_user(response)
-    print(username)
-    stories = username.own_stories
-    variables = {'stories': stories, 'user': get_current_user(response)}
-    p = Parser.from_file('templates/ownstories.html')
-    result = p.expand(variables) # dict in expand
-    response.write(result)
-    pass
-
+    errors = []
+    if username is None:
+        response.redirect("/")
+        return
+    else:
+        stories = username.own_stories
+        variables = {'stories': stories, 'user': get_current_user(response)}
+        p = Parser.from_file('templates/ownstories.html')
+        result = p.expand(variables) # dict in expand
+        response.write(result)
     
 def style(response):
     with open('style.css', 'r') as f:
