@@ -1,10 +1,9 @@
-{% include templates/header.html %}
+{% include templates/header.html user=user%}
 
 <article>
     {% if user is not None %}
-        Welcome {{user}}
-    {% end if %}
-    {% if user is None %}
+        <h1>Welcome {{user}}</h1>
+    {% else %}
         <h1>Login</h1>
         {% if login_fail %} 
             <div id="errorBox">
