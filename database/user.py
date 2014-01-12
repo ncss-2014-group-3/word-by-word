@@ -4,7 +4,15 @@ from . import connection
 class User:
     @classmethod
     def from_username(cla, username):
-        return cla(username)
+        cursor = connection.cursor()
+        returned = cursor.execute('SELECT username FROM users WHERE username=?', (username,))
+        row = returned.fetchone()
+        if row: # user exists
+            returned2 = cursor.execute('SELECT fullname FROM users where username=?', (username,))
+            fullnamerow = returned2.fetchone()
+            return cla(username, fullnamerow[0]) # return User object
+        else: # user does not exist
+            return None
 
     @classmethod
     def login(cla, username, password):
@@ -20,20 +28,20 @@ class User:
             return False
 
     @classmethod
-    def create(cla, username, password):
+    def create(cla, username, password, fullname='User'):
         cursor = connection.cursor()
         returned = cursor.execute('''SELECT username FROM users WHERE username=?''', (username,))
         row = returned.fetchone()
         if row:
             return False # user exists
         elif row is None: # User does not exist, insert a new user into database
-            cursor.execute('''INSERT INTO users VALUES(?,?)''', (username, password))
+            cursor.execute('''INSERT INTO users VALUES(?,?,?)''', (username, password, fullname))
             connection.commit()
-            return cla(username) # return User object
-        pass
+            return cla(username, fullname) # return User object
     
-    def __init__(self, username):
+    def __init__(self, username, fullname = 'User'):
         self.username = username
+        self.fullname = fullname
 
     def remove(self):
         cursor = connection.cursor()
