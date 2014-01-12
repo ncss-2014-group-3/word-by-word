@@ -45,7 +45,7 @@ article {
     width:1000px;
     position:absolute;
     left:300px;
-    min-height:1000px;
+    min-height:100%;
     padding:10px 5px 20px 5px;
     background-color:#fff;
     box-sizing:border-box;
@@ -260,10 +260,11 @@ header {
         list-style:none;
         margin:0;
         padding:0;
+        float:right;
     }
     header nav ul li {
         float:right;
-        margin-left:30px;
+        margin-left:20px;
     }
     header nav ul li a {
         font-size:15px;
