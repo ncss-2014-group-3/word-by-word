@@ -1,5 +1,5 @@
 import html
-#from .parser import Parser
+from .parser import Parser
 
 class IncludeNode:
     def __init__(self, file_name, context):
