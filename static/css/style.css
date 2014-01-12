@@ -1,7 +1,8 @@
 body {
+
 	margin:0;
     padding:0;
-	font-family: Helvetica, Arial, sans-serif;
+    font-family: 'alegreya_sansblack';
 	font-size: 14px;
 	line-height: 21px;
     background-color:#eaeaea;
@@ -34,6 +35,18 @@ p.edit{
 a {
 	color: #E67300;
     text-decoration:none;
+    -webkit-transition-duration:0.4s;
+    -o-webkit-transition-duration:0.4s;
+    -moz-transition-duration:0.4s;
+    transition-duration:0.4s;
+}
+
+a.hover{
+    -webkit-transition-duration:0.4s;
+    -o-webkit-transition-duration:0.4s;
+    -moz-transition-duration:0.4s;
+    transition-duration:0.4s;
+    opacity:0.6;
 }
 
 a:hover  {
@@ -187,9 +200,9 @@ header {
 		font-size: 50px;
         margin:0;
         text-align:center;
-        background:transparent;
         font-weight:bold;
         padding-top:15px;
+        font-family: 'alegreya_sansblack', 'Rokkitt';
 	}
     header h1 a {
         color:#fff;
@@ -211,11 +224,16 @@ header {
     }
     header nav ul li a {
         font-size:18px;
+        font-family:'Love Ya Like A Sister', cursive;
     }
 	
 		header nav a {
-            
 		}
+        
+        header nav a:hover{
+            background-color:#D4D4D4;
+            border:2px solid #D4D4D4;
+        }
         
 footer {
     background-color:#464646;
@@ -227,18 +245,44 @@ footer {
 
 table.borders {
     font-size:16px;
-    width:100%;
+    width:800px;
     text-align:justify;
     border:1px solid #a8a8a8;
     border-collapse:collapse;
+    position:relative;
+}
+
+
+tr.story-row:hover td .summary {
+    display:block;
+    width:250px;
+    height:50px;
+    background:#ddd;
+    box-sizing:border-box;
+    padding: 15px 5px;
+    border-radius: 3px;
+}
+
+td .summary {
+    display:none;
+    position:absolute;
+    right:-260px;
+    margin-top:-33px;
 }
 
 table.borders td, th {
     word-wrap:break-word;
     border-right:1px dotted #a8a8a8;
-    border-bottom:1px dotted #a8a8a8;
     padding:10px 4px 10px 4px;
     line-height:18px;
+}
+tr:nth-child(odd)
+{
+background:white;
+}
+tr:nth-child(even)
+{
+background:#e5e5e5;
 }
 input { 
     font-family:Helvetica, sans-serif;
