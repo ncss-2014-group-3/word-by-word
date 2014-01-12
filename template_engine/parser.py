@@ -1,9 +1,9 @@
 import re
-from .PythonNode import PythonNode
-from .GroupNode import GroupNode
-from .TextNode import TextNode
-from .ForNode import ForNode
-from .IfNode import IfNode
+from PythonNode import PythonNode
+from GroupNode import GroupNode
+from TextNode import TextNode
+from ForNode import ForNode
+from IfNode import IfNode
 
 TOKENS = {
     '{{' : 'startvar',
@@ -138,7 +138,8 @@ ParseException: No end for/else
 ' var = 1 '
 >>> Parser('{% for i,e in enumerate("abcde") %}{{e}} is the {{i}}th letter, {%end for%}').expand()
 'a is the 0th letter, b is the 1th letter, c is the 2th letter, d is the 3th letter, e is the 4th letter, '
->>> Parser('{%for a in [i for i in range(10) if i == 100] %} {{i}} {%else%}No numbers in 0..9 equal 100{%end for%}').expand()
+>>> text = '{%for a in [i for i in range(10) if i == var] %} {{i}} == {{var}} {%else%}No numbers in 0..9 equal {{var}}{%end for%}'
+>>> Parser(text).expand({'var':100})
 'No numbers in 0..9 equal 100'
 """
         tree = self.parse_group()
@@ -252,10 +253,10 @@ ParseException: No end for/else
         
         return IncludeNode(file_name, context)
 
-from .IncludeNode import IncludeNode
+from IncludeNode import IncludeNode
 
 if __name__ == '__main__':
     import doctest
-    nFailed, nTests = doctest.testmod()
-    if nFailed == 0:
-        print('Passed')
+#    nFailed, nTests = doctest.testmod()
+ #   if nFailed == 0:
+  #      print('Passed')
