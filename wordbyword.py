@@ -43,9 +43,14 @@ def stories(response):
     response.write(result)
 
 def own_stories(response):
+    # pretty much the same as stories above
     username = get_current_user(response)
-    stories = 
-    variables = {'stories': 
+    print(username)
+    stories = username.own_stories
+    variables = {'stories': stories, 'user': get_current_user(response)}
+    p = Parser.from_file('templates/ownstories.html')
+    result = p.expand(variables) # dict in expand
+    response.write(result)
     pass
 
     
@@ -102,7 +107,6 @@ def view_story(response, sid):
     s = story.Story.from_id(sid)
     if not s:
         raise tornado.web.HTTPError(404)
-
     p = Parser.from_file("templates/viewstory.html")
     # html = """
     # """.format(
@@ -144,7 +148,6 @@ def add_word(response, sid, wid):
         
     if not errors: #if there are no errors
         w.add_child(new_word, author)
-        s.prune()
         response.redirect("/story/" + str(s.story_id))
         return
 
@@ -251,5 +254,6 @@ if __name__ == "__main__":
     server.register('/login', login)
     server.register('/logout', logout)
     server.register('/register', register)
+    server.register('/ownstories', own_stories)
     server.register('/user/(\w+)', profile)
     server.run()
