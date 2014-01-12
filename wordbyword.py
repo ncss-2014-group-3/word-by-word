@@ -53,6 +53,16 @@ def create(response):
     # a list of strings of things that went wrong
     #we will give this to the template.
     errors = []
+
+    username = response.get_secure_cookie('username')
+    if not username:
+        errors.append('You must be logged in to post a word')
+        p = Parser.from_file("templates/createastory.html")
+        variables = {'errors': errors }
+        view = p.expand(variables)
+        response.write(view)
+        errors = []
+        
     if response.request.method == "POST":
         if not title:
             #we didn't get given a title
