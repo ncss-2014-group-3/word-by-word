@@ -87,9 +87,30 @@ def view_story(response, sid):
 def add_word(response, sid, wid):
     s = story.Story.from_id(sid)
     w = word.Word.from_id(wid)
-    new_word = response.get_field("word")
-    w.add_child(new_word)
-    response.redirect("/story/" + str(s.story_id))
+    errors = []
+    new_word = response.get_field("word").strip()
+    #response.redirect("/story/" + str(s.story_id))
+    if not new_word:
+        errors.append("You didn't enter a word!")
+
+    if " " in new_word:
+        errors.append("Please only enter one word.")
+
+    if len(new_word) > 20:
+        errors.append("Your word is too long. Word must be below 21 characters long.")
+
+    if not errors: #if there are no errors
+        w.add_child(new_word)
+        response.redirect("/story/" + str(s.story_id))
+        return
+
+    errors.append("Please try again.")
+
+    p = Parser.from_file("templates/viewstory.html")
+    variables = {'errors': errors, "story": s}
+    view = p.expand(variables)
+    response.write(view)
+
 
 if __name__ == "__main__":
     server = Server()
