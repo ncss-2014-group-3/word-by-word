@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, hashlib
 from . import connection
 
 class User:
@@ -20,7 +20,7 @@ class User:
         row = returned.fetchone()
         if row is None:
             return False
-        if password == row[0]:
+        if password == row[0]: # check inputted against returned password from db
             return cla(username) # return User object if True
         else:
             return False
@@ -35,7 +35,7 @@ class User:
         elif row is None: # User does not exist, insert a new user into database
             cursor.execute('''INSERT INTO users VALUES(?,?,?)''', (username, password, fullname))
             connection.commit()
-            return cla(username, fullname) # return User object
+            return cla(username) # return User object
     
     def __init__(self, username):
         self.username = username
