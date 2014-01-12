@@ -304,11 +304,6 @@ input {
     text-transform:uppercase;
 }
 
-#intro{
-    text-align:center;
-}
-
-
 #storyList {
     box-sizing:border-box;
     width:790px;
@@ -319,6 +314,3 @@ input {
     text-decoration:underline;
     font-weight:normal;
 }
-
-
-
