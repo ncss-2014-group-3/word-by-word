@@ -87,13 +87,14 @@ def view_story(response, sid):
     if not s:
         raise tornado.web.HTTPError(404)
     p = Parser.from_file("templates/viewstory.html")
-    # html = """
-    # """.format(
-    #   title=story.title,
-    #   current="",#story.current,
-    #   tree=render_word(story.first_word, title=True))
-    # print("?", html)
     response.write(p.expand({"story": s}))
+
+def add_word(response, sid, wid):
+    s = story.Story.from_id(sid)
+    w = word.Word.from_id(wid)
+    new_word = response.get_field("word")
+    w.add_child(new_word)
+    response.redirect("/story/" + str(s.story_id))
 
 if __name__ == "__main__":
 	server = Server()
@@ -102,4 +103,5 @@ if __name__ == "__main__":
 	server.register("/story", create)
 	server.register("/story/(\d+)", view_story)
 	server.register("/story/(\d+)/word/(\d+)/vote", upvote)
-	server.run()
+    server.register("/story/(\d+)/(\d+)/reply", add_word)
+    server.run()
