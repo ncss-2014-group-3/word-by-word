@@ -13,7 +13,7 @@ class Story:
         first_word = Word.from_story_id(id)
         if first_word is None:
             return None
-        return cla(row[0], first_word, id, first_word.author)
+        return cla(row[0], first_word, first_word.author, id)
 
     @classmethod
     def story_list(cls, limit=0):
