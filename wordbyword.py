@@ -203,10 +203,10 @@ def register(response):
 
 def profile(response, username):
         #get request, the list of stories they have made, list of stories they have contributed to maybe, last visit?, 
-        user = user.User.from_username(username)
+        display_user = user.User.from_username(username)
         
         p = Parser.from_file("templates/userProfile.html")
-        variables = { "user":user}
+        variables = { "user":display_user}
         view = p.expand(variables)
         response.write(view)
 
