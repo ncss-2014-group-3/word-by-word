@@ -18,13 +18,20 @@ class Story:
         return cla(row[0], first_word, first_word.author, id)
 
     @classmethod
-    def story_list(cls, limit=0):
+    def story_list(cls, limit=10):
         cursor = connection.cursor()
-        stories = cursor.execute('''SELECT stories.storyID FROM stories
-            INNER JOIN words ON words.storyID = stories.storyID
-            INNER JOIN votes ON votes.wordID = words.wordID
+        stories = cursor.execute('''
+            SELECT
+                stories.storyID,
+                (
+                    SELECT COUNT(*)
+                    FROM votes
+                    INNER JOIN words ON words.storyID = stories.storyID
+                    WHERE votes.wordID = words.wordID
+                ) AS n_votes
+            FROM stories
             GROUP BY stories.storyID
-            ORDER BY COUNT(username) DESC
+            ORDER BY n_votes DESC
             LIMIT ?''', (limit,))
         stories_list = []
         for s in stories:
@@ -61,7 +68,7 @@ class Story:
         ''', (self.story_id,))
         return result.fetchone()[0]
 
-    def remove(self): #### BUG WITH REMOVE FUNCTION - AMBIGUOUS COLUMN NAME: WORDID PLEASE FIX
+    def remove(self):
         self.first_word.remove()
         self._cursor.execute('''
             DELETE FROM stories WHERE storyID = ?

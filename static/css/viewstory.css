@@ -12,7 +12,7 @@
 }
 
 .child {
-	background-color: rgba(128,216,186, 0.1) !important;
+	background-color:rgba(255, 94, 3, 0.1);
 }
 
 .child td {
@@ -29,7 +29,7 @@
 	display: inline-block;
 }
 	.up {
-		color: green;
+		color: orange;
 		font-size: 1.5em;
 	}
 

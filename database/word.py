@@ -91,13 +91,13 @@ class Word:
             SELECT words.wordID, storyID, word, author, parentID
             FROM words
             WHERE parentID = ?
-            ORDER BY (SELECT COUNT(*) FROM votes WHERE wordID=?)
-        """, (self.id,self.id))
+        """, (self.id,))
         
         children = []
         for childWord in c:
             #id, parentID, storyID, word
             children.append(Word(childWord[0], childWord[1], childWord[2], childWord[3], childWord[4]))
+        children.sort(key=lambda w:w.votes, reverse=True)
         
         return children
 
