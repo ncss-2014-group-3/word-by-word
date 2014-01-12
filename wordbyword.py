@@ -13,31 +13,31 @@ import database
 #   function:   stories()
 #   arguments:  response
 #   description:
-#       When the page is called for listing the stories avaliable.
+#	   When the page is called for listing the stories avaliable.
 def stories(response):
-    #list will contain:
-    # title, burb and word count
-    #stories = db.story_list()
-    #require db.story_list_data()
-    # arguments: no args
-    # returns: title, short burb and word count
-    stories = story.Story.story_list()
-    #v = stories[0].first_word.add_child("word2")
-    #print(v)
-    # story_list_data should return:
-    #   titles and word count
-    variables = {'stories': stories}
-    #render the page from the template
-    #create the parser object from template file
-    p = Parser.from_file('templates/stories.html')
-    #render the html code in var result
-    result = p.expand(variables) # dict in expand
-    #render the result to the client
-    response.write(result)
+	#list will contain:
+	# title, burb and word count
+	#stories = db.story_list()
+	#require db.story_list_data()
+	# arguments: no args
+	# returns: title, short burb and word count
+	stories = story.Story.story_list()
+	#v = stories[0].first_word.add_child("word2")
+	#print(v)
+	# story_list_data should return:
+	#   titles and word count
+	variables = {'stories': stories}
+	#render the page from the template
+	#create the parser object from template file
+	p = Parser.from_file('templates/stories.html')
+	#render the html code in var result
+	result = p.expand(variables) # dict in expand
+	#render the result to the client
+	response.write(result)
 
 def style(response):
-    with open('style.css', 'r') as f:
-        response.write(f.read())
+	with open('style.css', 'r') as f:
+		response.write(f.read())
 
 def create(response):
 	#get the variables we need using get_field
@@ -76,25 +76,25 @@ def create(response):
 	response.write(view)
 
 def upvote(response, word_id, story_id):
-    if response.request.method == "POST":
-        #Write to databse
-        word = Word.from_id(word_id)
-        word.add_vote()
-        response.redirect("/story/" + str(story_id))
+	if response.request.method == "POST":
+		#Write to databse
+		word = Word.from_id(word_id)
+		word.add_vote()
+		response.redirect("/story/" + str(story_id))
 
 def view_story(response, sid):
-    s = story.Story.from_id(sid)
-    if not s:
-        raise tornado.web.HTTPError(404)
-    p = Parser.from_file("templates/viewstory.html")
-    response.write(p.expand({"story": s}))
+	s = story.Story.from_id(sid)
+	if not s:
+		raise tornado.web.HTTPError(404)
+	p = Parser.from_file("templates/viewstory.html")
+	response.write(p.expand({"story": s}))
 
 def add_word(response, sid, wid):
-    s = story.Story.from_id(sid)
-    w = word.Word.from_id(wid)
-    new_word = response.get_field("word")
-    w.add_child(new_word)
-    response.redirect("/story/" + str(s.story_id))
+	s = story.Story.from_id(sid)
+	w = word.Word.from_id(wid)
+	new_word = response.get_field("word")
+	w.add_child(new_word)
+	response.redirect("/story/" + str(s.story_id))
 
 if __name__ == "__main__":
 	server = Server()
@@ -103,5 +103,5 @@ if __name__ == "__main__":
 	server.register("/story", create)
 	server.register("/story/(\d+)", view_story)
 	server.register("/story/(\d+)/word/(\d+)/vote", upvote)
-    server.register("/story/(\d+)/(\d+)/reply", add_word)
-    server.run()
+	server.register("/story/(\d+)/(\d+)/reply", add_word)
+	server.run()
