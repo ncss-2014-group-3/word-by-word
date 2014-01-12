@@ -7,17 +7,17 @@
             <th>User</th>
             <th width="125">Votes</th>
         </tr>
-        {% if len(stories) %}
-            {% for story in stories %}
+        {% if len(users) %}
+            {% for user in users %}
                 <tr class="story-row">
-                    <td><a href="/story/{{story.story_id}}">{{ story.title }}</a>
+                    <td><a href="/story/{{story.story_id}}">{{ user.username }}</a>
                         <div class="summary">
                             <div class="text">
-                            {{story.fixed_words()}}
+                            
                             </div>
                         </div>
                     </td>
-                    <td>{{ story.total_votes }}</td>
+                    <td>{{ user.score }}</td>
                 </tr>
             {% end for %}
         {% else %}
