@@ -1,0 +1,31 @@
+{% include templates/header.html %}
+<article>
+   <h1>Scoreboard</h1>
+   <p class = "view"> Users with most votes </p>
+    <table class="borders" id="storyList">
+        <tr id='bold'>
+            <th>User</th>
+            <th width="125">Votes</th>
+        </tr>
+        {% if len(users) %}
+            {% for user in users %}
+                <tr class="story-row">
+                    <td><a href="/story/{{story.story_id}}">{{ user.username }}</a>
+                        <div class="summary">
+                            <div class="text">
+                            
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ user.score }}</td>
+                </tr>
+            {% end for %}
+        {% else %}
+            <tr colspan="2">
+                <th> There are no stories </th>
+                <td></td>
+            </td>
+        {% end if %}
+    </table>
+</article>
+{% include templates/footer.html %}
