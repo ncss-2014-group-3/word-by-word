@@ -33,7 +33,7 @@ def stories(response):
     #print(v)
     # story_list_data should return:
     #   titles and word count
-    variables = {'stories': stories}
+    variables = {'stories': stories, 'user': get_current_user(response)}
     #render the page from the template
     #create the parser object from template file
     p = Parser.from_file('templates/stories.html')
