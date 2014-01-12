@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
 import html
 import os
+import re
 
 import tornado.web
 from tornado.ncss import Server
 from template_engine.parser import Parser
-from database import story
-from database import word
+from database import story, word, user
 import database
+
+def get_current_user(response):
+    username = response.get_secure_cookie('username')
+    if username is None:
+        return None
+    return user.User.from_username(username.decode())
+
 # Create the database
 # database.create()
 #   function:   stories()
@@ -58,12 +65,17 @@ def create(response):
             errors.append("Please only enter one word.")
         if len(firstword) > 20:
             errors.append("Your word is too long. Word must be below 21 characters long.")
+        author = get_current_user(response)
+        print('author =', author)
+        if author is None:
+            errors.append('You must be logged in to post a word')
         if not errors:
             #write to the database
-            new_story = story.Story(title, firstword)
+            new_story = story.Story(title, firstword, author)
             story_id = new_story.story_id
             response.redirect("/story/" + str(story_id))
             return
+                
         #if there are errors, relay back to user
         errors.append("Please try again.")
     p = Parser.from_file("templates/createastory.html")
@@ -99,8 +111,13 @@ def add_word(response, sid, wid):
     if len(new_word) > 20:
         errors.append("Your word is too long. Word must be below 21 characters long.")
 
+    author = get_current_user(response)
+    print('author =', author)
+    if author is None:
+        errors.append('You must be logged in to post a word')
+        
     if not errors: #if there are no errors
-        w.add_child(new_word)
+        w.add_child(new_word, author)
         response.redirect("/story/" + str(s.story_id))
         return
 
@@ -112,19 +129,89 @@ def add_word(response, sid, wid):
     response.write(view)
 
 def upvote(response, story_id, word_id):
-	if response.request.method == "POST":
-		#Write to databse
-		w = word.Word.from_id(word_id)
-		w.add_vote()
-		response.redirect("/story/" + str(story_id))
+    author = get_current_user(response)
+    print('author =', author)
+    errors = []
+    if author is None:
+        errors.append('You must be logged in to post a word')
+    if response.request.method == "POST" and not errors:
+        #Write to databse
+        w = word.Word.from_id(word_id)
+        w.add_vote(author)
+        response.redirect("/story/" + str(story_id))
+
+def login(response):
+        username = response.get_field('name')
+        password = response.get_field('password')
+        logged_name = response.get_secure_cookie('username')
+        login_fail = False
+        if logged_name is not None:
+                username = logged_name.decode()
+                print('logged in, user =', username)
+        else:
+                if user and password:
+                        if user.User.login(username, password):
+                                print('login success, user =', username)
+                                response.set_secure_cookie('username', username)
+                                response.redirect('/login')
+                                return
+                        else:
+                                login_fail = True
+                                username = password = None
+                else:
+                        username = password = None
+                
+        p = Parser.from_file('templates/login.html')
+        html = p.expand({ 'user' : username, 'login_fail' : login_fail })
+        response.write(html)
+
+def logout(response):
+        response.clear_cookie('username')
+        response.redirect('/login')
+
+def register(response):
+        logged_name = response.get_secure_cookie('username')
+        if logged_name is None:
+                username = response.get_field('name')
+                password = response.get_field('password')
+                print('user,pass =', username, password)
+                if username and password is not None:
+                        good_username = True if re.match(r'^\w+$', username) else False
+                        username_taken = True if user.User.from_username(username) else False
+                        good_password = (len(password) > 4)
+                        print(good_username, good_password, username_taken)
+                        if good_username and good_password and not username_taken:
+                                response.set_secure_cookie('username', username)
+                                user.User.create(username, password)
+                                print(user, password)
+                        else:
+                                username = password = None
+                else:
+                        username = password = None
+                        good_username = good_password = True
+                        username_taken = False
+        else:
+                good_username = good_password = True
+                username_taken = False
+                username = logged_name.decode()
+                
+        p = Parser.from_file('templates/register.html')
+        html = p.expand({
+                'user' : username,
+                'good_username': good_username,
+                'good_password': good_password,
+                'username_taken': username_taken})
+        response.write(html)
 
 if __name__ == "__main__":
-
-	server = Server()
-	server.register("/", stories)
-	server.register("/style.css", style)
-	server.register("/story", create)
-	server.register("/story/(\d+)", view_story)
-	server.register("/story/(\d+)/word/(\d+)/vote", upvote)
-	server.register("/story/(\d+)/(\d+)/reply", add_word)
-	server.run()
+    server = Server()
+    server.register("/", stories)
+    server.register("/style.css", style)
+    server.register("/story", create)
+    server.register("/story/(\d+)", view_story)
+    server.register("/story/(\d+)/word/(\d+)/vote", upvote)
+    server.register("/story/(\d+)/(\d+)/reply", add_word)
+    server.register('/login', login)
+    server.register('/logout', logout)
+    server.register('/register', register)
+    server.run()

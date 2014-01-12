@@ -9,27 +9,28 @@ class Word:
         Get the first word for a story
         """
         c = connection.cursor()
-        c.execute("SELECT wordID, storyID, word, parentID FROM words WHERE storyID = ? and parentID IS NULL", (story_id,))
+        c.execute("SELECT wordID, storyID, word, author, parentID FROM words WHERE storyID = ? and parentID IS NULL", (story_id,))
         result = c.fetchone()
         if result:
-            return cla(result[0],result[1], result[2], result[3])
+            return cla(result[0],result[1], result[2], result[3], result[4])
     
     @classmethod
     def from_id(cla, word_id):
         c = connection.cursor()
-        c.execute("""SELECT wordID, storyID, word, parentID
+        c.execute("""SELECT wordID, storyID, word, author, parentID
                     FROM words
                     WHERE wordID = ?""", (word_id,))
         result = c.fetchone()
         if result:
-            return cla(result[0],result[1], result[2], result[3])
+            return cla(result[0],result[1], result[2], result[3], result[4])
         
-    def __init__(self, id, story_id, value, parent_id = None):
+    def __init__(self, id, story_id, value, author, parent_id = None):
         self.id = id
         self.parent_id = parent_id
         self.story_id = story_id
         self.value = value
-        
+        self.author = author
+
         c = connection.cursor()
         c.execute("""SELECT count(*) FROM votes WHERE wordID = ?""", (self.id,))
         result = c.fetchone()
@@ -43,8 +44,8 @@ class Word:
     def __str__(self):
         return self.value
         
-    def add_child(self, value):
-        new_word = Word(False, self.story_id, value, self.id)
+    def add_child(self, value, author):
+        new_word = Word(False, self.story_id, value, author, self.id)
         new_word.save()
         return new_word
     def remove(self):
@@ -70,42 +71,47 @@ class Word:
             child_scores += child.votes
         return self._dir_votes + child_scores
     
-    def add_vote(self):
+    def add_vote(self, voter):
         self._dir_votes += 1
         c = connection.cursor()
         c.execute("""
-        INSERT INTO votes VALUES (?)
-        """, (self.id,))
+        INSERT INTO votes VALUES (?,?)
+        """, (self.id,voter.username))
         connection.commit()
     
-    def remove_vote(self):
-        '''self._dir_votes -= 1
-        c = connection.cursor()
-        c.execute("""
-        DELETE FROM votes WHERE wordID = ?
-        LIMIT 1
-        """, (self.id,))
-        connection.commit()'''
-        print('ERR NOT IMPLIMENTED')
+    def remove_vote(self, voter):
+        cursor = connection.cursor()
+        cursor.execute('''DELETE FROM votes WHERE wordID=? AND username=?''', (self.id, voter.username))
+        cursor.commit()
     
     @property
     def children(self):
         c = connection.cursor()
-        
         c.execute("""
-            SELECT *
-            FROM
-                words
-            WHERE
-                parentID = """ + str(self.id) + """
-        """)
+            SELECT words.wordID, storyID, word, author, parentID
+            FROM words
+            WHERE parentID = ?
+            ORDER BY (SELECT COUNT(*) FROM votes WHERE wordID=?)
+        """, (self.id,self.id))
         
         children = []
         for childWord in c:
             #id, parentID, storyID, word
-            children.append(Word(childWord[0], childWord[2], childWord[3], childWord[1]))
+            children.append(Word(childWord[0], childWord[1], childWord[2], childWord[3], childWord[4]))
         
         return children
+
+    @property
+    def favourite_child(self):
+        cursor = connection.cursor()
+        cursor.execute('''
+            SELECT words.wordID, storyID, word, author, parentID
+            FROM words
+            WHERE parentID = ?
+            ORDER BY (SELECT COUNT(*) FROM votes WHERE wordID=?)
+            LIMIT 1''', (self.id,self.id))
+        row = cursor.fetchone()
+        return None if row is None else Word(row[0], row[1], row[2], row[3], row[4])
     
     def save(self):
         c = connection.cursor()
@@ -117,14 +123,15 @@ class Word:
                 storyID = ?
                 ,word = ?
                 ,parentID = ?
+                ,author = ?
                 WHERE
                     wordID = ?
-                """, (self.story_id, self.value, self.parent_id, self.id))
+                """, (self.story_id, self.value, self.parent_id, self.author.username, self.id))
             connection.commit()
         else:
             #print('[save] insert')
             c.execute("""
-                INSERT INTO words VALUES (NULL,?,?,?)
-                """, (self.parent_id, self.story_id, self.value))
+                INSERT INTO words VALUES (NULL,?,?,?,?)
+                """, (self.parent_id, self.story_id, self.value, self.author.username))
             connection.commit()
             self.id = c.lastrowid
