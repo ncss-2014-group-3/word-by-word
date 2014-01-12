@@ -176,6 +176,12 @@ form input[type=submit], button {
     padding:3px 20px;
     box-shadow: 1px 1px 1px rgba(20,20,20,0.5);
 }
+
+button a {
+    color:black;
+    text-decoration:none !important;
+}
+
 form input[type=submit]:active {
     position:relative;
     top:1px;
@@ -286,10 +292,12 @@ table.borders td, th {
     border-right:1px dotted #a8a8a8;
     padding:10px 4px 10px 4px;
     line-height:18px;
+    font-weight:bold;
 }
 
 input { 
     font-family:Helvetica, sans-serif;
+    
     font-size:14px;
     padding: 3px;
 }
@@ -351,3 +359,6 @@ input {
     font-weight:bold;
 }
 
+#normal {
+    font-weight:normal;
+}

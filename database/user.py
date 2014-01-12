@@ -51,3 +51,10 @@ class User:
         cursor = connection.cursor()
         cursor.execute('''UPDATE users SET password=?, fullname=? WHERE username=?''', (new_password, fullname, username))
         connection.commit()
+
+    def get_score(self, username):
+        cursor = connection.cursor()
+        returnedvotes = cursor.execute('''SELECT COUNT(wordID) FROM votes WHERE wordID IN
+                                        (SELECT wordID FROM words WHERE author=?)''', (username,))
+        score = returnedvotes.fetchone()[0]
+        return score

@@ -1,12 +1,11 @@
 <table id="child-{{ word.id }}" class="child">
 	<tr>
+		{% if not word.fixed() %}
 		<td>
-			
-			<span class="word">{{ word.value }} {% if not word.fixed() %}<sup>{{ word.votes }}</sup>{% end if %}</span>
-			{% if not word.fixed() %}
+			<span class="word">{{ word.value }}</span>
             <div class="upvotes">
                 <form method="POST" action="/story/{{ story.story_id }}/word/{{ word.id }}/vote">
-					<input type="submit" value="&uarr;">
+					<input type="submit" value="{{ word.votes }} &uarr;" class="up-arrow">
 				</form>
 				<!-- <span class="num">0</span> -->
 			</div>
