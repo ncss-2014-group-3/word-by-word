@@ -1,6 +1,5 @@
 import sqlite3
 from . import connection
-from database import userStats
 
 class User:
     @classmethod
@@ -27,20 +26,19 @@ class User:
             return False
 
     @classmethod
-    def create(cla, username, password, fullname='User'):
+    def create(cla, username, password, fullname='User', email=''):
         cursor = connection.cursor()
         returned = cursor.execute('''SELECT username FROM users WHERE username=?''', (username,))
         row = returned.fetchone()
         if row:
             return False # user exists
         elif row is None: # User does not exist, insert a new user into database
-            cursor.execute('''INSERT INTO users VALUES(?,?,?)''', (username, password, fullname))
+            cursor.execute('''INSERT INTO users VALUES(?,?,?,?)''', (username, password, fullname, email))
             connection.commit()
             return cla(username) # return User object
     
     def __init__(self, username):
         self.username = username
-        self.stats = userStats.Stats(username)
 
     def remove(self):
         cursor = connection.cursor()
@@ -58,3 +56,9 @@ class User:
                                         (SELECT wordID FROM words WHERE author=?)''', (username,))
         score = returnedvotes.fetchone()[0]
         return score
+
+    def get_email(self, username):
+        cursor = connection.cursor()
+        returned = cursor.execute('''SELECT email FROM users WHERE username=? ''', (username,))
+        email = returned.fetchone()[0]
+        return email
