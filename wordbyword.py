@@ -42,6 +42,12 @@ def stories(response):
     #render the result to the client
     response.write(result)
 
+def own_stories(response):
+    username = get_current_user(response)
+    stories = 
+    variables = {'stories': 
+    pass
+
     
 def style(response):
     with open('style.css', 'r') as f:

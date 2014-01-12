@@ -1,6 +1,7 @@
 import sqlite3
 from . import connection
 from database import userStats
+from database.story import Story
 import hashlib
 
 
@@ -47,7 +48,7 @@ class User:
             (
                 SELECT users.username, COUNT(DISTINCT words.wordID) AS C FROM USERS
                 LEFT OUTER JOIN words ON words.author = users.username
-                LEFT OUTER JOIN votes on votes,wordID = words.wordID
+                LEFT OUTER JOIN votes ON votes,wordID = words.wordID
                 GROUP BY words.wordID
             )
             GROUP BY username
@@ -94,5 +95,13 @@ class User:
 
     @property
     def own_stories(self):
-        pass
+        cursor = connection.cursor()
+        returnedstories = cursor.execute('''
+                                        SELECT storyID from stories WHERE storyID IN
+                                        (
+                                            SELECT storyID FROM words WHERE author=? AND parentID IS NULL
+                                        )
+                                        ''', (self.username,))
+        stories = [Story.from_id(x[0]) for x in returnedstories.fetchall()]
+        return stories
         
