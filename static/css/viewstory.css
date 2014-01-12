@@ -2,18 +2,20 @@
 	overflow-x: auto;
 }
 
-.child {
+#story-tree .child {
 	border: 1px dashed #f1f1f1;
 	background: rgba(0, 0, 0, 0.04);
 	width: auto;
 }
 
-.child td {
+#story-tree .child td {
 	border-left: none;
 	border-right: none;
 }
+#story-tree .word {
+}
 
-.upvotes {
+#story-tree .upvotes {
 	display: inline-block;
 }
 	.up {
@@ -21,6 +23,25 @@
 		font-size: 1.5em;
 	}
 
+
+.reply {
+    display:inline;
+    
+    margin:3px 10px;
+    width:80px;
+}
+
 .reply input[name="word"] {
-	width: 100px;
+	width: 80px;
+    border:1px solid #aaa;
+    border-radius:5px;
+    padding:1px 3px;
+    margin:0;
+    background-color:transparent;
+    box-shadow:none;
+    font-size:12px;
+}
+
+#story-tree form {
+    display:inline-block;
 }

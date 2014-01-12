@@ -8,11 +8,10 @@
 			<span class="word">{{ word.value }}</span>
 			<div class="reply">
 				<form method="POST" action="/story/{{ story.story_id }}/{{ word.id }}/reply">
-					<input type="text" name="word">
-					<input type="submit" name="submit">
+					<input type="text" name="word" placeholder="Next word" class="auto-submit">
 				</form>
 			</div>
-
+            <div class="clear"></div>
 		</td>
 		{% if word.children %}
 			<td class="children">
