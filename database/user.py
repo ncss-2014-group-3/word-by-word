@@ -1,5 +1,6 @@
 import sqlite3
 from . import connection
+from database import userStats
 
 class User:
     @classmethod
@@ -57,6 +58,7 @@ class User:
     
     def __init__(self, username):
         self.username = username
+        self.stats = userStats.Stats(username)
 
     def remove(self):
         cursor = connection.cursor()
