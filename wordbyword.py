@@ -33,7 +33,7 @@ def stories(response):
     #print(v)
     # story_list_data should return:
     #   titles and word count
-    variables = {'stories': stories}
+    variables = {'stories': stories, 'user': get_current_user(response)}
     #render the page from the template
     #create the parser object from template file
     p = Parser.from_file('templates/stories.html')
@@ -58,7 +58,7 @@ def create(response):
     if not username:
         errors.append('You must be logged in to post a story.')
         p = Parser.from_file("templates/createastory.html")
-        variables = {'errors': errors }
+        variables = {'errors': errors, 'user': get_current_user(response)}
         view = p.expand(variables)
         
     if response.request.method == "POST":
@@ -86,7 +86,7 @@ def create(response):
         #if there are errors, relay back to user
         errors.append("Please try again.")
     p = Parser.from_file("templates/createastory.html")
-    variables = {'errors': errors }
+    variables = {'errors': errors, 'user': get_current_user(response)}
     view = p.expand(variables)
     
     response.write(view)

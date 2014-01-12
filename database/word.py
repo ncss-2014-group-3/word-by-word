@@ -124,7 +124,22 @@ class Word:
             LIMIT 1''', (self.id,self.id))
         row = cursor.fetchone()
         return None if row is None else Word(row[0], row[1], row[2], row[3], row[4])
-    
+
+    def _deepest_child(self):
+        # Depth first, brah.
+        m = 1
+        for child in self.children:
+            m = 1 + max(m, child._deepest_child())
+        return m
+
+    def fixed(self, n=5):
+        return self._deepest_child() > n
+
+    def fixed_children(self):
+        if not self.children:
+            return True
+        return any(w.fixed() for w in self.children)
+
     def save(self):
         c = connection.cursor()
         if self.id:

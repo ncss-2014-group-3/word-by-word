@@ -5,15 +5,29 @@
 .tree {
 	border: none;
 }
+
+#story-tree .child {
+	border: 1px dotted #ffc04d;
+	background: rgba(255, 165, 0, 0.08);
+	width: auto;
+}
     
 #story-tree .child {
 	background-color:rgba(255, 94, 3, 0.1);
 }
 
+.child td {
+	border-radius: 20px;
+}
+	.child td:first-child .word {
+		padding: 5px;
+	}
+
 #story-tree .child td {
 	border-left: none;
 	border-right: none;
 }
+
 #story-tree .word {
 }
 
@@ -37,6 +51,20 @@
 	width: 60px;
 }
 
+#story-tree {
+	vertical-align: middle !important;
+}
+
 #story-tree form {
     display:inline-block;
+}
+
+form input.up-arrow {
+    background-color:transparent;
+	margin-top: 0px;
+    border:none;
+    cursor:pointer;
+    padding:3px 3px;
+    color:black;
+    box-shadow: none;
 }
