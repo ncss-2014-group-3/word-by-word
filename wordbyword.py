@@ -6,7 +6,7 @@ import tornado.web
 from tornado.ncss import Server
 from template_engine.parser import Parser
 from database import story
-from database import word
+from database import word as word_model
 import database
 # Create the database
 # database.create()
@@ -75,10 +75,10 @@ def create(response):
 	view = p.expand(variables)
 	response.write(view)
 
-def upvote(response, word_id, story_id):
+def upvote(response, story_id, word_id):
 	if response.request.method == "POST":
 		#Write to databse
-		word = Word.from_id(word_id)
+		word = word_model.Word.from_id(word_id)
 		word.add_vote()
 		response.redirect("/story/" + str(story_id))
 
@@ -91,7 +91,7 @@ def view_story(response, sid):
 
 def add_word(response, sid, wid):
 	s = story.Story.from_id(sid)
-	w = word.Word.from_id(wid)
+	w = word_model.Word.from_id(wid)
 	new_word = response.get_field("word")
 	w.add_child(new_word)
 	response.redirect("/story/" + str(s.story_id))
