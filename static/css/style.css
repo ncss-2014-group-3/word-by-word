@@ -63,7 +63,7 @@ article h1 {
 	line-height: 29px;
     text-align:center;
     padding:5px 0;
-    border-bottom:1px solid #aaa;
+    /*border-bottom:1px solid #aaa;*/
 }
 
 article h2 {
@@ -238,23 +238,42 @@ table.borders {
     position:relative;
 }
 
-
-tr.story-row:hover td .summary {
-    display:block;
-    width:250px;
-    height:50px;
-    background:#ddd;
-    box-sizing:border-box;
-    padding: 15px 5px;
-    border-radius: 3px;
+/*dont show extra data if less then 1350*/
+@media screen and (min-width: 1300px){
+    tr.story-row:hover td .summary {
+        display:block;
+        
+    }
+    td .summary {
+        display:none;
+        position:absolute;
+        right:-250px;
+        margin-top:-33px;
+        padding-left:8px;
+        background-image:url('/static/images/descArrow.png');
+        background-repeat:no-repeat;
+        background-position:0 15px;
+    }
+    td .summary .text {
+        background-color:#ddd;
+        width:230px;
+        box-sizing:border-box;
+        padding: 15px 10px;
+        border-radius: 3px;
+    }
 }
 
-td .summary {
-    display:none;
-    position:absolute;
-    right:-260px;
-    margin-top:-33px;
+@media screen and (max-width: 1300px){
+    td .summary {
+        font-size:12px;
+    }
 }
+
+tr.story-row:hover {
+    background-color:#ddd !important;
+}
+
+
 
 table.borders td, th {
     word-wrap:break-word;
@@ -303,11 +322,10 @@ input {
 
 #storyList tr:nth-child(odd)
 {
-background:white;
+    background:#e5e5e5;
 }
-#storyList tr:nth-child(even)
-{
-background:#e5e5e5;
+#storyList th{   
+    font-weight: bold;
 }
 
 #storyList a {
@@ -315,3 +333,8 @@ background:#e5e5e5;
     text-decoration:underline;
     font-weight:normal;
 }
+
+#bold {
+    font-weight:bold;
+}
+

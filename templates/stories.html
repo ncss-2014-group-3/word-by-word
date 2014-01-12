@@ -1,15 +1,17 @@
 {% include templates/header.html %}
 <article>
-   <h1>List of Stories</h1>
+   <h1>All Stores</h1>
     <table class="borders" id="storyList">
-        <tr>
+        <tr id='bold'>
             <th>Title</th>
             <th width="125">Votes</th>
         </tr>
         {% for story in stories %}
             <tr class="story-row">
                 <td><a href="/story/{{story.story_id}}">{{ story.title }}</a>
-                    <div class="summary">Test</div>
+                    <div class="summary">
+                        <div class="text">this is a test. which is a little longer but shouldn't break</div>
+                    </div>
                 </td>
                 <td>{{ story.total_votes }}</td>
             </tr>
