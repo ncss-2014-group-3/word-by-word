@@ -4,7 +4,7 @@ body {
 	font-family: Helvetica, Arial, sans-serif;
 	font-size: 14px;
 	line-height: 21px;
-    background-color:#aaa;
+    background-color:#eaeaea;
 }
 
 .center {
@@ -54,15 +54,18 @@ article {
 }
 
 /* headings */
-h1 {
+article h1 {
 	font-size: 35px;
+    color:#555;
 	font-weight: bold;
 	margin-bottom: 20px;
 	line-height: 29px;
-
+    text-align:center;
+    padding:5px 0;
+    border-bottom:1px solid #aaa;
 }
 
-h2 {
+article h2 {
 	font-size: 25px;
 	font-weight: bold;
 	margin-bottom: 19px;
@@ -71,7 +74,7 @@ h2 {
 	margin-top: 25px;
 }
 
-h3 {
+article h3 {
 	font-size: 17px;
 	font-weight: bold;
 	line-height: 19px;
@@ -177,13 +180,16 @@ form input[type=submit]:active {
 
 
 header {
-	background-color: #666666;
+	background-color: #464646;
     padding-top:10px;
 }
 	header h1 {
 		font-size: 50px;
         margin:0;
         text-align:center;
+        background:transparent;
+        font-weight:bold;
+        padding-top:15px;
 	}
     header h1 a {
         color:#fff;
