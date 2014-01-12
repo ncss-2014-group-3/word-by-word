@@ -18,9 +18,9 @@ class User:
         cursor = connection.cursor()
         returned = cursor.execute('SELECT password FROM users WHERE username=?', (username,))
         row = returned.fetchone()
-        check = row[0]
-        
-        if password == check:
+        if row is None:
+            return False
+        if password == row[0]:
             return cla(username) # return User object if True
         else:
             return False
