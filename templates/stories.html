@@ -1,19 +1,30 @@
 {% include templates/header.html %}
 <article>
-   <h1>List of Stories</h1>
+   <h1>All Stories</h1>
     <table class="borders" id="storyList">
-        <tr>
+        <tr id='bold'>
             <th>Title</th>
             <th width="125">Votes</th>
         </tr>
-        {% for story in stories %}
-            <tr class="story-row">
-                <td><a href="/story/{{story.story_id}}">{{ story.title }}</a>
-                    <div class="summary">this is a test</div>
-                </td>
-                <td>{{ story.total_votes }}</td>
-            </tr>
-        {% end for %}
+        {% if len(stories) %}
+            {% for story in stories %}
+                <tr class="story-row">
+                    <td><a href="/story/{{story.story_id}}">{{ story.title }}</a>
+                        <div class="summary">
+                            <div class="text">
+                            {{story.fixed_words()}}
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ story.total_votes }}</td>
+                </tr>
+            {% end for %}
+        {% else %}
+            <tr colspan="2">
+                <th> There are no stories </th>
+                <td></td>
+            </td>
+        {% end if %}
     </table>
 </article>
 {% include templates/footer.html %}
