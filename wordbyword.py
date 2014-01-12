@@ -182,14 +182,9 @@ def register(response):
                     errors.append('Invalid username, username already taken.')
                 if len(password) < 5:
                     errors.append('Invalid password, passwords must be at least 5 characters long')
-                good_username = True if re.match(r'^\w+$', username) else False
-                username_taken = True if user.User.from_username(username) else False
-                good_password = (len(password) > 4)
-                print(good_username, good_password, username_taken)
-                if good_username and good_password and not username_taken:
+                if not errors:
                         response.set_secure_cookie('username', username)
                         user.User.create(username, password)
-                        print(user, password)
                         response.redirect('/')
                         return
                 else:
@@ -202,9 +197,6 @@ def register(response):
         p = Parser.from_file('templates/register.html')
         html = p.expand({
                 'user' : username,
-                'good_username': good_username,
-                'good_password': good_password,
-                'username_taken': username_taken,
                 'errors': errors})
         response.write(html)
 
