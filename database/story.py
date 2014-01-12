@@ -89,6 +89,15 @@ class Story:
             if not word:
                 break
 
+    def first_non_fixed(self):
+        word = self.first_word
+        while word.fixed():
+            next_word = word.favourite_child
+            if next_word is None:
+                break
+            word = next_word
+        return word
+
     def first_words(self, num=10):
         nwords = []
         for w in self.walk_first_words(num):

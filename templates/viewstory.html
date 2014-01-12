@@ -44,7 +44,7 @@ var link_to_children = function(word_id) {
 
 link_to_children({{story.first_word.id}})
 
-var words = {% json story.first_word.as_json() %}
+var words = {% json story.first_non_fixed().as_json() %}
 
 var single_height = 25;
 function height(node)
