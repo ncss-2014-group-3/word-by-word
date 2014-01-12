@@ -79,34 +79,18 @@ class Word:
             count += child.word_count
         return count
 
-    def get_votes(self, seen=None):
-        if seen is None:
-            seen = set()
-        child_scores = 0
-        dir_votes = 0
-        for child in self._children_unsorted:
-            cur = set()
-            child_scores += child.get_votes(cur)
-            seen = seen | cur
-        for voter in self._get_voters():
-            if voter not in seen:
-                #print('votes1',dir_votes,'voter',voter) # <-- test
-                dir_votes += 1
-                #print('votes2',dir_votes,'voter',voter) # <-- test
-                seen.add(voter)
-        
-        #print('votes3',dir_votes,'voter',voter) # <-- test
-        dir_votes += child_scores
-        return dir_votes
-
-    votes = cached_property(get_votes)
+    @cached_property
+    def votes(self):
+        return len(self._get_voters())
 
     def _get_voters(self):
+        users = set()
         cursor = connection.cursor()
-        cursor.execute('''SELECT author FROM words WHERE wordID=?''', (self.id,))
-        users = []
+        cursor.execute('''SELECT username FROM votes WHERE wordID=?''', (self.id,))
         for user in cursor.fetchall():
-            users.append(user)
+            users.add(user)
+        for child in self._children_unsorted:
+            users.update(child._get_voters())
         return users
     
     def add_vote(self, voter):
