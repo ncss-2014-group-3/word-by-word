@@ -84,7 +84,7 @@ class Word:
     def remove_vote(self, voter):
         cursor = connection.cursor()
         cursor.execute('''DELETE FROM votes WHERE wordID=? AND username=?''', (self.id, voter.username))
-        cursor.commit()
+        connection.commit()
     
     @property
     def children(self):
