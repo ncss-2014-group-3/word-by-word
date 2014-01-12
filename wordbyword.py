@@ -42,7 +42,7 @@ def stories(response):
     #render the result to the client
     response.write(result)
 
-def own_stories(response):
+def my_stories(response):
     # pretty much the same as stories above
     username = get_current_user(response)
     errors = []
@@ -256,6 +256,6 @@ if __name__ == "__main__":
     server.register('/login', login)
     server.register('/logout', logout)
     server.register('/register', register)
-    server.register('/mystories', own_stories)
+    server.register('/mystories', my_stories)
     server.register('/user/(\w+)', profile)
     server.run()
