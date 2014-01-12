@@ -89,6 +89,7 @@ class Story:
                 words.append(nword)
             else:
                 break
+        nwords = []
         for w in words:
             nwords.append(w.value)
         return ' '.join(nwords)
