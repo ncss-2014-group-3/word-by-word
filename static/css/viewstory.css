@@ -1,0 +1,26 @@
+#story-tree {
+	overflow-x: auto;
+}
+
+.child {
+	border: 1px dashed #f1f1f1;
+	background: rgba(0, 0, 0, 0.04);
+	width: auto;
+}
+
+.child td {
+	border-left: none;
+	border-right: none;
+}
+
+.upvotes {
+	display: inline-block;
+}
+	.up {
+		color: green;
+		font-size: 1.5em;
+	}
+
+.reply input[name="word"] {
+	width: 100px;
+}
