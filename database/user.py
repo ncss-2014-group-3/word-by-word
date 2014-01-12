@@ -89,6 +89,10 @@ class User:
         
     @property
     def image_url(self):
-        size = 300
+        size = 200
         return 'http://www.gravatar.com/avatar/' + hashlib.md5(self.email.encode()).hexdigest() + '.png?s='+str(size)
+
+    @property
+    def own_stories(self):
+        pass
         
