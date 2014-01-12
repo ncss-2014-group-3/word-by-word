@@ -20,8 +20,10 @@ body {
 p.view{
 	margin-top:30px;
     margin-bottom: 20px;
-    text-align:justify;
+    text-align:center;
     font-family: 'Signika', sans-serif;
+    font-size: 15px;
+    
 }
 
 p.edit{
