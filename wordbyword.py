@@ -174,7 +174,14 @@ def register(response):
         username = response.get_field('name')
         password = response.get_field('password')
         print('user,pass =', username, password)
+        errors = []
         if username and password is not None:
+                if re.match(r'^\w+$', username) is None:
+                    errors.append('Invalid username, usernames must be alphanumeric with undeerscores.')
+                if user.User.from_username(username) is not None:
+                    errors.append('Invalid username, username already taken.')
+                if len(password) < 5:
+                    errors.append('Invalid password, passwords must be at least 5 characters long')
                 good_username = True if re.match(r'^\w+$', username) else False
                 username_taken = True if user.User.from_username(username) else False
                 good_password = (len(password) > 4)
