@@ -78,13 +78,20 @@ class Word:
         for child in self.children:
             count += child.word_count
         return count
-        
+
     @cached_property
     def votes(self):
-        child_scores = 0
-        for child in self.children:
-            child_scores += child.votes
-        return self._dir_votes + child_scores
+        return len(self._get_voters())
+
+    def _get_voters(self):
+        users = set()
+        cursor = connection.cursor()
+        cursor.execute('''SELECT username FROM votes WHERE wordID=?''', (self.id,))
+        for user in cursor.fetchall():
+            users.add(user)
+        for child in self._children_unsorted:
+            users.update(child._get_voters())
+        return users
     
     def add_vote(self, voter):
         self._dir_votes += 1
@@ -117,6 +124,21 @@ class Word:
         children.sort(key=lambda w:w.votes, reverse=True)
         
         return children
+    @property
+    def _children_unsorted(self):
+        c = connection.cursor()
+        c.execute("""
+            SELECT words.wordID, storyID, word, author, parentID
+            FROM words
+            WHERE parentID = ?
+        """, (self.id,))
+        
+        children = []
+        for childWord in c:
+            #id, parentID, storyID, word
+            children.append(Word(childWord[0], childWord[1], childWord[2], childWord[3], childWord[4]))        
+        return children
+        
     def _deepest_child(self):
         # Depth first, brah.
         m = 1

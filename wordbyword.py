@@ -100,7 +100,7 @@ def create(response):
         #if there are errors, relay back to user
         errors.append("Please try again.")
     p = Parser.from_file("templates/createastory.html")
-    variables = {'errors': errors, 'user': get_current_user(response)}
+    variables = {'errors': errors, 'user': get_current_user(response), 'title': title, 'firstword':firstword}
     view = p.expand(variables)
     
     response.write(view)
