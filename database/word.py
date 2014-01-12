@@ -80,7 +80,8 @@ class Word:
             count += child.word_count
         return count
 
-    @cached_property
+    # @cached_property
+    @property
     def votes(self):
         return len(self._get_voters())
 
