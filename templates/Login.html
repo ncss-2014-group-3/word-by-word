@@ -1,0 +1,28 @@
+<html>
+    <head>
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css" type="text/css">
+    </head>
+
+
+    <body>
+{% if user is not None %}
+Welcome {{user}}
+{% end if %}
+{% if user is None %}
+   <h1>Login</h1>
+<form id="form1" name="form1" method="post" action="/login">
+<label>Name:</label><input name="name" id="name" type="text" title="Please Enter A User Name" /><br />
+<label>Password:</label><input name="password" id="password" type="password" title="Please Enter A Password" /><br />
+<input name="submit" type="submit" value="Submit" />
+</form>
+{% if login_fail %} Login Failed: incorrect username and password
+{% end if %} 
+
+{% end if %}
+
+  
+    
+    </body>
+
+    </html>

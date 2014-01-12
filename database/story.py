@@ -6,25 +6,29 @@ class Story:
     @classmethod
     def from_id(cla,id):
         cursor = connection.cursor()
-        cursor.execute('''SELECT name FROM stories WHERE storyID=?''', (id,))
+        cursor.execute('''SELECT name FROM stories WHERE storyID = ?''', (id,))
         row = cursor.fetchone()
         if row is None:
             return None
         first_word = Word.from_story_id(id)
         if first_word is None:
             return None
-        return cla(row[0], first_word, id)
+        return cla(row[0], first_word, first_word.author, id)
 
     @classmethod
-    def story_list(cls):
+    def story_list(cls, limit=0):
         cursor = connection.cursor()
-        stories = cursor.execute('''SELECT storyID FROM stories''')
+        stories = cursor.execute('''SELECT storyID FROM stories
+            INNER JOIN votes ON storyID
+            GROUP BY storyID
+            ORDER BY COUNT(storyID)
+            LIMIT ?''', (limit,))
         stories_list = []
         for s in stories:
             stories_list.append(Story.from_id(s[0]))
         return stories_list
             
-    def __init__(self, title, first_word, story_id=None):
+    def __init__(self, title, first_word, author, story_id=None):
         """
         Creates a story
         arguments: 
@@ -41,7 +45,7 @@ class Story:
             self.story_id = self._cursor.lastrowid
             connection.commit()
         if type(first_word) == str:
-            self.first_word = Word(False, self.story_id, first_word)
+            self.first_word = Word(False, self.story_id, first_word, author) #author add
         else:
             self.first_word = first_word
     
@@ -64,10 +68,14 @@ class Story:
     @property
     def word_count(self):
         return self.first_word.word_count
+
+    @property
+    def author(self):
+        return self.first_word.author
         
     def save(self):
-        self._cursor.execte("""UPDATE stories SET
+        self._cursor.execute('''UPDATE stories SET
             name = ?
             WHERE storyID = ?
-        """, self.title, self.story_id)
+        ''', (self.title, self.story_id))
         connection.commit()
