@@ -23,7 +23,7 @@
 }
 	.up {
 		color: green;
-		font-size: 1.5em;
+		font-size: 1em;
 	}
 
 .reply input[name="word"] {
@@ -41,4 +41,54 @@
 
 * {
 	vertical-align: middle !important;
+}
+
+div#new_add_word.reply form.up input {
+	position: absolute;
+	width: 65px;
+	display: inline-block;
+	font-size: 1em;
+} 
+
+div#new_add_word.reply form.up{
+	width:90px;
+	height:2.3em;
+	line-height: 2.3em;
+	padding-left: 5px;
+}
+
+div.vote{
+	height: 2.3em;
+	line-height: 2.3em;
+	padding-left:8px;
+}
+
+form.vote_button input[type=submit]{
+	float:left;
+	color:#E67300; 
+	margin-top:0px;
+	font-weight: bold;
+    background-color:#ccc;
+    border:none;
+    cursor:pointer;
+    padding:3px 7px;
+    box-shadow: 0px 0px 0px transparent;
+}
+
+div.popup{
+	border: 1px solid black;
+	display: none;
+	position: absolute;
+}
+.word{
+	padding: 5px;
+	display: inline-block;
+}
+
+td.children {
+}
+
+table.child {
+	margin-bottom: 5px;
+	border-left: 1px solid black;
 }

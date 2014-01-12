@@ -48,6 +48,7 @@ class Word:
         new_word = Word(False, self.story_id, value, author, self.id)
         new_word.save()
         return new_word
+
     def remove(self):
         for child in self.children:
             child.remove()
@@ -100,6 +101,17 @@ class Word:
             children.append(Word(childWord[0], childWord[1], childWord[2], childWord[3], childWord[4]))
         
         return children
+
+    def as_json(self):
+        return {
+            'value': self.value,
+            'id': self.id,
+            'parent_id': self.parent_id,
+            'author': self.author,
+            'children': [
+                child.as_json() for child in self.children
+            ]
+        }
 
     @property
     def favourite_child(self):
