@@ -104,15 +104,15 @@ def view_story(response, sid):
     # print("?", html)
 
     errors = []
-    username = response.get_secure_cookie('username')
-    if not username:
+    user_obj = get_current_user(response)
+    if not user_obj:
         errors.append('You must be logged in to post a word.')
         p = Parser.from_file("templates/viewstory.html")
-        variables = {'errors': errors, "story": s}
+        variables = {'errors': errors, "story": s, "user": user_obj}
         view = p.expand(variables)
         response.write(view)
     
-    response.write(p.expand({"story": s, "errors":[]}))
+    response.write(p.expand({"story": s, "errors":[], "user": user_obj}))
 
 def add_word(response, sid, wid):
     s = story.Story.from_id(sid)
