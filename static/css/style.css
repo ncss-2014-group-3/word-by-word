@@ -188,11 +188,11 @@ header {
         
 footer {
     background-color:black;
-
     height:20px;
     color:white;
     text-align: center;
     padding:6px;
+    margin-top: 50px;
 } 
 
 table {
