@@ -138,7 +138,7 @@ def upvote(response, story_id, word_id):
         #Write to databse
         w = word.Word.from_id(word_id)
         w.add_vote(author)
-        response.redirect("/story/" + str(story_id))
+    response.redirect("/story/" + str(story_id))
 
 def login(response):
         username = response.get_field('name')
