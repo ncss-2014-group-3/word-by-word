@@ -22,7 +22,7 @@ def stories(response):
     # returns: title, short burb and word count
     stories = story.Story.story_list()
     #v = stories[0].first_word.add_child("word2")
-    #print(v)
+    print(v)
     # story_list_data should return:
     #   titles and word count
     variables = {'stories': stories}
