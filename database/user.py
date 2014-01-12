@@ -52,9 +52,7 @@ class User:
 
     def get_score(self, username):
         cursor = connection.cursor()
-        #returned = cursor.execute('''SELECT wordID FROM words WHERE author=?''', (username,))
-        #row = returned.fetchall()
-
-        returnedvotes = cursor.execute('''SELECT COUNT(wordID) FROM votes WHERE wordID IN (SELECT wordID FROM words WHERE author=?)''', (username,))
+        returnedvotes = cursor.execute('''SELECT COUNT(wordID) FROM votes WHERE wordID IN
+                                        (SELECT wordID FROM words WHERE author=?)''', (username,))
         score = returnedvotes.fetchone()[0]
         return score
