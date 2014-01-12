@@ -11,6 +11,10 @@
         	
         {% end for %}
     </div>
+    <p id="current-story">
+    	{{ story.first_word }} {% include templates/story_part.html word=story.first_word %}
+    </p>
+    <br>
     <content id="story-tree">
         {% include templates/word.html word=story.first_word story=story %}
     </content>
