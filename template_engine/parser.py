@@ -1,10 +1,9 @@
 import re
-from IncludeNode import IncludeNode
-from PythonNode import PythonNode
-from GroupNode import GroupNode
-from TextNode import TextNode
-from ForNode import ForNode
-from IfNode import IfNode
+from .PythonNode import PythonNode
+from .GroupNode import GroupNode
+from .TextNode import TextNode
+from .ForNode import ForNode
+from .IfNode import IfNode
 
 TOKENS = {
     '{{' : 'startvar',
@@ -252,6 +251,8 @@ ParseException: No end for/else
             return TextNode(result)
         
         return IncludeNode(file_name, context)
+
+from .IncludeNode import IncludeNode
 
 if __name__ == '__main__':
     import doctest
