@@ -2,7 +2,7 @@ body {
 
 	margin:0;
     padding:0;
-    font-family: 'alegreya_sansblack';
+    font-family:Arial;
 	font-size: 14px;
 	line-height: 21px;
     background-color:#eaeaea;
@@ -35,18 +35,7 @@ p.edit{
 a {
 	color: #E67300;
     text-decoration:none;
-    -webkit-transition-duration:0.4s;
-    -o-webkit-transition-duration:0.4s;
-    -moz-transition-duration:0.4s;
-    transition-duration:0.4s;
-}
 
-a.hover{
-    -webkit-transition-duration:0.4s;
-    -o-webkit-transition-duration:0.4s;
-    -moz-transition-duration:0.4s;
-    transition-duration:0.4s;
-    opacity:0.6;
 }
 
 a:hover  {
@@ -195,6 +184,7 @@ form input[type=submit]:active {
 header {
 	background-color: #464646;
     padding-top:10px;
+    font-family: 'alegreya_sansblack';
 }
 	header h1 {
 		font-size: 50px;
@@ -211,6 +201,7 @@ header {
 
 	header nav {
 		float:right;
+        margin-bottom:5px;
 	}
     
     header nav ul {
@@ -224,16 +215,12 @@ header {
     }
     header nav ul li a {
         font-size:18px;
-        font-family:'Love Ya Like A Sister', cursive;
+        letter-spacing:1px;
     }
 	
 		header nav a {
 		}
         
-        header nav a:hover{
-            background-color:#D4D4D4;
-            border:2px solid #D4D4D4;
-        }
         
 footer {
     background-color:#464646;
@@ -276,14 +263,7 @@ table.borders td, th {
     padding:10px 4px 10px 4px;
     line-height:18px;
 }
-tr:nth-child(odd)
-{
-background:white;
-}
-tr:nth-child(even)
-{
-background:#e5e5e5;
-}
+
 input { 
     font-family:Helvetica, sans-serif;
     font-size:14px;
@@ -315,4 +295,24 @@ input {
     margin-top: 15px;
     letter-spacing:2px;
     text-transform:uppercase;
+}
+
+#storyList {
+    box-sizing:border-box;
+    width:790px;
+}
+
+#storyList tr:nth-child(odd)
+{
+background:white;
+}
+#storyList tr:nth-child(even)
+{
+background:#e5e5e5;
+}
+
+#storyList a {
+    color:#000;
+    text-decoration:underline;
+    font-weight:normal;
 }
