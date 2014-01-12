@@ -109,7 +109,7 @@ ParseException: No endtag
 >>> Parser('{% if 1 == 1 %}hello').expand()
 Traceback (most recent call last):
   ...
-ParseException: No end if
+ParseException: No end if/else
 >>> text = '{% if var >= 1%}{%if var == 1 %}var = 1, {% end if %}var >= 1{% end if %}'
 >>> Parser(text).expand({ 'var' : 1})
 'var = 1, var >= 1'
@@ -128,7 +128,7 @@ TypeError: unorderable types: str() >= int()
 >>> Parser('{% for i in range(5) %} {{ i }}').expand()
 Traceback (most recent call last):
   ...
-ParseException: No end for
+ParseException: No end for/else
 >>> Parser('{%for i in (\'dog\', \'cat\', \'frog\') %}{{ i }} {% end for %}').expand()
 'dog cat frog '
 >>> Parser('{% for i in range(9) %}{% for j in \'abcd\'%}{{ str(i) + j }},{%end for %}{% end for %}').expand()
@@ -139,6 +139,8 @@ ParseException: No end for
 ' var = 1 '
 >>> Parser('{% for i,e in enumerate("abcde") %}{{e}} is the {{i}}th letter, {%end for%}').expand()
 'a is the 0th letter, b is the 1th letter, c is the 2th letter, d is the 3th letter, e is the 4th letter, '
+>>> Parser('{%for a in [i for i in range(10) if i == 100] %} {{i}} {%else%}No numbers in 0..9 equal 100{%end for%}').expand()
+'No numbers in 0..9 equal 100'
 """
         tree = self.parse_group()
         return tree.render(context)
@@ -184,10 +186,20 @@ ParseException: No end for
         self.match('endtag')
         group = self.parse_group()
 
-        self.match('starttag', 'end for')
+        self.match('starttag', 'end for/else')
+        
+        keyword, tag_contents = self.split_tag()
+        if keyword == 'else':
+            self.match('else')
+            self.match('endtag')
+            else_group = self.parse_group()
+            self.match('starttag')
+        else:
+            else_group = None
+        
         self.match('end for')
         
-        return ForNode(for_condition, group)
+        return ForNode(for_condition, group, else_group)
     
     def parse_if(self):
         keyword, predicate = self.split_tag()
@@ -195,7 +207,7 @@ ParseException: No end for
         self.match('endtag')
         
         group = self.parse_group()
-        self.match('starttag', 'end if')
+        self.match('starttag', 'end if/else')
         
         keyword, tag_contents = self.split_tag()
 
@@ -204,14 +216,11 @@ ParseException: No end for
             self.match('endtag')
             else_group = self.parse_group()
             self.match('starttag')
-            keyword, tag_contents = self.split_tag()
         else:
             else_group = None
             
-            
-        if keyword != 'end' or tag_contents != 'if':
-            raise ParseException('No end if')
-        self.next()
+        
+        self.match('end if')
         
         return IfNode(predicate, group, else_group)
 
