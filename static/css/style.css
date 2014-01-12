@@ -258,9 +258,8 @@ table.borders {
     td .summary .text {
         background-color:#ddd;
         width:230px;
-        height:50px;
         box-sizing:border-box;
-        padding: 15px 5px;
+        padding: 15px 10px;
         border-radius: 3px;
     }
 }
