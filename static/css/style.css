@@ -58,7 +58,7 @@ article h1 {
     position: absolute;
     top: 150px;
     left: 0;
-
+    overflow:hidden;
     width: 260px;
 	margin-bottom: 20px;
     padding: 30px 10px;
