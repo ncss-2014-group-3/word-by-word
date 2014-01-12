@@ -263,14 +263,7 @@ table.borders td, th {
     padding:10px 4px 10px 4px;
     line-height:18px;
 }
-tr:nth-child(odd)
-{
-background:white;
-}
-tr:nth-child(even)
-{
-background:#e5e5e5;
-}
+
 input { 
     font-family:Helvetica, sans-serif;
     font-size:14px;
@@ -307,6 +300,15 @@ input {
 #storyList {
     box-sizing:border-box;
     width:790px;
+}
+
+#storyList tr:nth-child(odd)
+{
+background:white;
+}
+#storyList tr:nth-child(even)
+{
+background:#e5e5e5;
 }
 
 #storyList a {
