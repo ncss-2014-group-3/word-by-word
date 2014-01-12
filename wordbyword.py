@@ -15,7 +15,6 @@ def get_current_user(response):
         return None
     return user.User.from_username(username.decode())
 
-
 # Create the database
 # database.create()
 #   function:   stories()
@@ -67,6 +66,7 @@ def create(response):
         if len(firstword) > 20:
             errors.append("Your word is too long. Word must be below 21 characters long.")
         author = get_current_user(response)
+        print('author =', author)
         if author is None:
             errors.append('You must be logged in to post a word')
         if not errors:
