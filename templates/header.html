@@ -27,12 +27,11 @@
                     {% end if %}
                     <li><a href="/">Top Stories</a></li><br>
                     {% if user is not None %}
-                        <li><a href="/story">Create a Story</a></li><br><br>
+                        <li><a href="/story">Create a Story</a></li><br>
                         <li><a href="/user/{{ user.username }}">{{ user.username }}'s Profile</a></li><br>
-                        <li><a href="/mystories">My Stories</a></li><br><br>
+                        <li><a href="/mystories">My Stories</a></li><br>
                         <li><a href="/logout">Logout</a></li><br>
                     {% else %}
-                        <br>
                         <li><a href="/login">Login</a></li><br>
                         <li><a href="/register">Register</a></li>
                     {% end if %}
