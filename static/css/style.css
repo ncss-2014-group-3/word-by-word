@@ -158,6 +158,12 @@ form input[type=text] {
 	height: 20px;
 }
 
+form input[type=password] {
+	width: 300px;
+	border: 1px solid #ddd;
+	height: 20px;
+}
+
 form input[type=text].lastname {
 	text-transform: uppercase;
 }
@@ -275,6 +281,13 @@ input {
     
 }
 #tblCreateStory tr  td{
+    padding:5px;
+}
+
+#tbl_create_user {
+    
+}
+#tbl_create_user tr  td{
     padding:5px;
 }
 
