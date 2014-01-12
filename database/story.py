@@ -1,4 +1,6 @@
+import random
 import sqlite3
+
 from .word import Word
 from . import connection
 
@@ -16,13 +18,20 @@ class Story:
         return cla(row[0], first_word, first_word.author, id)
 
     @classmethod
-    def story_list(cls, limit=0):
+    def story_list(cls, limit=10):
         cursor = connection.cursor()
-        stories = cursor.execute('''SELECT stories.storyID FROM stories
-            INNER JOIN words ON words.storyID = stories.storyID
-            INNER JOIN votes ON votes.wordID = words.wordID
+        stories = cursor.execute('''
+            SELECT
+                stories.storyID,
+                (
+                    SELECT COUNT(*)
+                    FROM votes
+                    INNER JOIN words ON words.storyID = stories.storyID
+                    WHERE votes.wordID = words.wordID
+                ) AS n_votes
+            FROM stories
             GROUP BY stories.storyID
-            ORDER BY COUNT(username) DESC
+            ORDER BY n_votes DESC
             LIMIT ?''', (limit,))
         stories_list = []
         for s in stories:
@@ -59,7 +68,7 @@ class Story:
         ''', (self.story_id,))
         return result.fetchone()[0]
 
-    def remove(self): #### BUG WITH REMOVE FUNCTION - AMBIGUOUS COLUMN NAME: WORDID PLEASE FIX
+    def remove(self):
         self.first_word.remove()
         self._cursor.execute('''
             DELETE FROM stories WHERE storyID = ?
@@ -80,3 +89,21 @@ class Story:
             WHERE storyID = ?
         ''', (self.title, self.story_id))
         connection.commit()
+
+    def fixed_words(self):
+        # TODO: Ensure this returns the "best" branch.
+        # e.g. use sorted() based on w.votes
+        def random_child(w):
+            if w.children:
+                w1 = random.choice(w.children)
+                return w1
+            else:
+                return None
+        children = []
+        x = self.first_word
+        while len(children) <= 10 and x is not None:
+            x = random_child(x)
+            children.append(x)
+        if children[-1] is None:
+            children.pop()
+        return " ".join(map(str, children))

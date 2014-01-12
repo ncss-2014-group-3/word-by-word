@@ -1,28 +1,41 @@
-<html>
-    <head>
-    <title>Login</title>
-    <link rel="stylesheet" href="login.css" type="text/css">
-    </head>
+{% include templates/header.html %}
 
+<article>
+    {% if user is not None %}
+        Welcome {{user}}
+    {% end if %}
+    {% if user is None %}
+        <h1>Login</h1>
+        <form id="form1" name="form1" method="post" action="/login">
+            <table id="tbl_input_user">
+                <tr>
+                    <td>Name:</td>
+                    <td><input name="name" id="name" type="text" 
+                    title="Please Enter A User Name" placeholder="Enter Name Here"></td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td>
+                        <input name="password" id="password" 
+                        type="password" title="Please Enter A Password" placeholder="Enter Password Here" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><input name="submit" type="submit" value="Submit"/></td>
+                </tr>
+            </table>
+        </form>
+        {% if login_fail %} 
+            <div id="errorBox">
+            <ul>
+                <li>Login Failed: incorrect username and password</li>
+            </ul>
+            </div>
+        {% end if %} 
 
-    <body>
-{% if user is not None %}
-Welcome {{user}}
-{% end if %}
-{% if user is None %}
-   <h1>Login</h1>
-<form id="form1" name="form1" method="post" action="/login">
-<label>Name:</label><input name="name" id="name" type="text" title="Please Enter A User Name" /><br />
-<label>Password:</label><input name="password" id="password" type="password" title="Please Enter A Password" /><br />
-<input name="submit" type="submit" value="Submit" />
-</form>
-{% if login_fail %} Login Failed: incorrect username and password
-{% end if %} 
-
-{% end if %}
-
+    {% end if %}
+</article>
   
     
-    </body>
-
-    </html>
+{% include templates/footer.html %}

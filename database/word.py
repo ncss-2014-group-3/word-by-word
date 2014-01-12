@@ -74,6 +74,8 @@ class Word:
     
     def add_vote(self, voter):
         self._dir_votes += 1
+        if self.remove_vote(voter): # omg this is so hacky
+            self._dir_votes -= 1
         c = connection.cursor()
         c.execute("""
         INSERT INTO votes VALUES (?,?)
@@ -83,7 +85,7 @@ class Word:
     def remove_vote(self, voter):
         cursor = connection.cursor()
         cursor.execute('''DELETE FROM votes WHERE wordID=? AND username=?''', (self.id, voter.username))
-        cursor.commit()
+        connection.commit()
     
     @property
     def children(self):
@@ -92,13 +94,13 @@ class Word:
             SELECT words.wordID, storyID, word, author, parentID
             FROM words
             WHERE parentID = ?
-            ORDER BY (SELECT COUNT(*) FROM votes WHERE wordID=?)
-        """, (self.id,self.id))
+        """, (self.id,))
         
         children = []
         for childWord in c:
             #id, parentID, storyID, word
             children.append(Word(childWord[0], childWord[1], childWord[2], childWord[3], childWord[4]))
+        children.sort(key=lambda w:w.votes, reverse=True)
         
         return children
 

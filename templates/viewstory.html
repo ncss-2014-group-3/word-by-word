@@ -1,4 +1,5 @@
 {% include templates/header.html %}
+
 <link rel="stylesheet" type="text/css" href="/static/css/viewstory.css">
 <article>    
     <h1 id="main-title">{{ story.title }}</h1>
@@ -9,7 +10,7 @@
               <li> {{ error }} </li>
             </ul>
         {% else %}
-        	success
+        	
         {% end for %}
     </div>
     <content id="story-tree">
