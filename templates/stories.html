@@ -6,18 +6,26 @@
             <th>Title</th>
             <th width="125">Votes</th>
         </tr>
-        {% for story in stories %}
-            <tr class="story-row">
-                <td><a href="/story/{{story.story_id}}">{{ story.title }}</a>
-                    <div class="summary">
-                        <div class="text">
-                        {{story.fixed_words()}}
+        {% if len(stories) %}
+            {% for story in stories %}
+                <tr class="story-row">
+                    <td><a href="/story/{{story.story_id}}">{{ story.title }}</a>
+                        <div class="summary">
+                            <div class="text">
+                            {{story.fixed_words()}}
+                            </div>
                         </div>
-                    </div>
-                </td>
-                <td>{{ story.total_votes }}</td>
-            </tr>
-        {% end for %}
+                    </td>
+                    <td>{{ story.total_votes }}</td>
+                </tr>
+            {% end for %}
+        {% else %}
+            <div id="errorBox">
+                <ul>
+                    <li> There are no stories </li>
+                <ul>
+            </div>
+        {% end if %}
     </table>
 </article>
 {% include templates/footer.html %}
