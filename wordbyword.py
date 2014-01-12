@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import html
 import os
+import re
 
 import tornado.web
 from tornado.ncss import Server
 from template_engine.parser import Parser
-from database import story
-from database import word as word_model
+
+from database import story, word, user
 import database
 # Create the database
 # database.create()
@@ -78,11 +79,11 @@ def create(response):
 def upvote(response, story_id, word_id):
 	if response.request.method == "POST":
 		#Write to databse
-		word = word_model.Word.from_id(word_id)
-		word.add_vote()
+		word_object = word.Word.from_id(word_id)
+		word_object.add_vote()
 		response.redirect("/story/" + str(story_id))
 		
-
+=
 def view_story(response, sid):
 	s = story.Story.from_id(sid)
 	if not s:
@@ -92,11 +93,74 @@ def view_story(response, sid):
 
 def add_word(response, sid, wid):
 	s = story.Story.from_id(sid)
-	w = word_model.Word.from_id(wid)
+	w = word.Word.from_id(wid)
 	new_word = response.get_field("word")
 	w.add_child(new_word)
 	response.redirect("/story/" + str(s.story_id))
 
+def login(response):
+        username = response.get_field('name')
+        password = response.get_field('password')
+        logged_name = response.get_secure_cookie('username')
+        login_fail = False
+        if logged_name is not None:
+                username = logged_name.decode()
+                print('logged in, user =', username)
+        else:
+                if user and password:
+                        if user.User.login(username, password):
+                                print('login success, user =', username)
+                                response.set_secure_cookie('username', username)
+                                response.redirect('/login')
+                                return
+                        else:
+                                login_fail = True
+                                username = password = None
+                else:
+                        username = password = None
+                
+        p = Parser.from_file('templates/login.html')
+        html = p.expand({ 'user' : username, 'login_fail' : login_fail })
+        response.write(html)
+
+def logout(response):
+        response.clear_cookie('username')
+        response.redirect('/login')
+
+def register(response):
+        logged_name = response.get_secure_cookie('username')
+        if logged_name is None:
+                username = response.get_field('name')
+                password = response.get_field('password')
+                print('user,pass =', username, password)
+                if username and password is not None:
+                        good_username = True if re.match(r'^\w+$', username) else False
+                        username_taken = True if user.User.from_username(username) else False
+                        good_password = (len(password) > 4)
+                        print(good_username, good_password, username_taken)
+                        if good_username and good_password and not username_taken:
+                                response.set_secure_cookie('username', username)
+                                user.User.create(username, password)
+                                print(user, password)
+                        else:
+                                username = password = None
+                else:
+                        username = password = None
+                        good_username = good_password = True
+                        username_taken = False
+        else:
+                good_username = good_password = True
+                username_taken = False
+                username = logged_name.decode()
+                
+        p = Parser.from_file('templates/register.html')
+        html = p.expand({
+                'user' : username,
+                'good_username': good_username,
+                'good_password': good_password,
+                'username_taken': username_taken})
+        response.write(html)
+        
 if __name__ == "__main__":
 	server = Server()
 	server.register("/", stories)
@@ -105,4 +169,7 @@ if __name__ == "__main__":
 	server.register("/story/(\d+)", view_story)
 	server.register("/story/(\d+)/word/(\d+)/vote", upvote)
 	server.register("/story/(\d+)/(\d+)/reply", add_word)
+    server.register('/login', login)
+    server.register('/logout', logout)
+    server.register('/register', register)
 	server.run()

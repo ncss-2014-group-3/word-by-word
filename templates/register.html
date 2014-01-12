@@ -1,0 +1,29 @@
+<html>
+    <head>
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css" type="text/css">
+    </head>
+
+
+    <body>
+{% if user is not None %}
+Welcome {{user}}
+{% end if %}
+{% if user is None %}
+<h1>Create account</h1>
+<form method="post">
+<label>Name:</label><input name="name" id="name" type="text" title="Please Type Something"/><br>
+<label>Password:</label><input name="password" id="password" type="password" title=" Please Enter Something"><br>
+<input name="submit" type="submit" value="Submit"/>
+</form>
+{% if good_username == False %} Bad Username. (Username must contain letters, numbers or _ etc.) <br>{% end if %} 
+{% if username_taken == True %} Username already taken. Please try another username! <br>{% end if %} 
+{% if good_password == False %} Bad password.(Must be at least 5 letters!) <br>{% end if %} 
+
+{% end if %}
+
+  
+    
+    </body>
+
+    </html>
