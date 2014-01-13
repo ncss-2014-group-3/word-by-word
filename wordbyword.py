@@ -217,7 +217,7 @@ def register(response):
                     errors.append('Invalid username, usernames must be 3-12 characters and alphanumeric, optionally containing underscores')
                 if user.User.from_username(username) is not None:
                    errors.append('Invalid username, username already taken')
-                if len(password) < 5:
+                if len(password) < 50:
                     errors.append('Invalid password, passwords must be at least 5 characters long')
                 if not errors:
                         response.set_secure_cookie('username', username)
@@ -244,7 +244,7 @@ def profile(response, username):
         variables = { "user":display_user}
         view = p.expand(variables)
         response.write(view)
-        
+
 if __name__ == "__main__":
     server = Server()
     server.register("/", stories)
