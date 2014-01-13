@@ -31,7 +31,7 @@
             {% end for %}
         {% else %}
             <tr colspan="2">
-                <th> There are no stories. <a href=/story>Create one now!</a> </th>
+                <th> There are no stories. {% if user %} <a href=/story>Create one now!</a> </th> {%else%}<a href=\login>Login to create a story!</a>{%end if%}
                 <td></td>
             </td>
         {% end if %}
