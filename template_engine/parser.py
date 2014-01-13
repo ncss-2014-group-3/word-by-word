@@ -1,6 +1,7 @@
 import re
 from .PythonNode import PythonNode
 from .GroupNode import GroupNode
+from .JSONNode import JSONNode
 from .TextNode import TextNode
 from .ForNode import ForNode
 from .IfNode import IfNode
@@ -145,6 +146,10 @@ ParseException: No end for/else
 ' 5 == 5 '
 >>> Parser('{{[s for s in range(9) if s == var]}}').expand({'var':5})
 '[5]'
+>>> Parser('{%json {"bla":["a", "b"]}%}').expand()
+'{"bla": ["a", "b"]}'
+>>> #Parser("{% json {'word':'this', 'id':3, 'childern_ids':[1,2,4]} %}" ).expand()
+>>> #'{"childern_ids": [1, 2, 4], "id": 3, "word": "this"}'
 """
         tree = self.parse_group()
         return tree.render(context)
@@ -169,6 +174,8 @@ ParseException: No end for/else
                 child = self.parse_if()
             elif keyword == 'for':
                 child = self.parse_for()
+            elif keyword == 'json':
+                child = self.parse_json()
             elif keyword in ('end', 'else'):
                 self.prev()
                 return GroupNode([])
@@ -237,6 +244,12 @@ ParseException: No end for/else
 
     def parse_text(self):
         result = TextNode(self.peek())
+        self.next()
+        return result
+
+    def parse_json(self):
+        keyword, json_data = self.split_tag()
+        result = JSONNode(json_data)
         self.next()
         return result
 

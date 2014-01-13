@@ -9,7 +9,7 @@
             {% end for %}
             </ul>
         </div>
-    {% end if %}
+	{% end if %}
     <p id="current-story">
     	<h2>The story so far...</h2>
         {{ story.first_word }} {% include templates/story_part.html word=story.first_word %}
@@ -18,5 +18,118 @@
     <content id="story-tree">
         {% include templates/word.html user=user word=story.first_word story=story %}
     </content>
+    <div id="diagram-tree" />
 </article>
+<script>
+function show_popup(id, x, y) {
+	var offset = $('#diagram-tree').position();
+	var popup = $('#word-' + id);
+	popup.css('left', (x + offset.left) + 'px');
+	popup.css('top', (y + offset.top + 25) + 'px');
+	popup.show();
+}
+
+function hide_popup(id) {
+	$('#word-' + id).hide();
+}
+
+var link_to_children = function(word_id) {
+	var word_span = $("span#" + word_id);
+	var children = $("td#" + word_id + " td#hacks" + word_id + " span.word"); //programming
+	var children = $('#' + word_id + ' > table > tbody > tr > td > .word');
+	console.log('#' + word_id + ' > table > tbody > tr > td > .word');
+	console.log(word_span); 
+	console.log(children, typeof children);
+};
+
+link_to_children({{story.first_word.id}})
+
+var words = {% json story.first_non_fixed().as_json() %}
+
+var single_height = 25;
+function height(node)
+{
+	if (node.children.length > 0){
+		var sum=0;
+		for(var i=0; i<node.children.length; i++)
+		{
+			sum += height(node.children[i]);
+		}
+		return sum;
+	}
+	else{return single_height;}
+}
+
+// Creates canvas 320 × 200 at 10, 50
+var paper = Raphael(document.getElementById("diagram-tree"), 810, 500);
+
+// Creates circle at x = 50, y = 40, with radius 10
+var circle = paper.circle(50, 40, 1000);
+// Sets the fill attribute of the circle to red (#f00)
+circle.attr("fill", 'transparent');
+
+// Sets the stroke attribute of the circle to white
+circle.attr("stroke", "#fff");
+
+draw(paper, words, 50,50);
+
+//var curve = paper.path(path).attr({"stroke-width": 4, "stroke-linecap": "round"});
+function draw(paper, node, left, top) {
+	var node_height = height(node);
+	var node_top = top + (0.5 * node_height);
+	var text = paper.text(left, node_top, node.value);
+	text.attr('font', '20px gotham');
+	var node_width = text.getBBox().width;
+	var child_left = left + node_width + 40;
+	var top_sum = top;
+
+	text.mouseover(function() {
+		var bbox = text.getBBox();
+		show_popup(node.id, bbox.x, bbox.y);
+	});
+
+	$('#word-' + node.id).mouseover(function() {
+		var bbox = text.getBBox();
+		show_popup(node.id, bbox.x, bbox.y);
+	});
+
+	text.mouseout(function() {
+		hide_popup(node.id);
+	});
+
+	$('#word-' + node.id).mouseout(function() {
+		hide_popup(node.id);
+	});
+
+	for (var i = 0; i < node.children.length; i++) {
+		var child_height = height(node.children[i]);
+		var child_width = draw(paper, node.children[i], child_left, top_sum);
+		var path = paper.path("M" + (left + (0.5 * node_width) + 5)  + "," + node_top + "L" + (child_left - (0.5 * child_width)) + "," + (top_sum + (0.5 * child_height)));
+		path.attr("stroke", "#ff7128");
+		path.attr("stroke-width", 4);
+		top_sum += child_height;
+	}
+
+	return node_width;
+}
+
+function draw_line(node)
+{
+	if (node.children.length > 0){
+		var length_word=text.getBBox().width;
+		var parent_x=0;
+		var parent_y=0;
+		var child_x=0;
+		var child_y=0;
+		for(var i=0; i<node.children.length; i++)
+		{
+			var path=paper.path("M10,20L30,40");
+			path.attr("stroke", "#fff");
+		}
+		return;
+	}
+	else{return;}
+}
+
+</script>
 {% include templates/footer.html %}

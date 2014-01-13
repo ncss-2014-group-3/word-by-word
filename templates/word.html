@@ -1,32 +1,22 @@
-<table id="child-{{ word.id }}" class="child">
-	<tr>
-		{% if not word.fixed() %}
-		<td>
-			<span class="word">{{ word.value }}</span>
-            <div class="upvotes">
-                <form method="POST" action="/story/{{ story.story_id }}/word/{{ word.id }}/vote">
-                    {% if user is not None %}
-                        <input type="submit" value="{{ word.votes }} &uarr;" class="up-arrow">
-                    {% else %}
-                        {{ word.votes }}
-                    {% end if %}
-				</form>
-				<!-- <span class="num">0</span> -->
-			</div>
-			<div class="reply">
-				<form method="POST" action="/story/{{ story.story_id }}/{{ word.id }}/reply">
-					<input type="text" name="word" placeholder="Next word" class="auto-submit" autocomplete="off">
-				</form>
-			</div>
-            <div class="clear"></div>
-			{% end if %}
-		</td>
-		{% if word.children %}
-			<td class="children">
-			{% for child in word.children %}
-				{% include templates/word.html user=user word=child story=story %}
-			{% end for %}
-			</td>
-		{% end if %}
-	</tr>
-</table>
+<div class="popup" id="word-{{word.id}}">
+	<div class="vote">
+		Votes: <sup>{{ word.votes }}</sup>
+		<div class="upvotes">
+	    	<form class="vote_button" method="POST" action="/story/{{ story.story_id }}/word/{{ word.id }}/vote">
+				<input type="submit" value = "&uarr;">
+			</form>
+			<!-- <span class="num">0</span> -->
+		</div>
+	</div>
+	<div class="reply" id="new_add_word">
+		<form class = "up" method="POST" action="/story/{{ story.story_id }}/{{ word.id }}/reply">
+			<input type="text" style='font-size:0.7em;'placeholder="Next word" name="word">
+		</form>
+	</div>
+</div>
+
+{% if word.children %}
+	{% for child in word.children %}
+		{% include templates/word.html user=user word=child story=story %}
+	{% end for %}
+{% end if %}

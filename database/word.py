@@ -4,7 +4,7 @@ from . import connection, dict_factory
 
 def cached_property(f):
     """returns a cached property that is calculated by function f"""
-    def get(self):
+    def get(self): #webscale
         try:
             return self._property_cache[f]
         except AttributeError:
@@ -63,6 +63,7 @@ class Word:
         new_word = Word(False, self.story_id, value, author, self.id)
         new_word.save()
         return new_word
+
     def remove(self):
         for child in self.children:
             child.remove()
@@ -79,7 +80,8 @@ class Word:
             count += child.word_count
         return count
 
-    @cached_property
+    # @cached_property
+    @property
     def votes(self):
         return len(self._get_voters())
 
@@ -149,6 +151,17 @@ class Word:
     def fixed(self, n=5):
         return self._deepest_child() > n
 
+
+    def as_json(self):
+        return {
+            'value': self.value,
+            'id': self.id,
+            'parent_id': self.parent_id,
+            'author': self.author,
+            'children': [
+                child.as_json() for child in self.children
+            ]
+        }
 
     @property
     def favourite_child(self):

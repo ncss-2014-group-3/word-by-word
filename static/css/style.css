@@ -58,7 +58,7 @@ article h1 {
     position: fixed;
     top: 150px;
     left: 0;
-
+    overflow:hidden;
     width: 260px;
 	margin-bottom: 20px;
     padding: 30px 10px;
@@ -259,6 +259,7 @@ footer {
     float:center;
     bottom:5px;
     position:fixed;
+    left: 16px;
     
 }
 

@@ -248,7 +248,7 @@ def profile(response, username):
         variables = { "user":display_user}
         view = p.expand(variables)
         response.write(view)
-
+        
 if __name__ == "__main__":
     server = Server()
     server.register("/", stories)
