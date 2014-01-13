@@ -150,6 +150,7 @@ def add_word(response, sid, wid):
         
     if not errors: #if there are no errors
         w.add_child(new_word, author)
+        s.prune()
         response.redirect("/story/" + str(s.story_id))
         return
 

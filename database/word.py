@@ -143,10 +143,10 @@ class Word:
         
     def _deepest_child(self):
         # Depth first, brah.
-        m = 1
+        m = 0
         for child in self.children:
-            m = 1 + max(m, child._deepest_child())
-        return m
+            m = max(m, child._deepest_child())
+        return m + 1
 
     def fixed(self, n=5):
         return self._deepest_child() > n
