@@ -85,7 +85,7 @@ def create(response):
             errors.append("You didn't enter a starting word!")
         if ' ' in firstword:
             errors.append("Please only enter one word")
-        if len(firstword) > 25:
+        if len(firstword) > 50:
             errors.append("Your word is too long. Word must be below 26 characters long")
         author = get_current_user(response)
         if author is None:
@@ -221,7 +221,7 @@ def register(response):
                     errors.append('Invalid username, usernames must be 3-12 characters and alphanumeric, optionally containing underscores')
                 if user.User.from_username(username) is not None:
                    errors.append('Invalid username, username already taken')
-                if len(password) < 50:
+                if len(password) < 5:
                     errors.append('Invalid password, passwords must be at least 5 characters long')
                 if not errors:
                         response.set_secure_cookie('username', username)
