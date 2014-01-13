@@ -208,6 +208,10 @@ def register(response):
         username = response.get_field('name')
         password = response.get_field('password')
         email = response.get_field('email')
+        # the vars to pass to the register form
+        p_username = username
+        p_password = password
+        p_email = email
         print('user,pass =', username, password)
         errors = []
         if username and password is not None:
@@ -233,7 +237,7 @@ def register(response):
         p = Parser.from_file('templates/register.html')
         html = p.expand({
                 'user' : username,
-                'errors': errors})
+                'errors': errors, 'username': p_username, 'password': p_password, 'email': p_email})
         response.write(html)
 
 def profile(response, username):

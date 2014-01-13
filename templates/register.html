@@ -19,20 +19,48 @@
             <table id="tbl_input_user">
                 <tr>
                     <td align="right">*Username:</td>
-                    <td><input name="name" id="name" type="text" 
-                    title="Please Enter A User Name" placeholder="Enter name here" autocomplete="off" autofocus="autofocus"></td>
+                    {% if len(errors) != 0 %}
+                        {% if "Invalid username, usernames must be 3-12 characters and alphanumeric, optionally containing underscores" not in errors %}
+                            <td><input name="name" id="name" type="text" 
+                                title="Please Enter A User Name" {% if username %} value={{ username }} {% end if %} placeholder="Enter name here" autocomplete="off" autofocus="autofocus"></td>
+                        {% else %}
+                            <td><input name="name" id="name" type="text" 
+                                title="Please Enter A User Name" {% if username %} value={{ username }} {% end if %} placeholder="Enter name here" autocomplete="off" autofocus="autofocus"></td>
+                        {% end if %}
+                    {% else %}
+                        <td><input name="name" id="name" type="text" 
+                            title="Please Enter A User Name" placeholder="Enter name here" autocomplete="off" autofocus="autofocus"></td>
+                    {% end if %}
                 </tr>
                 <tr>
                     <td align="right">*Password:</td>
-                    <td>
-                        <input name="password" id="password" 
-                        type="password" title="Please Enter A Password" placeholder="Enter password here" />
-                    </td>
+                    {% if len(errors) != 0 %}
+                        {% if "Invalid password, passwords must be at least 5 characters long" not in errors %}
+                            <td><input name="password" id="password" type="password" 
+                                title="Please Enter A Password" {% if password %} value={{ password }} {% end if %} placeholder="Enter password here" autocomplete="off" autofocus="autofocus"></td>
+                        {% else %}
+                            <td><input name="password" id="password" type="password" 
+                                title="Please Enter A Password" {% if password %} value={{ password }} {% end if %} placeholder="Enter password here" autocomplete="off" autofocus="autofocus"></td>
+                        {% end if %}
+                    {% else %}
+                        <td><input name="password" id="password" type="password" 
+                                title="Please Enter A Password" placeholder="Enter password here" autocomplete="off" autofocus="autofocus"></td>
+                    {% end if %}
                 </tr>
                 <tr>
                     <td align="right">*Email:</td>
-                    <td><input name="email" id="email" type="text" 
-                    title="Please Enter Your Email" placeholder="Enter email here" autocomplete="off"></td>
+                    {% if len(errors) != 0 %}
+                        {% if "Invalid email" not in errors %}
+                            <td><input name="email" id="email" type="text" 
+                                title="Please Enter Your Email" {% if password %} value={{ password }} {% end if %} placeholder="Enter email here" autocomplete="off" autofocus="autofocus"></td>
+                        {% else %}
+                            <td><input name="email" id="email" type="text" 
+                                title="Please Enter Your Email" {% if password %} value={{ password }} {% end if %} placeholder="Enter email here" autocomplete="off" autofocus="autofocus"></td>
+                        {% end if %}
+                    {% else %}
+                        <td><input name="email" id="email" type="text" 
+                                title="Please Enter Your Email" placeholder="Enter email here" autocomplete="off" autofocus="autofocus"></td>
+                    {% end if %}
                 </tr>
                 <tr>
                     <td align="right">Full Name:</td>
