@@ -80,19 +80,19 @@ class Word:
             count += child.word_count
         return count
 
-    # @cached_property
     @property
     def votes(self):
-        return len(self._get_voters())
+        return len(self.voters)
 
-    def _get_voters(self):
+    @cached_property
+    def voters(self):
         users = set()
         cursor = connection.cursor()
         cursor.execute('''SELECT username FROM votes WHERE wordID=?''', (self.id,))
         for user in cursor.fetchall():
             users.add(user)
         for child in self._children_unsorted:
-            users.update(child._get_voters())
+            users.update(child.voters)
         return users
     
     def add_vote(self, voter):
@@ -112,21 +112,11 @@ class Word:
     
     @property
     def children(self):
-        c = connection.cursor()
-        c.execute("""
-            SELECT words.wordID, storyID, word, author, parentID
-            FROM words
-            WHERE parentID = ?
-        """, (self.id,))
-        
-        children = []
-        for childWord in c:
-            #id, parentID, storyID, word
-            children.append(Word(childWord[0], childWord[1], childWord[2], childWord[3], childWord[4]))
-        children.sort(key=lambda w:w.votes, reverse=True)
-        
+        children = self._children_unsorted
+        children = sorted(children, key=lambda w:w.votes, reverse=True)
         return children
-    @property
+
+    @cached_property
     def _children_unsorted(self):
         c = connection.cursor()
         c.execute("""
@@ -134,7 +124,7 @@ class Word:
             FROM words
             WHERE parentID = ?
         """, (self.id,))
-        
+
         children = []
         for childWord in c:
             #id, parentID, storyID, word
