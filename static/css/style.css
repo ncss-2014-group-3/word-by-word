@@ -56,6 +56,7 @@ article#view-story {
 /* headings */
 article h1 {
     position: fixed;
+    z-index:1;
     top: 150px;
     left: 0;
     overflow:hidden;
@@ -198,6 +199,7 @@ form input[type=submit]:active {
 
 header {
     position:fixed;
+    z-index:1;
 	background-color: #ff7128;
     float:left;
 	width: 280px;
@@ -259,6 +261,7 @@ footer {
     float:center;
     bottom:5px;
     position:fixed;
+    z-index:1;
     left: 16px;
     
 }
