@@ -85,7 +85,7 @@ def create(response):
             errors.append("You didn't enter a starting word!")
         if ' ' in firstword:
             errors.append("Please only enter one word")
-        if len(firstword) > 50:
+        if len(firstword) > 25:
             errors.append("Your word is too long. Word must be below 26 characters long")
         author = get_current_user(response)
         if author is None:
@@ -141,8 +141,8 @@ def add_word(response, sid, wid):
     if " " in new_word:
         errors.append("Please only enter one word")
 
-    if len(new_word) > 25:
-        errors.append("Your word is too long. Word must be below 26 characters long")
+    if len(new_word) > 50:
+        errors.append("Your word is too long. Word must be below 51 characters long")
 
     author = get_current_user(response)
     if author is None:
@@ -212,7 +212,7 @@ def register(response):
         p_username = username
         p_password = password
         p_email = email
-        print('user,pass =', username, password)
+
         errors = []
         if username and password is not None:
                 if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$', email) is None:
@@ -248,7 +248,7 @@ def profile(response, username):
         variables = { "user":display_user}
         view = p.expand(variables)
         response.write(view)
-
+        
 if __name__ == "__main__":
     server = Server()
     server.register("/", stories)
