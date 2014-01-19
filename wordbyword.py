@@ -116,16 +116,8 @@ def view_story(response, sid):
     #   current="",#story.current,
     #   tree=render_word(story.first_word, title=True))
     # print("?", html)
-
-    errors = []
-    user_obj = get_current_user(response)
-    if not user_obj:
-        errors.append('You must be logged in to post a word')
-        p = Parser.from_file("templates/viewstory.html")
-        variables = {'errors': errors, "story": s, "user": user_obj}
-        view = p.expand(variables)
-        response.write(view)
     
+    user_obj = get_current_user(response)    
     response.write(p.expand({"story": s, "errors":[], "user": user_obj}))
 
 def add_word(response, sid, wid):
@@ -244,9 +236,9 @@ def register(response):
 def profile(response, username):
         #get request, the list of stories they have made, list of stories they have contributed to maybe, last visit?, 
         display_user = user.User.from_username(username)
-        
+        current_user = get_current_user(response)
         p = Parser.from_file("templates/userProfile.html")
-        variables = { "user":display_user}
+        variables = {"current_user":current_user, "display_user":display_user}
         view = p.expand(variables)
         response.write(view)
         
