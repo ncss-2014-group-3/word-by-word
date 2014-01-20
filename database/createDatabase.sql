@@ -29,4 +29,5 @@ CREATE TABLE users (
     ,password TEXT NOT NULL
     ,fullname TEXT NULL
     ,email TEXT NULL
+    ,salt TEXT NULL
 );
