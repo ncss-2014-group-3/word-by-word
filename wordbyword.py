@@ -241,6 +241,12 @@ def profile(response, username):
         variables = {"current_user":current_user, "display_user":display_user}
         view = p.expand(variables)
         response.write(view)
+
+def scoreboard(response):
+    variables = {'users': user.User.user_list(), 'user': get_current_user(response)}
+    p = Parser.from_file('templates/scoreboard.html')
+    result = p.expand(variables)
+    response.write(result)
         
 if __name__ == "__main__":
     server = Server()
@@ -254,5 +260,6 @@ if __name__ == "__main__":
     server.register('/logout', logout)
     server.register('/register', register)
     server.register('/mystories', my_stories)
+    server.register('/scoreboard', scoreboard)
     server.register('/user/(\w+)', profile)
     server.run()

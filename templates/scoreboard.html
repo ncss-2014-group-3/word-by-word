@@ -1,29 +1,30 @@
-{% include templates/header.html %}
+{% include templates/header.html user=user%}
 <article>
    <h1>Scoreboard</h1>
    <p class = "view"> Users with most votes </p>
     <table class="borders" id="storyList">
         <tr id='bold'>
-            <th>User</th>
+            <th width="200">User</th>
+            <th width="125">Total Votes</th>
+            <th>Top Story</th>
             <th width="125">Votes</th>
         </tr>
         {% if len(users) %}
-            {% for user in users %}
+            {% for u in users %}
                 <tr class="story-row">
-                    <td><a href="/story/{{story.story_id}}">{{ user.username }}</a>
-                        <div class="summary">
-                            <div class="text">
-                            
-                            </div>
-                        </div>
-                    </td>
-                    <td>{{ user.score }}</td>
+                    <td><a href="/user/{{u.username}}">{{ u.username }}</a></td>
+                    <td>{{ u.score }}</td>
+                    {% if u.top_story %}
+                    <td><a href="/story/{{ u.top_story.story_id }}">{{ u.top_story.title }}</a></td>
+                    <td>{{ u.top_story.total_votes }}</td>
+                    {% else %}
+                    <td colspan="2"> This user has yet to author a story </td>
+                    {% end if %}
                 </tr>
             {% end for %}
         {% else %}
-            <tr colspan="2">
-                <th> There are no stories </th>
-                <td></td>
+            <tr colspan="4">
+                <th> There are currently no stories </th>
             </td>
         {% end if %}
     </table>
