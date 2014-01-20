@@ -149,7 +149,7 @@ form input[type=text], form input[type=email], form input[type=password]{
     -webkit-transition: box-shadow 0.1s;
 }
 
-input[type=text]:focus, input[type=password]:focus{
+input[type=text]:focus, input[type=email], input[type=password]:focus{
     box-shadow:inset 1px 1px 6px 0px rgba(50,50,50,0.3);
 }
 
@@ -157,7 +157,7 @@ form label {
 	width: 70px;
 }
 
-form input[type=text] {
+form input[type=text], form input[type=email] {
 	width: 300px;
 	border: 1px solid #ddd;
 	height: 20px;
