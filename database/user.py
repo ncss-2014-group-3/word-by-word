@@ -5,6 +5,21 @@ from database.story import Story
 import hashlib
 
 
+def cached_property(f):
+    """returns a cached property that is calculated by function f"""
+    def get(self): #webscale
+        try:
+            return self._property_cache[f]
+        except AttributeError:
+            self._property_cache = {}
+            x = self._property_cache[f] = f(self)
+            return x
+        except KeyError:
+            x = self._property_cache[f] = f(self)
+            return x
+        
+    return property(get)
+
 class User:
     @classmethod
     def from_username(cla, username):
@@ -43,21 +58,21 @@ class User:
     @classmethod
     def user_list(cls, limit=10):
         cursor = connection.cursor()
-        stories = cursor.execute('''
+        users = cursor.execute('''
             SELECT username, SUM(c) AS s FROM
             (
                 SELECT users.username, COUNT(DISTINCT words.wordID) AS C FROM USERS
                 LEFT OUTER JOIN words ON words.author = users.username
-                LEFT OUTER JOIN votes ON votes,wordID = words.wordID
+                LEFT OUTER JOIN votes ON votes.wordID = words.wordID
                 GROUP BY words.wordID
             )
             GROUP BY username
             ORDER BY s DESC
             LIMIT ?''', (limit,))
-        stories_list = []
-        for s in stories:
-            stories_list.append(Story.from_id(s[0]))
-        return stories_list
+        user_list = []
+        for u in users:
+            user_list.append(User.from_username(u[0]))
+        return user_list
     
     def __init__(self, username):
         self.username = username
@@ -104,4 +119,29 @@ class User:
                                         ''', (self.username,))
         stories = [Story.from_id(x[0]) for x in returnedstories.fetchall()]
         return stories
+
+    @cached_property
+    def top_story(self):
+        cursor = connection.cursor()
+        result = cursor.execute("""
+            SELECT
+                storyID,
+                (
+                SELECT count(*) FROM votes
+                WHERE votes.wordID IN
+                    (SELECT wordID FROM words WHERE words.storyID = stories.storyID)
+                ) as totalVotes
+                ,(
+                SELECT author FROM words WHERE words.storyID = stories.storyID AND
+                    parentID IS NULL
+                ) as sauthor
+            FROM stories
+            WHERE sauthor = ?
+            ORDER BY totalVotes DESC
+            LIMIT 1
+        """, (self.username,))
+        story = result.fetchone()
+        if story is not None:
+            return Story.from_id(story[0])
+        return None
         
