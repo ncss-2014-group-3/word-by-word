@@ -22,14 +22,14 @@
                     {% if len(errors) != 0 %}
                         {% if "Invalid username, usernames must be 3-12 characters and alphanumeric, optionally containing underscores" not in errors %}
                             <td><input name="name" id="name" type="text" 
-                                title="Please Enter A User Name" {% if username %} value={{ username }} {% end if %} placeholder="Enter name here" autocomplete="off" autofocus="autofocus"></td>
+                                title="Please Enter A User Name" {% if username %} value={{ username }} {% end if %} placeholder="Enter name here" autocomplete="off" autofocus="autofocus" /></td>
                         {% else %}
                             <td><input name="name" id="name" type="text" 
-                                title="Please Enter A User Name" {% if username %} value={{ username }} {% end if %} placeholder="Enter name here" autocomplete="off" autofocus="autofocus"></td>
+                                title="Please Enter A User Name" {% if username %} value={{ username }} {% end if %} placeholder="Enter name here" autocomplete="off" autofocus="autofocus" /></td>
                         {% end if %}
                     {% else %}
                         <td><input name="name" id="name" type="text" 
-                            title="Please Enter A User Name" placeholder="Enter name here" autocomplete="off" autofocus="autofocus"></td>
+                            title="Please Enter A User Name" placeholder="Enter name here" autocomplete="off" autofocus="autofocus" /></td>
                     {% end if %}
                 </tr>
                 <tr>
@@ -37,35 +37,35 @@
                     {% if len(errors) != 0 %}
                         {% if "Invalid password, passwords must be at least 5 characters long" not in errors %}
                             <td><input name="password" id="password" type="password" 
-                                title="Please Enter A Password" {% if password %} value={{ password }} {% end if %} placeholder="Enter password here" autocomplete="off" autofocus="autofocus"></td>
+                                title="Please Enter A Password" {% if password %} value={{ password }} {% end if %} placeholder="Enter password here" autocomplete="off" /></td>
                         {% else %}
                             <td><input name="password" id="password" type="password" 
-                                title="Please Enter A Password" {% if password %} value={{ password }} {% end if %} placeholder="Enter password here" autocomplete="off" autofocus="autofocus"></td>
+                                title="Please Enter A Password" {% if password %} value={{ password }} {% end if %} placeholder="Enter password here" autocomplete="off" /></td>
                         {% end if %}
                     {% else %}
                         <td><input name="password" id="password" type="password" 
-                                title="Please Enter A Password" placeholder="Enter password here" autocomplete="off" autofocus="autofocus"></td>
+                                title="Please Enter A Password" placeholder="Enter password here" autocomplete="off" /></td>
                     {% end if %}
                 </tr>
                 <tr>
                     <td align="right">*Email:</td>
                     {% if len(errors) != 0 %}
                         {% if "Invalid email" not in errors %}
-                            <td><input name="email" id="email" type="text" 
-                                title="Please Enter Your Email" {% if email %} value={{ email }} {% end if %} placeholder="Enter email here" autocomplete="off" autofocus="autofocus"></td>
+                            <td><input name="email" id="email" type="email" 
+                                title="Please Enter Your Email" {% if email %} value={{ email }} {% end if %} placeholder="Enter email here" autocomplete="off" /></td>
                         {% else %}
-                            <td><input name="email" id="email" type="text" 
-                                title="Please Enter Your Email" {% if email %} value={{ email }} {% end if %} placeholder="Enter email here" autocomplete="off" autofocus="autofocus"></td>
+                            <td><input name="email" id="email" type="email" 
+                                title="Please Enter Your Email" {% if email %} value={{ email }} {% end if %} placeholder="Enter email here" autocomplete="off" /></td>
                         {% end if %}
                     {% else %}
-                        <td><input name="email" id="email" type="text" 
-                                title="Please Enter Your Email" placeholder="Enter email here" autocomplete="off" autofocus="autofocus"></td>
+                        <td><input name="email" id="email" type="email" 
+                                title="Please Enter Your Email" placeholder="Enter email here" autocomplete="off" /></td>
                     {% end if %}
                 </tr>
                 <tr>
                     <td align="right">Full Name:</td>
                     <td><input name="fullname" id="fullname" type="text" 
-                    title="Please Enter Your Full Name" placeholder="Enter full name here" autocomplete="off"></td>
+                    title="Please Enter Your Full Name" placeholder="Enter full name here" autocomplete="off" /></td>
                 </tr>
                 <tr>
                     <td></td>
