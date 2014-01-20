@@ -306,7 +306,7 @@ table.borders {
     }
 }
 
-tr.story-row:hover {
+tr.story-row:hover, tr.user-row:hover {
     background-color:#ddd !important;
 }
 
@@ -384,11 +384,11 @@ input {
     font-weight:normal;
 }
 
-#bold {
+.bold {
     font-weight:bold;
 }
 
-#normal {
+.normal {
     font-weight:normal;
 }
 
