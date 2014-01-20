@@ -39,7 +39,7 @@ class User:
         if row is None:
             return False
         h = hashlib.sha256()
-        if password == hashlib.sha256((row[0]+str(row[1])).encode('utf-8')).hexdigest(): # check inputted against returned password from db
+        if row[0] == hashlib.sha256((password+row[1]).encode('utf-8')).hexdigest(): # check inputted against returned password from db
             return cla(username) # return User object if True
         else:
             return False
