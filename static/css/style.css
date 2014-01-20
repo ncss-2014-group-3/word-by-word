@@ -365,20 +365,20 @@ input {
     font-family: 'AlegreyaSans', sans-serif;
 }
 
-#storyList {
+#storyList, #userList {
     box-sizing:border-box;
     width: 100%;
 }
 
-#storyList tr:nth-child(odd)
+#storyList tr:nth-child(odd), #userList tr:nth-child(odd)
 {
     background:#e5e5e5;
 }
-#storyList th{   
+#storyList th, #userList th{   
     font-weight: bold;
 }
 
-#storyList a {
+#storyList a, #userList a {
     color:#000;
     text-decoration:underline;
     font-weight:normal;
