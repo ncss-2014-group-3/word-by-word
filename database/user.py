@@ -1,8 +1,7 @@
-import sqlite3
+import sqlite3, hashlib, random, string
 from . import connection
 from database import userStats
 from database.story import Story
-import hashlib
 
 
 def cached_property(f):
@@ -35,11 +34,12 @@ class User:
     def login(cla, username, password):
         check = ''
         cursor = connection.cursor()
-        returned = cursor.execute('SELECT password FROM users WHERE username=?', (username,))
+        returned = cursor.execute('SELECT password,salt FROM users WHERE username=?', (username,))
         row = returned.fetchone()
         if row is None:
             return False
-        if password == row[0]: # check inputted against returned password from db
+        h = hashlib.sha256()
+        if password == hashlib.sha256((row[0]+str(row[1])).encode('utf-8')).hexdigest(): # check inputted against returned password from db
             return cla(username) # return User object if True
         else:
             return False
@@ -52,7 +52,11 @@ class User:
         if row:
             return False # user exists
         elif row is None: # User does not exist, insert a new user into database
-            cursor.execute('''INSERT INTO users VALUES(?,?,?,?)''', (username, password, fullname, email))
+            salt = ''
+            for i in range(32):
+                salt += random.choice(string.printable)
+            password = hashlib.sha256((password+salt).encode('utf-8')).hexdigest()
+            cursor.execute('''INSERT INTO users VALUES(?,?,?,?,?)''', (username, password, fullname, email, salt))
             connection.commit()
             return cla(username) # return User object
     @classmethod
@@ -83,9 +87,13 @@ class User:
         cursor.execute('''DELETE FROM users WHERE username=?''', (self.username,))
         connection.commit()
 
-    def update(self, username, new_password, fullname='User'):
+    def update(self, new_password, fullname='User'):
+        salt = ''
+        for i in range(32):
+            salt += random.choice(string.printable)
+        new_password = hashlib.sha256((new_password+salt).encode('utf-8')).hexdigest()
         cursor = connection.cursor()
-        cursor.execute('''UPDATE users SET password=?, fullname=? WHERE username=?''', (new_password, fullname, username))
+        cursor.execute('''UPDATE users SET password=?, fullname=?, salt=? WHERE username=?''', (new_password, fullname, salt, self.username))
         connection.commit()
 
     @property
