@@ -55,7 +55,7 @@ article#view-story {
 
 /* headings */
 article h1 {
-    position: fixed;
+    position: absolute;
     z-index:1;
     top: 150px;
     left: 0;
@@ -198,7 +198,7 @@ form input[type=submit]:active {
 
 
 header {
-    position:fixed;
+    position: absolute;
     z-index:1;
 	background-color: #ff7128;
     float:left;
@@ -260,7 +260,7 @@ footer {
     font-size:12px;
     float:center;
     bottom:5px;
-    position:fixed;
+    position:absolute;
     z-index:1;
     left: 16px;
     
@@ -306,7 +306,7 @@ table.borders {
     }
 }
 
-tr.story-row:hover {
+tr.story-row:hover, tr.user-row:hover {
     background-color:#ddd !important;
 }
 
@@ -365,30 +365,30 @@ input {
     font-family: 'AlegreyaSans', sans-serif;
 }
 
-#storyList {
+#storyList, #userList {
     box-sizing:border-box;
     width: 100%;
 }
 
-#storyList tr:nth-child(odd)
+#storyList tr:nth-child(odd), #userList tr:nth-child(odd)
 {
     background:#e5e5e5;
 }
-#storyList th{   
+#storyList th, #userList th{   
     font-weight: bold;
 }
 
-#storyList a {
+#storyList a, #userList a {
     color:#000;
     text-decoration:underline;
     font-weight:normal;
 }
 
-#bold {
+.bold {
     font-weight:bold;
 }
 
-#normal {
+.normal {
     font-weight:normal;
 }
 
