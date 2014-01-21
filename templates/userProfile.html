@@ -23,31 +23,47 @@
                 {% end if %}
                 <tr>
                     <td>Total words entered:</td>
-                    <td>{{display_user.stats.total_words}}</td>
+                    <td>{{display_user.total_words}}</td>
                 </tr>
                 <tr>
                     <td>Total stories created:</td>
-                    <td>{{display_user.stats.total_stories_created}}</td>
+                    <td>{{display_user.total_stories}}</td>
                 </tr>
                 <tr>
                     <td>Total stories contributed to:</td>
-                    <td>{{display_user.stats.total_stories_contributed}}</td>
+                    <td>{{display_user.total_stories_contributed}}</td>
                 </tr>
                 <tr>
-                    <td>Total votes:</td>
-                    <td>{{display_user.stats.total_votes}}</td>
+                    <td>Total votes cast:</td>
+                    <td>{{display_user.votes_cast}}</td>
                 </tr>
                 <tr>
-                    <td>Most up-voted word:</td>
-                    <td>{{display_user.stats.most_upvoted_word}}</td>
+                    <td>Best word(s):</td>
+                    {% if display_user.best_words == [] %}
+                    <td class="bold">N/A</td>
+                    {% else %}
+                    <td>
+                    {% for w,v in display_user.best_words %}
+                    	{{w}} ({{v}})
+                    {% end for %}
+                    </td>
+                    {% end if %}
                 </tr>
                 <tr>
-                    <td>Most frequently used word:</td>
-                    <td>{{display_user.stats.frequent_word}}</td>
+                    <td>Most frequently used word(s):</td>
+                    {% if display_user.frequent_words == [] %}
+                    <td class="bold">N/A</td>
+                    {% else %}
+                    <td>{{ ', '.join(display_user.frequent_words) }}</td>
+                    {% end if %}
                 </tr>
                 <tr>
                     <td>Top created story:</td>
-                    <td>{{display_user.stats.top_story}}</td>
+                    {% if display_user.top_story is None %}
+                    <td class="bold">N/A</td>
+                    {% else %}
+                    <td><a href="/story/{{ display_user.top_story.story_id }}">{{display_user.top_story.title}}</a></td>
+                    {% end if %}
                 </tr>
             </table>
         </div>

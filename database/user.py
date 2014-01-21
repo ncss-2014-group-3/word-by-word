@@ -1,7 +1,7 @@
 import sqlite3, hashlib, random, string
 from . import connection
-from database import userStats
 from database.story import Story
+from database.word import Word
 
 
 def cached_property(f):
@@ -80,7 +80,6 @@ class User:
     
     def __init__(self, username):
         self.username = username
-        self.stats = userStats.Stats(username)
 
     def remove(self):
         cursor = connection.cursor()
@@ -152,4 +151,109 @@ class User:
         if story is not None:
             return Story.from_id(story[0])
         return None
-        
+
+    @property
+    def total_words(self):
+        cursor = connection.cursor()
+        result = cursor.execute('''
+            SELECT
+                COUNT(*)
+            FROM words
+            WHERE
+                author = ?
+        ''', (self.username,))
+        return result.fetchone()[0]
+
+    @property
+    def total_stories(self):
+        cursor = connection.cursor()
+        result = cursor.execute('''
+            SELECT
+                 COUNT(*)
+            FROM stories
+            INNER JOIN words ON stories.storyID = words.storyID
+            WHERE
+                words.parentID IS NULL
+                AND words.author = ?
+        ''', (self.username,))
+        return result.fetchone()[0]
+
+    @property
+    def total_stories_contributed(self):
+        cursor = connection.cursor()
+        result = connection.execute('''
+            SELECT
+                 COUNT(DISTINCT storyID)
+            FROM (
+                SELECT storyID FROM words
+                WHERE words.author = ?
+            )
+        ''', (self.username,))
+        return result.fetchone()[0]
+
+    @cached_property
+    def best_words(self):
+        cursor = connection.cursor()
+        result = cursor.execute('''
+            SELECT words.wordID, wordVotes
+            FROM words
+            INNER JOIN (
+                SELECT
+                    words.wordID as wID, COUNT(votes.wordID) as wordVotes
+                FROM
+                    votes
+                LEFT JOIN words on words.wordID=votes.wordID
+                WHERE words.author = ?
+                GROUP BY words.wordID
+            ) ON words.wordID=wID
+            GROUP BY wordID
+            HAVING wordVotes=(
+                SELECT
+                    COUNT(votes.wordID) as wordVotes
+                FROM
+                    votes
+                LEFT JOIN words on words.wordID=votes.wordID
+                WHERE words.author = ?
+                GROUP BY votes.wordID
+                ORDER BY COUNT(votes.wordID) DESC
+                LIMIT 1
+            )
+        ''', (self.username,self.username))
+        results = result.fetchall()
+        words = []
+        for w in results:
+            words.append((Word.from_id(w[0]),w[1]))
+        return words
+
+    @property
+    def votes_cast(self):
+        cursor = connection.cursor()
+        result = cursor.execute('''
+            SELECT count(*) FROM votes
+            WHERE username = ?
+        ''', (self.username,))
+        return result.fetchone()[0]
+
+    @cached_property
+    def frequent_words(self):
+        cursor = connection.cursor()
+        query = cursor.execute('''
+            SELECT LOWER(word)
+            FROM words
+            WHERE author = ?
+            GROUP BY LOWER(word)
+            HAVING COUNT(*) = (
+                SELECT COUNT(LOWER(word)) as wordCount
+                FROM words
+                WHERE author = ?
+                GROUP BY LOWER(word)
+                ORDER BY wordCount DESC
+                LIMIT 1
+            )
+            ORDER BY LOWER(word) ASC
+        ''', (self.username,self.username))
+        results = query.fetchall()
+        words = []
+        for w in results:
+            words.append(w[0])
+        return words
