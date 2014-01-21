@@ -224,10 +224,12 @@ class User:
             )
         ''', (self.username,self.username))
         results = result.fetchall()
+        if results is None:
+            return None
         words = []
         for w in results:
-            words.append((Word.from_id(w[0]),w[1]))
-        return words
+            words.append(Word.from_id(w[0]))
+        return (words,w[1])
 
     @property
     def votes_cast(self):

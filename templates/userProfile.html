@@ -38,13 +38,11 @@
         </tr>
         <tr class="stats-row">
             <td>Best word(s):</td>
-            {% if display_user.best_words == [] %}
+            {% if display_user.best_words is None %}
             <td class="bold">N/A</td>
             {% else %}
             <td class="normal">
-            {% for w,v in display_user.best_words %}
-            	{{w}} ({{v}})
-            {% end for %}
+            {{ ', '.join(map(lambda w:w.value,display_user.best_words[0])) }} ({{ display_user.best_words[1] }})
             </td>
             {% end if %}
         </tr>
