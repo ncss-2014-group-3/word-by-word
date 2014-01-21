@@ -63,16 +63,20 @@ class User:
     def user_list(cls, limit=10):
         cursor = connection.cursor()
         users = cursor.execute('''
-            SELECT username, SUM(c) AS s FROM
-            (
-                SELECT users.username, COUNT(DISTINCT words.wordID) AS C FROM USERS
-                LEFT OUTER JOIN words ON words.author = users.username
-                LEFT OUTER JOIN votes ON votes.wordID = words.wordID
-                GROUP BY words.wordID
-            )
-            GROUP BY username
-            ORDER BY s DESC
-            LIMIT ?''', (limit,))
+            SELECT
+                users.username,count(votes.username) AS totalVotes
+            FROM
+                users
+            LEFT OUTER JOIN
+                words ON users.username=author
+            LEFT OUTER JOIN
+                votes ON words.wordID=votes.wordID
+            GROUP BY
+                users.username
+            ORDER BY
+                totalVotes DESC
+            LIMIT ?
+        ''', (limit,))
         user_list = []
         for u in users:
             user_list.append(User.from_username(u[0]))
