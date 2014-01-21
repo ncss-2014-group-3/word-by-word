@@ -255,7 +255,7 @@ class User:
                 LIMIT 1
             )
             ORDER BY LOWER(word) ASC
-            LIMIT = ?
+            LIMIT ?
         ''', (self.username,self.username,5))
         results = query.fetchall()
         words = []
