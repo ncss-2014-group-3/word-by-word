@@ -175,7 +175,6 @@ def login(response):
         else:
                 if user and password:
                         if user.User.login(username, password):
-                                print('login success, user =', username)
                                 response.set_secure_cookie('username', username)
                                 response.redirect('/')
                                 return
