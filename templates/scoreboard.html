@@ -2,7 +2,7 @@
 <article>
    <h1>Scoreboard</h1>
    <h2>Highest Scoring Users</h2>
-   <p class = "blurb">  Users displayed here are those who have received the highest number of votes for words they have submitted.
+   <p class = "blurb">Users displayed here are those who have received the highest number of votes for words they have submitted.
    <br />
    For each of these users, it also displays their highest ranked story, along with total votes associated with that story.</p>
     <table class="borders" id="userList">
@@ -21,7 +21,7 @@
                     <td class="normal"><a href="/story/{{ u.top_story.story_id }}">{{ u.top_story.title }}</a></td>
                     <td>{{ u.top_story.total_votes }}</td>
                     {% else %}
-                    <td class="normal" colspan="2"> This user has yet to author a story </td>
+                    <td colspan="2"> This user has yet to author a story </td>
                     {% end if %}
                 </tr>
             {% end for %}

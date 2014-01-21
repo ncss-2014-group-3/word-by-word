@@ -2,71 +2,67 @@
 <article id="cuserProfile">
     {% if display_user %}
         <h1>{{display_user.username}}'s profile</h1>
-        
+        <h2>User Info &amp; Statistics</h2>
         <div id="profileImage">
             <img src="{{display_user.image_url}}" alt="{{display_user.username}}" />
         </div>
         
-        <div id="userStats">
-            <table>
-                <tr>
-                    <td>Username:</td>
-                    <td>{{display_user.username}}</td>
-                </tr>
-                {% if current_user %}
-                {% if current_user.username == display_user.username %}
-                <tr>
-                    <td>E-mail:</td>
-                    <td>{{display_user.email}}</td>
-                </tr>
-                {% end if %}
-                {% end if %}
-                <tr>
-                    <td>Total words entered:</td>
-                    <td>{{display_user.total_words}}</td>
-                </tr>
-                <tr>
-                    <td>Total stories created:</td>
-                    <td>{{display_user.total_stories}}</td>
-                </tr>
-                <tr>
-                    <td>Total stories contributed to:</td>
-                    <td>{{display_user.total_stories_contributed}}</td>
-                </tr>
-                <tr>
-                    <td>Total votes cast:</td>
-                    <td>{{display_user.votes_cast}}</td>
-                </tr>
-                <tr>
-                    <td>Best word(s):</td>
-                    {% if display_user.best_words == [] %}
-                    <td class="bold">N/A</td>
-                    {% else %}
-                    <td>
-                    {% for w,v in display_user.best_words %}
-                    	{{w}} ({{v}})
-                    {% end for %}
-                    </td>
-                    {% end if %}
-                </tr>
-                <tr>
-                    <td>Most frequently used word(s):</td>
-                    {% if display_user.frequent_words == [] %}
-                    <td class="bold">N/A</td>
-                    {% else %}
-                    <td>{{ ', '.join(display_user.frequent_words) }}</td>
-                    {% end if %}
-                </tr>
-                <tr>
-                    <td>Top created story:</td>
-                    {% if display_user.top_story is None %}
-                    <td class="bold">N/A</td>
-                    {% else %}
-                    <td><a href="/story/{{ display_user.top_story.story_id }}">{{display_user.top_story.title}}</a></td>
-                    {% end if %}
-                </tr>
-            </table>
-        </div>
+    <table class="borders" id="userStats">
+        <tr class="stats-row">
+            <td>Username:</td>
+            <td class="normal">{{display_user.username}}</td>
+        </tr>
+        {% if current_user %}
+        {% if current_user.username == display_user.username %}
+        <tr class="stats-row">
+            <td>E-mail:</td>
+            <td class="normal">{{display_user.email}}</td>
+        </tr>
+        {% end if %}
+        {% end if %}
+        <tr class="stats-row">
+            <td>Total words entered:</td>
+            <td class="normal">{{display_user.total_words}}</td>
+        </tr>
+        <tr class="stats-row">
+            <td>Total stories created:</td>
+            <td class="normal">{{display_user.total_stories}}</td>
+        </tr>
+        <tr class="stats-row">
+            <td>Total stories contributed to:</td>
+            <td class="normal">{{display_user.total_stories_contributed}}</td>
+        </tr>
+        <tr class="stats-row">
+            <td>Total votes cast:</td>
+            <td class="normal">{{display_user.votes_cast}}</td>
+        </tr>
+        <tr class="stats-row">
+            <td>Best word(s):</td>
+            {% if display_user.best_words is None %}
+            <td class="bold">N/A</td>
+            {% else %}
+            <td class="normal">
+            {{ ', '.join(map(lambda w:w.value,display_user.best_words[0])) }} ({{ display_user.best_words[1] }})
+            </td>
+            {% end if %}
+        </tr>
+        <tr class="stats-row">
+            <td>Most frequently used word(s):</td>
+            {% if display_user.frequent_words == [] %}
+            <td class="bold">N/A</td>
+            {% else %}
+            <td class="normal">{{ ', '.join(display_user.frequent_words) }}</td>
+            {% end if %}
+        </tr>
+        <tr class="stats-row">
+            <td>Top created story:</td>
+            {% if display_user.top_story is None %}
+            <td class="bold">N/A</td>
+            {% else %}
+            <td class="normal"><a href="/story/{{ display_user.top_story.story_id }}">{{display_user.top_story.title}}</a></td>
+            {% end if %}
+        </tr>
+    </table>
     {% else %}
         <h1>User not found</h1>
         <div id="errorBox">
