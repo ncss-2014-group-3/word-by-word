@@ -12,7 +12,7 @@ class Word:
         c.execute("SELECT wordID, storyID, word, author, parentID FROM words WHERE storyID = ? and parentID IS NULL", (story_id,))
         result = c.fetchone()
         if result:
-            return cla(result[0], result[1], result[2], result[3], result[4])
+            return cla(*result)
 
     @classmethod
     def from_id(cla, word_id):
@@ -22,7 +22,7 @@ class Word:
                     WHERE wordID = ?""", (word_id,))
         result = c.fetchone()
         if result:
-            return cla(result[0], result[1], result[2], result[3], result[4])
+            return cla(*result)
 
     def __init__(self, id, story_id, value, author, parent_id=None):
         self.id = id
