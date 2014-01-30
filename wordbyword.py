@@ -3,7 +3,7 @@ import re
 
 import tornado.web
 from tornado.ncss import Server
-from template_engine.parser import Parser
+from template_engine.parser import render
 from database import story, word, user
 import database
 
@@ -35,11 +35,11 @@ def stories(response):
     variables = {'stories': stories, 'user': get_current_user(response)}
     #render the page from the template
     #create the parser object from template file
-    p = Parser.from_file('templates/stories.html')
-    #render the html code in var result
-    result = p.expand(variables) # dict in expand
-    #render the result to the client
-    response.write(result)
+    response.write(render(
+        'templates/stories.html',
+        variables
+    ))
+
 
 def my_stories(response):
     # pretty much the same as stories above
@@ -51,10 +51,13 @@ def my_stories(response):
     else:
         stories = username.own_stories
         variables = {'stories': stories, 'user': get_current_user(response)}
-        p = Parser.from_file('templates/mystories.html')
-        result = p.expand(variables) # dict in expand
-        response.write(result)
-    
+
+        response.write(render(
+            'templates/mystories.html',
+            variables
+        ))
+
+
 def style(response):
     with open('style.css', 'r') as f:
         response.write(f.read())
@@ -71,10 +74,13 @@ def create(response):
     username = response.get_secure_cookie('username')
     if not username:
         errors.append('You must be logged in to post a story')
-        p = Parser.from_file("templates/createastory.html")
         variables = {'errors': errors, 'user': get_current_user(response)}
-        view = p.expand(variables)
-        
+
+        return render(
+            "templates/createastory.html",
+            variables,
+        )
+
     if response.request.method == "POST":
         if not title:
             #we didn't get given a title
@@ -99,26 +105,42 @@ def create(response):
 
         #if there are errors, relay back to user
         errors.append("Please try again.")
-    p = Parser.from_file("templates/createastory.html")
-    variables = {'errors': errors, 'user': get_current_user(response), 'title': title, 'firstword':firstword}
-    view = p.expand(variables)
-    
-    response.write(view)
+
+    variables = {
+        'errors': errors,
+        'user': get_current_user(response),
+        'title': title,
+        'firstword': firstword
+    }
+
+    response.write(render(
+        "templates/createastory.html",
+        variables,
+    ))
+
 
 def view_story(response, sid):
     s = story.Story.from_id(sid)
     if not s:
         raise tornado.web.HTTPError(404)
-    p = Parser.from_file("templates/viewstory.html")
     # html = """
     # """.format(
     #   title=story.title,
     #   current="",#story.current,
     #   tree=render_word(story.first_word, title=True))
     # print("?", html)
-    
-    user_obj = get_current_user(response)    
-    response.write(p.expand({"story": s, "errors":[], "user": user_obj}))
+
+    variables = {
+        "story": s,
+        "errors": [],
+        "user": get_current_user(response)
+    }
+
+    response.write(render(
+        "templates/viewstory.html",
+        variables
+    ))
+
 
 def add_word(response, sid, wid):
     s = story.Story.from_id(sid)
@@ -148,10 +170,16 @@ def add_word(response, sid, wid):
 
     errors.append("Please try again.")
 
-    p = Parser.from_file("templates/viewstory.html")
-    variables = {'errors': errors, "story": s, 'user': get_current_user(response)}
-    view = p.expand(variables)
-    response.write(view)
+    variables = {
+        'errors': errors,
+        "story": s,
+        'user': get_current_user(response)
+    }
+    response.write(render(
+        "templates/viewstory.html",
+        variables,
+    ))
+
 
 def upvote(response, story_id, word_id):
     author = get_current_user(response)
@@ -185,9 +213,11 @@ def login(response):
                 else:
                         username = password = None
                 
-        p = Parser.from_file('templates/login.html')
-        html = p.expand({ 'user' : username, 'login_fail' : login_fail })
-        response.write(html)
+        response.write(render(
+            'templates/login.html',
+            {'user': username, 'login_fail': login_fail}
+        ))
+
 
 def logout(response):
         response.clear_cookie('username')
@@ -227,28 +257,47 @@ def register(response):
                         username = password = None
         else:
                 username = password = None
-                
-        p = Parser.from_file('templates/register.html')
-        html = p.expand({
-                'user' : username,
-                'errors': errors, 'username': p_username, 'password': p_password, 'email': p_email})
-        response.write(html)
+
+        context = {
+            'user': username,
+            'errors': errors,
+            'username': p_username,
+            'password': p_password,
+            'email': p_email
+        }
+        response.write(render(
+            'templates/register.html',
+            context
+        ))
+
 
 def profile(response, username):
         #get request, the list of stories they have made, list of stories they have contributed to maybe, last visit?, 
         display_user = user.User.from_username(username)
         current_user = get_current_user(response)
-        p = Parser.from_file("templates/userProfile.html")
-        variables = {"current_user":current_user, "display_user":display_user}
-        view = p.expand(variables)
-        response.write(view)
+
+        context = {
+            "current_user": current_user,
+            "display_user": display_user
+        }
+
+        response.write(render(
+            "templates/userProfile.html",
+            context
+        ))
+
 
 def scoreboard(response):
-    variables = {'users': user.User.user_list(), 'user': get_current_user(response)}
-    p = Parser.from_file('templates/scoreboard.html')
-    result = p.expand(variables)
-    response.write(result)
-        
+    variables = {
+        'users': user.User.user_list(),
+        'user': get_current_user(response)
+    }
+
+    response.write(render(
+        'templates/scoreboard.html',
+        variables
+    ))
+
 if __name__ == "__main__":
     server = Server()
     server.register("/", stories)

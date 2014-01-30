@@ -1,4 +1,4 @@
-from .parser import Parser
+from .parser import render
 
 
 class IncludeNode:
@@ -13,8 +13,8 @@ class IncludeNode:
                 resolve_context[k] = eval(v, {}, context)
             except (NameError, SyntaxError):
                 return ''
-        result = Parser.from_file(self.file_name).expand(resolve_context)
-        return result    
-    
+
+        return render(self.file_name, resolve_context)
+
     def __repr__(self):
         return "IncludeNode({!r}, {!r})".format(self.file_name, self.context)

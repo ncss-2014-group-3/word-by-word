@@ -17,6 +17,13 @@ class ParseException(Exception):
     pass
 
 
+def render(filename, context=None):
+    context = context or {}
+
+    parser_inst = Parser.from_file(filename)
+    return parser_inst.expand(context)
+
+
 class Parser:
     """ Parser(text) -> parser object
 
@@ -261,9 +268,10 @@ ParseException: No end for/else
                 context[k] = v
 
         if not context:
-            result = Parser.from_file(file_name).expand(context)
-            return TextNode(result)
-        
+            return TextNode(
+                render(file_name, context)
+            )
+
         return IncludeNode(file_name, context)
 
 from .IncludeNode import IncludeNode
