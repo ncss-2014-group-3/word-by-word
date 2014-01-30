@@ -1,5 +1,6 @@
 import html
 
+
 class PythonNode:
     def __init__(self, code):
         self.code = code
@@ -15,4 +16,3 @@ class PythonNode:
     
     def __repr__(self):
         return "PythonNode({!r})".format(self.code)
-    

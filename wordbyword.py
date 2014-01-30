@@ -13,6 +13,7 @@ def get_current_user(response):
         return None
     return user.User.from_username(username.decode())
 
+
 # Create the database
 # database.create()
 #   function:   stories()
@@ -58,6 +59,7 @@ def style(response):
     with open('style.css', 'r') as f:
         response.write(f.read())
 
+
 def create(response):
     #get the variables we need using get_field
     title = response.get_field("title")
@@ -94,7 +96,7 @@ def create(response):
             story_id = new_story.story_id
             response.redirect("/story/" + str(story_id))
             return
-                
+
         #if there are errors, relay back to user
         errors.append("Please try again.")
     p = Parser.from_file("templates/createastory.html")
@@ -122,7 +124,7 @@ def add_word(response, sid, wid):
     s = story.Story.from_id(sid)
     w = word.Word.from_id(wid)
     errors = []
-    
+
     new_word = response.get_field("word").strip()
     #response.redirect("/story/" + str(s.story_id))
     if not new_word:
@@ -137,8 +139,8 @@ def add_word(response, sid, wid):
     author = get_current_user(response)
     if author is None:
         errors.append('You must be logged in to post a word')
-        
-    if not errors: #if there are no errors
+
+    if not errors:  # if there are no errors
         w.add_child(new_word, author)
         s.prune()
         response.redirect("/story/" + str(s.story_id))
@@ -161,6 +163,7 @@ def upvote(response, story_id, word_id):
         w = word.Word.from_id(word_id)
         w.add_vote(author)
     response.redirect("/story/" + str(story_id))
+
 
 def login(response):
         username = response.get_field('name')
@@ -189,6 +192,7 @@ def login(response):
 def logout(response):
         response.clear_cookie('username')
         response.redirect('/')
+
 
 def register(response):
         logged_name = response.get_secure_cookie('username')

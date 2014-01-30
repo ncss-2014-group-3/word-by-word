@@ -49,7 +49,8 @@ class User:
             password = hashlib.sha256((password+salt).encode('utf-8')).hexdigest()
             cursor.execute('''INSERT INTO users VALUES(?,?,?,?,?)''', (username, password, fullname, email, salt))
             connection.commit()
-            return cla(username) # return User object
+            return cla(username)  # return User object
+
     @classmethod
     def user_list(cls, limit=10):
         cursor = connection.cursor()
@@ -72,7 +73,7 @@ class User:
         for u in users:
             user_list.append(User.from_username(u[0]))
         return user_list
-    
+
     def __init__(self, username):
         self.username = username
 
@@ -104,7 +105,7 @@ class User:
         returned = cursor.execute('''SELECT email FROM users WHERE username=? ''', (self.username,))
         email = returned.fetchone()[0]
         return email
-        
+
     @property
     def image_url(self):
         size = 200
@@ -217,10 +218,12 @@ class User:
         results = result.fetchall()
         if not results:
             return None
+
         words = []
         for w in results:
             words.append(Word.from_id(w[0]))
-        return (words,w[1])
+
+        return words, w[1]
 
     @property
     def votes_cast(self):
@@ -249,9 +252,11 @@ class User:
             )
             ORDER BY LOWER(word) ASC
             LIMIT ?
-        ''', (self.username,self.username,5))
+        ''', (self.username, self.username, 5))
         results = query.fetchall()
+
         words = []
         for w in results:
             words.append(w[0])
+
         return words

@@ -7,5 +7,3 @@ class TextNode:
 
     def __repr__(self):
         return 'TextNode({!r})'.format(self.content)
-
-    

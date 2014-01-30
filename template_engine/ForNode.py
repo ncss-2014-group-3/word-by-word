@@ -21,11 +21,10 @@ class ForNode:
             atLeast1 = True
         if not atLeast1 and self.else_group is not None:
             result += self.else_group.render(context)
-            
+
         if name in context:
             del context[name]
         return result
-        
+
     def __repr__(self):
         return 'IfNode({!r})'.format(self.children)
-    

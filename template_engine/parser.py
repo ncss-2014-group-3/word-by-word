@@ -12,6 +12,7 @@ TOKENS = {
     '%}' : 'endtag',
     }
 
+
 class ParseException(Exception):
     pass
 
@@ -20,7 +21,7 @@ class Parser:
     """ Parser(text) -> parser object
 
 Creates a new Parser object from a string that can be expanded. """
-    
+
     def __init__(self, text):
         """ p.__init__(text) initialises the Parser and stores in p. """
         self._tokens = []
@@ -37,13 +38,11 @@ Creates a new Parser object from a string that can be expanded. """
             if minpos == 0:
                 self._tokens.append(TOKENS[mintype])
                 text = text[len(mintype):]
-                
+
             else:
                 self._tokens.append(text[:minpos])
                 text = text[minpos:]
-                
 
-                
         self._length = len(self._tokens)
         self._upto = 0
 
@@ -73,14 +72,14 @@ Creates a new Parser object from a string that can be expanded. """
             keyword, *tag_contents = tag_contents.strip().split()
             return keyword, ' '.join(tag_contents)
         else:
-            return None,None
+            return None, None
 
     @classmethod
     def from_file(cls, file_name):
         with open(file_name) as f:
             text = f.read()
         return Parser(text)
-        
+
     def expand(self, context={}):
         r""" p.expand(context = {}) -> str
 
@@ -162,7 +161,7 @@ ParseException: No end for/else
             self.next()
             child = self.parse_python()
             self.match('endvar')
-            
+
         elif self.peek() == 'starttag':
             self.next()
             tag_contents = self.peek().strip()
@@ -178,7 +177,7 @@ ParseException: No end for/else
             elif keyword in ('end', 'else'):
                 self.prev()
                 return GroupNode([])
-                
+
             self.match('endtag')
         else:
             child = self.parse_text()
@@ -190,14 +189,13 @@ ParseException: No end for/else
 
     def parse_for(self):
         keyword, for_condition = self.split_tag()
-        
 
         self.next()
         self.match('endtag')
         group = self.parse_group()
 
         self.match('starttag', 'end for/else')
-        
+
         keyword, tag_contents = self.split_tag()
         if keyword == 'else':
             self.match('else')
@@ -206,19 +204,19 @@ ParseException: No end for/else
             self.match('starttag')
         else:
             else_group = None
-        
+
         self.match('end for')
-        
+
         return ForNode(for_condition, group, else_group)
-    
+
     def parse_if(self):
         keyword, predicate = self.split_tag()
         self.next()
         self.match('endtag')
-        
+
         group = self.parse_group()
         self.match('starttag', 'end if/else')
-        
+
         keyword, tag_contents = self.split_tag()
 
         if keyword == 'else':
@@ -228,10 +226,9 @@ ParseException: No end for/else
             self.match('starttag')
         else:
             else_group = None
-            
-        
+
         self.match('end if')
-        
+
         return IfNode(predicate, group, else_group)
 
     def parse_python(self):

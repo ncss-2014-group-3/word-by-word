@@ -1,5 +1,6 @@
 import json
 
+
 class JSONNode:
     def __init__(self, code):
         self.code = code
@@ -11,4 +12,3 @@ class JSONNode:
     
     def __repr__(self):
         return "JSONNode({!r})".format(self.code)
-    
