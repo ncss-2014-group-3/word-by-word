@@ -224,7 +224,7 @@ class User:
             )
         ''', (self.username,self.username))
         results = result.fetchall()
-        if results == []:
+        if not results:
             return None
         words = []
         for w in results:
