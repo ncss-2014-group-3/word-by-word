@@ -1,4 +1,7 @@
-import sqlite3, hashlib, random, string
+import hashlib
+import random
+import string
+
 from . import connection
 from database.story import Story
 from database.word import Word

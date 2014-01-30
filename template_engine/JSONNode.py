@@ -1,4 +1,3 @@
-import html
 import json
 
 class JSONNode:

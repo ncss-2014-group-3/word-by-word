@@ -1,4 +1,3 @@
-import sqlite3, hashlib
 from database import connection
 from database import user
 

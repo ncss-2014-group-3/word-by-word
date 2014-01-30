@@ -1,4 +1,3 @@
-import sqlite3
 from .word import Word
 from . import connection
 

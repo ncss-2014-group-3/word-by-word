@@ -1,4 +1,3 @@
-import re
 from .PythonNode import PythonNode
 from .GroupNode import GroupNode
 from .JSONNode import JSONNode
