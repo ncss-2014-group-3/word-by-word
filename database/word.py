@@ -74,8 +74,9 @@ class Word:
         users = set()
         cursor = connection.cursor()
         cursor.execute('SELECT username FROM votes WHERE wordID=?', (self.id,))
-        for user in cursor.fetchall():
-            users.add(user)
+
+        users.update(cursor.fetchall())
+
         for child in self._children_unsorted:
             users.update(child.voters)
         return users
