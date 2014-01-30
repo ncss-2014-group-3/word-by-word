@@ -5,7 +5,9 @@ import tornado.web
 from tornado.ncss import Server
 from template_engine.parser import render
 from database import story, word, user
-import database
+
+EMAIL_RE = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
+
 
 def get_current_user(response):
     username = response.get_secure_cookie('username')
@@ -232,7 +234,7 @@ def register(response):
 
         errors = []
         if username and password is not None:
-                if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$', email) is None:
+                if EMAIL_RE.match(email) is None:
                     errors.append('Invalid email')
                 if re.match(r'^\w{3,12}$', username) is None:
                     errors.append('Invalid username, usernames must be 3-12 characters and alphanumeric, optionally containing underscores')
