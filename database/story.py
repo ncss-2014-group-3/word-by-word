@@ -41,7 +41,7 @@ class Story:
     def __init__(self, title, first_word, author, story_id=None):
         """
         Creates a story
-        arguments: 
+        arguments:
             Title (of story)
             First word (string or word object)
             story id (optional, new story will be created if not specified)
@@ -57,7 +57,8 @@ class Story:
             connection.commit()
 
         if type(first_word) == str:
-            self.first_word = Word(False, self.story_id, first_word, author) #author add
+            # author add
+            self.first_word = Word(False, self.story_id, first_word, author)
         else:
             self.first_word = first_word
 

@@ -6,10 +6,10 @@ from .ForNode import ForNode
 from .IfNode import IfNode
 
 TOKENS = {
-    '{{' : 'startvar',
-    '}}' : 'endvar',
-    '{%' : 'starttag',
-    '%}' : 'endtag',
+    '{{': 'startvar',
+    '}}': 'endvar',
+    '{%': 'starttag',
+    '%}': 'endtag',
     }
 
 

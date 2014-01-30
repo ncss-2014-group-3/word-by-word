@@ -18,14 +18,13 @@ class User:
         cursor = connection.cursor()
         returned = cursor.execute('SELECT username,fullname FROM users WHERE username=?', (username,))
         row = returned.fetchone()
-        if row: # user exists
-            return cla(username) # return User object
-        else: # user does not exist
+        if row:  # user exists
+            return cla(username)  # return User object
+        else:  # user does not exist
             return None
 
     @classmethod
     def login(cla, username, password):
-        check = ''
         cursor = connection.cursor()
         returned = cursor.execute('SELECT password,salt FROM users WHERE username=?', (username,))
         row = returned.fetchone()
@@ -46,8 +45,10 @@ class User:
         returned = cursor.execute('''SELECT username FROM users WHERE username=?''', (username,))
         row = returned.fetchone()
         if row:
-            return False # user exists
-        elif row is None: # User does not exist, insert a new user into database
+            return False  # user exists
+
+        elif row is None:
+            # User does not exist, insert a new user into database
             salt = ''
             for i in range(32):
                 salt += random.choice(string.printable)
@@ -186,7 +187,7 @@ class User:
     @property
     def total_stories_contributed(self):
         cursor = connection.cursor()
-        result = connection.execute('''
+        result = cursor.execute('''
             SELECT
                  COUNT(DISTINCT storyID)
             FROM (
@@ -223,7 +224,7 @@ class User:
                 ORDER BY COUNT(votes.wordID) DESC
                 LIMIT 1
             )
-        ''', (self.username,self.username))
+        ''', (self.username, self.username))
         results = result.fetchall()
         if not results:
             return None

@@ -44,7 +44,6 @@ def stories(response):
 def my_stories(response):
     # pretty much the same as stories above
     username = get_current_user(response)
-    errors = []
     if username is None:
         response.redirect("/")
         return

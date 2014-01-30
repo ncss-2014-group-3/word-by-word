@@ -13,10 +13,10 @@ class ForNode:
         atLeast1 = False
         name = '_item'
         while name in context:
-            name = '_'+ name
-            
+            name = '_' + name
+
         for item in iterator:
-            exec('{} = {}'.format(var, name), {name:item}, context)
+            exec('{} = {}'.format(var, name), {name: item}, context)
             result += self.group.render(context)
             atLeast1 = True
         if not atLeast1 and self.else_group is not None:
