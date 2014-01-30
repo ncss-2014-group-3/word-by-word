@@ -14,27 +14,19 @@ def get_current_user(response):
     return user.User.from_username(username.decode())
 
 
-# Create the database
-# database.create()
-#   function:   stories()
-#   arguments:  response
-#   description:
-#       When the page is called for listing the stories avaliable.
 def stories(response):
-    #list will contain:
-    # title, burb and word count
-    #stories = db.story_list()
-    #require db.story_list_data()
-    # arguments: no args
-    # returns: title, short burb and word count
-    stories = story.Story.story_list()
-    #v = stories[0].first_word.add_child("word2")
-    #print(v)
-    # story_list_data should return:
-    #   titles and word count
-    variables = {'stories': stories, 'user': get_current_user(response)}
-    #render the page from the template
-    #create the parser object from template file
+    """
+    function:   stories()
+    arguments:  response
+    description:
+        When the page is called for listing the stories avaliable.
+    """
+
+    variables = {
+        'stories': story.Story.story_list(),
+        'user': get_current_user(response)
+    }
+
     response.write(render(
         'templates/stories.html',
         variables
@@ -43,13 +35,17 @@ def stories(response):
 
 def my_stories(response):
     # pretty much the same as stories above
+
     username = get_current_user(response)
     if username is None:
         response.redirect("/")
         return
+
     else:
-        stories = username.own_stories
-        variables = {'stories': stories, 'user': get_current_user(response)}
+        variables = {
+            'stories': username.own_stories,
+            'user': get_current_user(response)
+        }
 
         response.write(render(
             'templates/mystories.html',
@@ -63,11 +59,11 @@ def style(response):
 
 
 def create(response):
-    #get the variables we need using get_field
+    # get the variables we need using get_field
     title = response.get_field("title")
     firstword = response.get_field("firstword")
     # a list of strings of things that went wrong
-    #we will give this to the template.
+    # we will give this to the template.
     errors = []
 
     username = response.get_secure_cookie('username')
@@ -119,18 +115,12 @@ def create(response):
 
 
 def view_story(response, sid):
-    s = story.Story.from_id(sid)
-    if not s:
+    story_inst = story.Story.from_id(sid)
+    if not story_inst:
         raise tornado.web.HTTPError(404)
-    # html = """
-    # """.format(
-    #   title=story.title,
-    #   current="",#story.current,
-    #   tree=render_word(story.first_word, title=True))
-    # print("?", html)
 
     variables = {
-        "story": s,
+        "story": story_inst,
         "errors": [],
         "user": get_current_user(response)
     }
@@ -142,12 +132,12 @@ def view_story(response, sid):
 
 
 def add_word(response, sid, wid):
-    s = story.Story.from_id(sid)
-    w = word.Word.from_id(wid)
+    story_inst = story.Story.from_id(sid)
+    word_inst = word.Word.from_id(wid)
     errors = []
 
     new_word = response.get_field("word").strip()
-    #response.redirect("/story/" + str(s.story_id))
+
     if not new_word:
         errors.append("Please enter a word")
 
@@ -162,16 +152,16 @@ def add_word(response, sid, wid):
         errors.append('You must be logged in to post a word')
 
     if not errors:  # if there are no errors
-        w.add_child(new_word, author)
-        s.prune()
-        response.redirect("/story/" + str(s.story_id))
+        word_inst.add_child(new_word, author)
+        story_inst.prune()
+        response.redirect("/story/{}".format(story_inst.story_id))
         return
 
     errors.append("Please try again.")
 
     variables = {
         'errors': errors,
-        "story": s,
+        "story": story_inst,
         'user': get_current_user(response)
     }
     response.write(render(
@@ -181,15 +171,19 @@ def add_word(response, sid, wid):
 
 
 def upvote(response, story_id, word_id):
+    # TODO; actually use the errors
+
     author = get_current_user(response)
     errors = []
     if author is None:
         errors.append('You must be logged in to upvote a word')
+
     if response.request.method == "POST" and not errors:
-        #Write to databse
-        w = word.Word.from_id(word_id)
-        w.add_vote(author)
-    response.redirect("/story/" + str(story_id))
+        # Write to database
+        word_inst = word.Word.from_id(word_id)
+        word_inst.add_vote(author)
+
+    response.redirect("/story/{}".format(story_id))
 
 
 def login(response):
@@ -271,7 +265,8 @@ def register(response):
 
 
 def profile(response, username):
-        #get request, the list of stories they have made, list of stories they have contributed to maybe, last visit?, 
+        # get request, the list of stories they have made,
+        # list of stories they have contributed to maybe, last visit?,
         display_user = user.User.from_username(username)
         current_user = get_current_user(response)
 
