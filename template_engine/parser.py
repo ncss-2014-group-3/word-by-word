@@ -87,7 +87,7 @@ Creates a new Parser object from a string that can be expanded. """
             text = f.read()
         return Parser(text)
 
-    def expand(self, context={}):
+    def expand(self, context=None):
         r""" p.expand(context = {}) -> str
 
 expanded form of the text given in the constructor.
@@ -156,6 +156,9 @@ ParseException: No end for/else
 >>> #Parser("{% json {'word':'this', 'id':3, 'childern_ids':[1,2,4]} %}" ).expand()
 >>> #'{"childern_ids": [1, 2, 4], "id": 3, "word": "this"}'
 """
+
+        context = context or {}
+
         tree = self.parse_group()
         return tree.render(context)
 
