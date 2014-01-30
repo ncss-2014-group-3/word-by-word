@@ -8,7 +8,9 @@ from database.story import Story
 from database.word import Word
 
 
- 
+def password_hash(password, salt):
+    return hashlib.sha256((password+salt).encode('utf-8')).hexdigest()
+
 
 class User:
     @classmethod
@@ -29,9 +31,12 @@ class User:
         row = returned.fetchone()
         if row is None:
             return False
-        h = hashlib.sha256()
-        if row[0] == hashlib.sha256((password+row[1]).encode('utf-8')).hexdigest(): # check inputted against returned password from db
-            return cla(username) # return User object if True
+
+        hashed = hashlib.sha256((password+row[1]).encode('utf-8')).hexdigest()
+
+        # check inputted against returned password from db
+        if row[0] == hashed:
+            return cla(username)  # return User object if True
         else:
             return False
 
@@ -46,8 +51,12 @@ class User:
             salt = ''
             for i in range(32):
                 salt += random.choice(string.printable)
-            password = hashlib.sha256((password+salt).encode('utf-8')).hexdigest()
-            cursor.execute('''INSERT INTO users VALUES(?,?,?,?,?)''', (username, password, fullname, email, salt))
+            password = password_hash(password, salt)
+
+            cursor.execute(
+                '''INSERT INTO users VALUES(?,?,?,?,?)''',
+                (username, password, fullname, email, salt)
+            )
             connection.commit()
             return cla(username)  # return User object
 
@@ -86,7 +95,7 @@ class User:
         salt = ''
         for i in range(32):
             salt += random.choice(string.printable)
-        new_password = hashlib.sha256((new_password+salt).encode('utf-8')).hexdigest()
+        new_password = password_hash(new_password, salt)
         cursor = connection.cursor()
         cursor.execute('''UPDATE users SET password=?, fullname=?, salt=? WHERE username=?''', (new_password, fullname, salt, self.username))
         connection.commit()
