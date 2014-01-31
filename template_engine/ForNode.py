@@ -13,19 +13,18 @@ class ForNode:
         atLeast1 = False
         name = '_item'
         while name in context:
-            name = '_'+ name
-            
+            name = '_' + name
+
         for item in iterator:
-            exec('{} = {}'.format(var, name), {name:item}, context)
+            exec('{} = {}'.format(var, name), {name: item}, context)
             result += self.group.render(context)
             atLeast1 = True
         if not atLeast1 and self.else_group is not None:
             result += self.else_group.render(context)
-            
+
         if name in context:
             del context[name]
         return result
-        
+
     def __repr__(self):
         return 'IfNode({!r})'.format(self.children)
-    

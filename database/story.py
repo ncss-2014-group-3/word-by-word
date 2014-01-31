@@ -1,15 +1,17 @@
-import sqlite3
 from .word import Word
 from . import connection
 
+
 class Story:
     @classmethod
-    def from_id(cla,id):
+    def from_id(cla, id):
         cursor = connection.cursor()
         cursor.execute('''SELECT name FROM stories WHERE storyID = ?''', (id,))
         row = cursor.fetchone()
+
         if row is None:
             return None
+
         first_word = Word.from_story_id(id)
         if first_word is None:
             return None
@@ -39,7 +41,7 @@ class Story:
     def __init__(self, title, first_word, author, story_id=None):
         """
         Creates a story
-        arguments: 
+        arguments:
             Title (of story)
             First word (string or word object)
             story id (optional, new story will be created if not specified)
@@ -48,15 +50,18 @@ class Story:
         self.story_id = story_id
         self._cursor = connection.cursor()
         self.first_word = first_word
+
         if not self.story_id:
             self._cursor.execute('''INSERT INTO stories (name) VALUES (?)''', (self.title,))
             self.story_id = self._cursor.lastrowid
             connection.commit()
+
         if type(first_word) == str:
-            self.first_word = Word(False, self.story_id, first_word, author) #author add
+            # author add
+            self.first_word = Word(False, self.story_id, first_word, author)
         else:
             self.first_word = first_word
-    
+
     @property
     def total_votes(self):
         result = self._cursor.execute('''
@@ -72,7 +77,7 @@ class Story:
             DELETE FROM stories WHERE storyID = ?
         ''', (self.story_id,))
         connection.commit()
-        
+
     @property
     def word_count(self):
         return self.first_word.word_count
@@ -83,11 +88,10 @@ class Story:
 
     def walk_first_words(self, num=10):
         word = self.first_word
-        for _ in range(num):
+
+        while word:
             yield word
             word = word.favourite_child
-            if not word:
-                break
 
     def first_non_fixed(self):
         word = self.first_word

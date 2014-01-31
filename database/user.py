@@ -1,23 +1,16 @@
-import sqlite3, hashlib, random, string
+import hashlib
+import random
+import string
+
 from . import connection
+from . import cached_property
 from database.story import Story
 from database.word import Word
 
 
-def cached_property(f):
-    """returns a cached property that is calculated by function f"""
-    def get(self): #webscale
-        try:
-            return self._property_cache[f]
-        except AttributeError:
-            self._property_cache = {}
-            x = self._property_cache[f] = f(self)
-            return x
-        except KeyError:
-            x = self._property_cache[f] = f(self)
-            return x
-        
-    return property(get)
+def password_hash(password, salt):
+    return hashlib.sha256((password+salt).encode('utf-8')).hexdigest()
+
 
 class User:
     @classmethod
@@ -25,22 +18,24 @@ class User:
         cursor = connection.cursor()
         returned = cursor.execute('SELECT username,fullname FROM users WHERE username=?', (username,))
         row = returned.fetchone()
-        if row: # user exists
-            return cla(username) # return User object
-        else: # user does not exist
+        if row:  # user exists
+            return cla(username)  # return User object
+        else:  # user does not exist
             return None
 
     @classmethod
     def login(cla, username, password):
-        check = ''
         cursor = connection.cursor()
         returned = cursor.execute('SELECT password,salt FROM users WHERE username=?', (username,))
         row = returned.fetchone()
         if row is None:
             return False
-        h = hashlib.sha256()
-        if row[0] == hashlib.sha256((password+row[1]).encode('utf-8')).hexdigest(): # check inputted against returned password from db
-            return cla(username) # return User object if True
+
+        hashed = hashlib.sha256((password+row[1]).encode('utf-8')).hexdigest()
+
+        # check inputted against returned password from db
+        if row[0] == hashed:
+            return cla(username)  # return User object if True
         else:
             return False
 
@@ -50,15 +45,22 @@ class User:
         returned = cursor.execute('''SELECT username FROM users WHERE username=?''', (username,))
         row = returned.fetchone()
         if row:
-            return False # user exists
-        elif row is None: # User does not exist, insert a new user into database
+            return False  # user exists
+
+        elif row is None:
+            # User does not exist, insert a new user into database
             salt = ''
             for i in range(32):
                 salt += random.choice(string.printable)
-            password = hashlib.sha256((password+salt).encode('utf-8')).hexdigest()
-            cursor.execute('''INSERT INTO users VALUES(?,?,?,?,?)''', (username, password, fullname, email, salt))
+            password = password_hash(password, salt)
+
+            cursor.execute(
+                '''INSERT INTO users VALUES(?,?,?,?,?)''',
+                (username, password, fullname, email, salt)
+            )
             connection.commit()
-            return cla(username) # return User object
+            return cla(username)  # return User object
+
     @classmethod
     def user_list(cls, limit=10):
         cursor = connection.cursor()
@@ -81,7 +83,7 @@ class User:
         for u in users:
             user_list.append(User.from_username(u[0]))
         return user_list
-    
+
     def __init__(self, username):
         self.username = username
 
@@ -94,7 +96,7 @@ class User:
         salt = ''
         for i in range(32):
             salt += random.choice(string.printable)
-        new_password = hashlib.sha256((new_password+salt).encode('utf-8')).hexdigest()
+        new_password = password_hash(new_password, salt)
         cursor = connection.cursor()
         cursor.execute('''UPDATE users SET password=?, fullname=?, salt=? WHERE username=?''', (new_password, fullname, salt, self.username))
         connection.commit()
@@ -113,7 +115,7 @@ class User:
         returned = cursor.execute('''SELECT email FROM users WHERE username=? ''', (self.username,))
         email = returned.fetchone()[0]
         return email
-        
+
     @property
     def image_url(self):
         size = 200
@@ -185,7 +187,7 @@ class User:
     @property
     def total_stories_contributed(self):
         cursor = connection.cursor()
-        result = connection.execute('''
+        result = cursor.execute('''
             SELECT
                  COUNT(DISTINCT storyID)
             FROM (
@@ -222,14 +224,16 @@ class User:
                 ORDER BY COUNT(votes.wordID) DESC
                 LIMIT 1
             )
-        ''', (self.username,self.username))
+        ''', (self.username, self.username))
         results = result.fetchall()
-        if results == []:
+        if not results:
             return None
+
         words = []
         for w in results:
             words.append(Word.from_id(w[0]))
-        return (words,w[1])
+
+        return words, w[1]
 
     @property
     def votes_cast(self):
@@ -258,9 +262,11 @@ class User:
             )
             ORDER BY LOWER(word) ASC
             LIMIT ?
-        ''', (self.username,self.username,5))
+        ''', (self.username, self.username, 5))
         results = query.fetchall()
+
         words = []
         for w in results:
             words.append(w[0])
+
         return words

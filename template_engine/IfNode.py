@@ -1,5 +1,5 @@
 class IfNode:
-    def __init__(self, predicate, group_true, group_false = None):
+    def __init__(self, predicate, group_true, group_false=None):
         self.predicate = predicate
         self.group_true = group_true
         self.group_false = group_false
@@ -15,4 +15,3 @@ class IfNode:
 
     def __repr__(self):
         return 'IfNode({!r})'.format(self.children)
-    

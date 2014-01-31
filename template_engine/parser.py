@@ -1,4 +1,3 @@
-import re
 from .PythonNode import PythonNode
 from .GroupNode import GroupNode
 from .JSONNode import JSONNode
@@ -7,21 +6,29 @@ from .ForNode import ForNode
 from .IfNode import IfNode
 
 TOKENS = {
-    '{{' : 'startvar',
-    '}}' : 'endvar',
-    '{%' : 'starttag',
-    '%}' : 'endtag',
+    '{{': 'startvar',
+    '}}': 'endvar',
+    '{%': 'starttag',
+    '%}': 'endtag',
     }
+
 
 class ParseException(Exception):
     pass
+
+
+def render(filename, context=None):
+    context = context or {}
+
+    parser_inst = Parser.from_file(filename)
+    return parser_inst.expand(context)
 
 
 class Parser:
     """ Parser(text) -> parser object
 
 Creates a new Parser object from a string that can be expanded. """
-    
+
     def __init__(self, text):
         """ p.__init__(text) initialises the Parser and stores in p. """
         self._tokens = []
@@ -38,13 +45,11 @@ Creates a new Parser object from a string that can be expanded. """
             if minpos == 0:
                 self._tokens.append(TOKENS[mintype])
                 text = text[len(mintype):]
-                
+
             else:
                 self._tokens.append(text[:minpos])
                 text = text[minpos:]
-                
 
-                
         self._length = len(self._tokens)
         self._upto = 0
 
@@ -74,15 +79,15 @@ Creates a new Parser object from a string that can be expanded. """
             keyword, *tag_contents = tag_contents.strip().split()
             return keyword, ' '.join(tag_contents)
         else:
-            return None,None
+            return None, None
 
     @classmethod
     def from_file(cls, file_name):
         with open(file_name) as f:
             text = f.read()
         return Parser(text)
-        
-    def expand(self, context={}):
+
+    def expand(self, context=None):
         r""" p.expand(context = {}) -> str
 
 expanded form of the text given in the constructor.
@@ -151,6 +156,9 @@ ParseException: No end for/else
 >>> #Parser("{% json {'word':'this', 'id':3, 'childern_ids':[1,2,4]} %}" ).expand()
 >>> #'{"childern_ids": [1, 2, 4], "id": 3, "word": "this"}'
 """
+
+        context = context or {}
+
         tree = self.parse_group()
         return tree.render(context)
 
@@ -163,7 +171,7 @@ ParseException: No end for/else
             self.next()
             child = self.parse_python()
             self.match('endvar')
-            
+
         elif self.peek() == 'starttag':
             self.next()
             tag_contents = self.peek().strip()
@@ -179,7 +187,7 @@ ParseException: No end for/else
             elif keyword in ('end', 'else'):
                 self.prev()
                 return GroupNode([])
-                
+
             self.match('endtag')
         else:
             child = self.parse_text()
@@ -191,14 +199,13 @@ ParseException: No end for/else
 
     def parse_for(self):
         keyword, for_condition = self.split_tag()
-        
 
         self.next()
         self.match('endtag')
         group = self.parse_group()
 
         self.match('starttag', 'end for/else')
-        
+
         keyword, tag_contents = self.split_tag()
         if keyword == 'else':
             self.match('else')
@@ -207,19 +214,19 @@ ParseException: No end for/else
             self.match('starttag')
         else:
             else_group = None
-        
+
         self.match('end for')
-        
+
         return ForNode(for_condition, group, else_group)
-    
+
     def parse_if(self):
         keyword, predicate = self.split_tag()
         self.next()
         self.match('endtag')
-        
+
         group = self.parse_group()
         self.match('starttag', 'end if/else')
-        
+
         keyword, tag_contents = self.split_tag()
 
         if keyword == 'else':
@@ -229,10 +236,9 @@ ParseException: No end for/else
             self.match('starttag')
         else:
             else_group = None
-            
-        
+
         self.match('end if')
-        
+
         return IfNode(predicate, group, else_group)
 
     def parse_python(self):
@@ -265,9 +271,10 @@ ParseException: No end for/else
                 context[k] = v
 
         if not context:
-            result = Parser.from_file(file_name).expand(context)
-            return TextNode(result)
-        
+            return TextNode(
+                render(file_name, context)
+            )
+
         return IncludeNode(file_name, context)
 
 from .IncludeNode import IncludeNode
