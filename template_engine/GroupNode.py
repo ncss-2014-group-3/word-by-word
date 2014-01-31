@@ -10,4 +10,3 @@ class GroupNode:
 
     def __repr__(self):
         return 'GroupNode({!r})'.format(self.children)
-    

@@ -1,5 +1,6 @@
 import html
 
+
 class PythonNode:
     def __init__(self, code):
         self.code = code
@@ -10,9 +11,7 @@ class PythonNode:
         except (NameError, SyntaxError):
             return ''
         else:
-            return '' if result == None else html.escape(str(result))
-    
-    
+            return '' if result is None else html.escape(str(result))
+
     def __repr__(self):
         return "PythonNode({!r})".format(self.code)
-    

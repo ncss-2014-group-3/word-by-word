@@ -1,21 +1,6 @@
-import sqlite3
+from . import connection
+from . import cached_property
 
-from . import connection, dict_factory
-
-def cached_property(f):
-    """returns a cached property that is calculated by function f"""
-    def get(self): #webscale
-        try:
-            return self._property_cache[f]
-        except AttributeError:
-            self._property_cache = {}
-            x = self._property_cache[f] = f(self)
-            return x
-        except KeyError:
-            x = self._property_cache[f] = f(self)
-            return x
-        
-    return property(get)
 
 class Word:
     @classmethod
@@ -27,8 +12,8 @@ class Word:
         c.execute("SELECT wordID, storyID, word, author, parentID FROM words WHERE storyID = ? and parentID IS NULL", (story_id,))
         result = c.fetchone()
         if result:
-            return cla(result[0],result[1], result[2], result[3], result[4])
-    
+            return cla(*result)
+
     @classmethod
     def from_id(cla, word_id):
         c = connection.cursor()
@@ -37,9 +22,9 @@ class Word:
                     WHERE wordID = ?""", (word_id,))
         result = c.fetchone()
         if result:
-            return cla(result[0],result[1], result[2], result[3], result[4])
-        
-    def __init__(self, id, story_id, value, author, parent_id = None):
+            return cla(*result)
+
+    def __init__(self, id, story_id, value, author, parent_id=None):
         self.id = id
         self.parent_id = parent_id
         self.story_id = story_id
@@ -58,7 +43,7 @@ class Word:
 
     def __str__(self):
         return self.value
-        
+
     def add_child(self, value, author):
         new_word = Word(False, self.story_id, value, author, self.id)
         new_word.save()
@@ -72,10 +57,10 @@ class Word:
         DELETE FROM words WHERE wordID = ?
         """, (self.id,))
         connection.commit()
-        
+
     @property
     def word_count(self):
-        count = 1 #account for self
+        count = 1  # account for self
         for child in self.children:
             count += child.word_count
         return count
@@ -88,13 +73,14 @@ class Word:
     def voters(self):
         users = set()
         cursor = connection.cursor()
-        cursor.execute('''SELECT username FROM votes WHERE wordID=?''', (self.id,))
-        for user in cursor.fetchall():
-            users.add(user)
+        cursor.execute('SELECT username FROM votes WHERE wordID=?', (self.id,))
+
+        users.update(cursor.fetchall())
+
         for child in self._children_unsorted:
             users.update(child.voters)
         return users
-    
+
     def add_vote(self, voter):
         self._dir_votes += 1
         if self.remove_vote(voter):
@@ -102,18 +88,21 @@ class Word:
         c = connection.cursor()
         c.execute("""
         INSERT INTO votes VALUES (?,?)
-        """, (self.id,voter.username))
+        """, (self.id, voter.username))
         connection.commit()
-    
+
     def remove_vote(self, voter):
         cursor = connection.cursor()
-        cursor.execute('''DELETE FROM votes WHERE wordID=? AND username=?''', (self.id, voter.username))
+        cursor.execute(
+            'DELETE FROM votes WHERE wordID=? AND username=?',
+            (self.id, voter.username)
+        )
         connection.commit()
-    
+
     @property
     def children(self):
         children = self._children_unsorted
-        children = sorted(children, key=lambda w:w.votes, reverse=True)
+        children = sorted(children, key=lambda w: w.votes, reverse=True)
         return children
 
     @cached_property
@@ -140,7 +129,6 @@ class Word:
 
     def fixed(self, n=5):
         return self._deepest_child() > n
-
 
     def as_json(self):
         return {
@@ -182,6 +170,7 @@ class Word:
 
     def save(self):
         c = connection.cursor()
+
         if self.id:
             #print('[save] update')
             c.execute("""
@@ -195,6 +184,7 @@ class Word:
                     wordID = ?
                 """, (self.story_id, self.value, self.parent_id, self.author.username, self.id))
             connection.commit()
+
         else:
             #print('[save] insert')
             c.execute("""
