@@ -54,12 +54,6 @@ def my_stories(response):
             username.own_stories
         )
 
-
-def style(response):
-    with open('style.css', 'r') as f:
-        response.write(f.read())
-
-
 def create(response):
     # get the variables we need using get_field
     title = response.get_field("title")
@@ -303,7 +297,6 @@ def scoreboard(response):
 if __name__ == "__main__":
     server = Server()
     server.register("/", stories)
-    server.register("/style.css", style)
     server.register("/story", create)
     server.register("/story/(\d+)", view_story)
     server.register("/story/(\d+)/word/(\d+)/vote(/remove)?", vote)
