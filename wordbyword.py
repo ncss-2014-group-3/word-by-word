@@ -38,23 +38,12 @@ def stories(response):
 
 
 def my_stories(response):
-    # pretty much the same as stories above
-
     username = get_current_user(response)
     if username is None:
         response.redirect("/")
         return
 
-    else:
-        variables = {
-            'stories': username.own_stories,
-            'user': get_current_user(response)
-        }
-
-        response.write(render(
-            'templates/mystories.html',
-            variables
-        ))
+    return stories(response)
 
 
 def style(response):
