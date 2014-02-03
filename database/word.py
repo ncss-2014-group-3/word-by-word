@@ -105,8 +105,8 @@ class Word(object):
     @property
     def children(self):
         children = self._children_unsorted
-        children = sorted(children, key=lambda w: w.votes, reverse=True)
-        return children
+
+        return sorted(children, key=lambda w: w.votes, reverse=True)
 
     @cached_property
     def _children_unsorted(self):
@@ -117,12 +117,8 @@ class Word(object):
             WHERE parentID = ?
         """, (self.id,))
 
-        children = []
-        for childWord in c:
-            #id, parentID, storyID, word
-            children.append(Word(childWord[0], childWord[1], childWord[2], childWord[3], childWord[4]))        
-        return children
-        
+        return list(map(Word, c))
+
     def _deepest_child(self):
         # Depth first, brah.
         m = 0

@@ -34,11 +34,12 @@ class Story(object):
             GROUP BY stories.storyID
             ORDER BY n_votes DESC
             LIMIT ?''', (limit,))
-        stories_list = []
-        for s in stories:
-            stories_list.append(Story.from_id(s[0]))
-        return stories_list
-            
+
+        return [
+            Story.from_id(s[0])
+            for s in stories
+        ]
+
     def __init__(self, title, first_word, author, story_id=None):
         """
         Creates a story
