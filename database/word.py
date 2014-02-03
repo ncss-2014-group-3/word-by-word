@@ -2,7 +2,7 @@ from . import connection
 from . import cached_property
 
 
-class Word:
+class Word(object):
     @classmethod
     def from_story_id(cla, story_id):
         """
@@ -52,6 +52,7 @@ class Word:
     def remove(self):
         for child in self.children:
             child.remove()
+
         c = connection.cursor()
         c.execute("""
         DELETE FROM words WHERE wordID = ?
@@ -79,12 +80,14 @@ class Word:
 
         for child in self._children_unsorted:
             users.update(child.voters)
+
         return users
 
     def add_vote(self, voter):
         self._dir_votes += 1
         if self.remove_vote(voter):
             self._dir_votes -= 1
+
         c = connection.cursor()
         c.execute("""
         INSERT INTO votes VALUES (?,?)
@@ -102,8 +105,8 @@ class Word:
     @property
     def children(self):
         children = self._children_unsorted
-        children = sorted(children, key=lambda w: w.votes, reverse=True)
-        return children
+
+        return sorted(children, key=lambda w: w.votes, reverse=True)
 
     @cached_property
     def _children_unsorted(self):
@@ -114,12 +117,8 @@ class Word:
             WHERE parentID = ?
         """, (self.id,))
 
-        children = []
-        for childWord in c:
-            #id, parentID, storyID, word
-            children.append(Word(childWord[0], childWord[1], childWord[2], childWord[3], childWord[4]))        
-        return children
-        
+        return list(map(Word, c))
+
     def _deepest_child(self):
         # Depth first, brah.
         m = 0
@@ -151,17 +150,7 @@ class Word:
             ORDER BY (SELECT COUNT(*) FROM votes WHERE wordID=?)
             LIMIT 1''', (self.id,self.id))
         row = cursor.fetchone()
-        return None if row is None else Word(row[0], row[1], row[2], row[3], row[4])
-
-    def _deepest_child(self):
-        # Depth first, brah.
-        m = 0
-        for child in self.children:
-            m = max(m, child._deepest_child())
-        return m + 1
-
-    def fixed(self, n=5):
-        return self._deepest_child() > n
+        return None if row is None else Word(*row)
 
     def fixed_children(self):
         if not self.children:

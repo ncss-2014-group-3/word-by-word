@@ -11,21 +11,16 @@ EMAIL_RE = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
 
 def get_current_user(response):
     username = response.get_secure_cookie('username')
+
     if username is None:
         return None
+
     return user.User.from_username(username.decode())
 
 
-def stories(response):
-    """
-    function:   stories()
-    arguments:  response
-    description:
-        When the page is called for listing the stories avaliable.
-    """
-
+def render_stories(response, stories):
     variables = {
-        'stories': story.Story.story_list(),
+        'stories': stories,
         'user': get_current_user(response)
     }
 
@@ -35,24 +30,29 @@ def stories(response):
     ))
 
 
-def my_stories(response):
-    # pretty much the same as stories above
+def stories(response):
+    """
+    function:   stories()
+    arguments:  response
+    description:
+        When the page is called for listing the stories avaliable.
+    """
+    render_stories(
+        response,
+        story.Story.story_list()
+    )
 
+
+def my_stories(response):
     username = get_current_user(response)
     if username is None:
         response.redirect("/")
-        return
 
     else:
-        variables = {
-            'stories': username.own_stories,
-            'user': get_current_user(response)
-        }
-
-        response.write(render(
-            'templates/mystories.html',
-            variables
-        ))
+        render_stories(
+            response,
+            username.own_stories
+        )
 
 
 def style(response):
@@ -121,16 +121,7 @@ def view_story(response, sid):
     if not story_inst:
         raise tornado.web.HTTPError(404)
 
-    variables = {
-        "story": story_inst,
-        "errors": [],
-        "user": get_current_user(response)
-    }
-
-    response.write(render(
-        "templates/viewstory.html",
-        variables
-    ))
+    render_stories(response, [story_inst])
 
 
 def add_word(response, sid, wid):
@@ -194,20 +185,20 @@ def login(response):
         logged_name = response.get_secure_cookie('username')
         login_fail = False
         if logged_name is not None:
-                username = logged_name.decode()
-                print('logged in, user =', username)
+            username = logged_name.decode()
+            print('logged in, user =', username)
         else:
-                if user and password:
-                        if user.User.login(username, password):
-                                response.set_secure_cookie('username', username)
-                                response.redirect('/')
-                                return
-                        else:
-                                login_fail = True
-                                username = password = None
+            if user and password:
+                if user.User.login(username, password):
+                    response.set_secure_cookie('username', username)
+                    response.redirect('/')
+                    return
                 else:
-                        username = password = None
-                
+                    login_fail = True
+                    username = password = None
+            else:
+                username = password = None
+
         response.write(render(
             'templates/login.html',
             {'user': username, 'login_fail': login_fail}
@@ -234,24 +225,24 @@ def register(response):
 
         errors = []
         if username and password is not None:
-                if EMAIL_RE.match(email) is None:
-                    errors.append('Invalid email')
-                if re.match(r'^\w{3,12}$', username) is None:
-                    errors.append('Invalid username, usernames must be 3-12 characters and alphanumeric, optionally containing underscores')
-                if user.User.from_username(username) is not None:
-                   errors.append('Invalid username, username already taken')
-                if len(password) < 5:
-                    errors.append('Invalid password, passwords must be at least 5 characters long')
-                if not errors:
-                        response.set_secure_cookie('username', username)
-                        user.User.create(username, password, email=email)
-                        response.redirect('/')
-                        return
+            if EMAIL_RE.match(email) is None:
+                errors.append('Invalid email')
+            if re.match(r'^\w{3,12}$', username) is None:
+                errors.append('Invalid username, usernames must be 3-12 characters and alphanumeric, optionally containing underscores')
+            if user.User.from_username(username) is not None:
+                errors.append('Invalid username, username already taken')
+            if len(password) < 5:
+                errors.append('Invalid password, passwords must be at least 5  characters long')
+            if not errors:
+                response.set_secure_cookie('username', username)
+                user.User.create(username, password, email=email)
+                response.redirect('/')
+                return
 
-                else:
-                        username = password = None
-        else:
+            else:
                 username = password = None
+        else:
+            username = password = None
 
         context = {
             'user': username,
