@@ -2,7 +2,7 @@ from .word import Word
 from . import connection
 
 
-class Story:
+class Story(object):
     @classmethod
     def from_id(cla, id):
         cursor = connection.cursor()

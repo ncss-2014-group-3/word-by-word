@@ -12,7 +12,7 @@ def password_hash(password, salt):
     return hashlib.sha256((password+salt).encode('utf-8')).hexdigest()
 
 
-class User:
+class User(object):
     @classmethod
     def from_username(cla, username):
         cursor = connection.cursor()

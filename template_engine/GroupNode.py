@@ -1,4 +1,4 @@
-class GroupNode:
+class GroupNode(object):
     def __init__(self, children):
         self.children = children
 

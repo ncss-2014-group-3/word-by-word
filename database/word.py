@@ -2,7 +2,7 @@ from . import connection
 from . import cached_property
 
 
-class Word:
+class Word(object):
     @classmethod
     def from_story_id(cla, story_id):
         """
