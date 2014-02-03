@@ -11,8 +11,10 @@ EMAIL_RE = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
 
 def get_current_user(response):
     username = response.get_secure_cookie('username')
+
     if username is None:
         return None
+
     return user.User.from_username(username.decode())
 
 

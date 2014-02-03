@@ -52,6 +52,7 @@ class Word(object):
     def remove(self):
         for child in self.children:
             child.remove()
+
         c = connection.cursor()
         c.execute("""
         DELETE FROM words WHERE wordID = ?
@@ -79,12 +80,14 @@ class Word(object):
 
         for child in self._children_unsorted:
             users.update(child.voters)
+
         return users
 
     def add_vote(self, voter):
         self._dir_votes += 1
         if self.remove_vote(voter):
             self._dir_votes -= 1
+
         c = connection.cursor()
         c.execute("""
         INSERT INTO votes VALUES (?,?)
