@@ -1,3 +1,5 @@
+import itertools
+
 from .word import Word
 from . import connection
 
@@ -89,12 +91,14 @@ class Story(object):
         return self.first_word.author
 
     def walk_first_words(self, num=10):
+        return itertools.islice(self.walk_words(), num=10)
+
+    def walk_words(self):
         word = self.first_word
-        for _ in range(num):
+
+        while word:
             yield word
             word = word.favourite_child
-            if not word:
-                break
 
     def first_non_fixed(self):
         word = self.first_word
