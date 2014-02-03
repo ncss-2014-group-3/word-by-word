@@ -18,10 +18,10 @@ class ParseException(Exception):
 
 
 def render(filename, context=None):
-    context = context or {}
+    with open(filename) as f:
+        text = f.read()
 
-    parser_inst = Parser.from_file(filename)
-    return parser_inst.expand(context)
+    return render_string(text, context)
 
 
 def render_string(string, context=None):
@@ -86,12 +86,6 @@ Creates a new Parser object from a string that can be expanded. """
             return keyword, ' '.join(tag_contents)
         else:
             return None, None
-
-    @classmethod
-    def from_file(cls, file_name):
-        with open(file_name) as f:
-            text = f.read()
-        return Parser(text)
 
     def expand(self, context=None):
         """
