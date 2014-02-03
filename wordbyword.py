@@ -185,20 +185,20 @@ def login(response):
         logged_name = response.get_secure_cookie('username')
         login_fail = False
         if logged_name is not None:
-                username = logged_name.decode()
-                print('logged in, user =', username)
+            username = logged_name.decode()
+            print('logged in, user =', username)
         else:
-                if user and password:
-                        if user.User.login(username, password):
-                                response.set_secure_cookie('username', username)
-                                response.redirect('/')
-                                return
-                        else:
-                                login_fail = True
-                                username = password = None
+            if user and password:
+                if user.User.login(username, password):
+                    response.set_secure_cookie('username', username)
+                    response.redirect('/')
+                    return
                 else:
-                        username = password = None
-                
+                    login_fail = True
+                    username = password = None
+            else:
+                username = password = None
+
         response.write(render(
             'templates/login.html',
             {'user': username, 'login_fail': login_fail}
@@ -225,24 +225,24 @@ def register(response):
 
         errors = []
         if username and password is not None:
-                if EMAIL_RE.match(email) is None:
-                    errors.append('Invalid email')
-                if re.match(r'^\w{3,12}$', username) is None:
-                    errors.append('Invalid username, usernames must be 3-12 characters and alphanumeric, optionally containing underscores')
-                if user.User.from_username(username) is not None:
-                   errors.append('Invalid username, username already taken')
-                if len(password) < 5:
-                    errors.append('Invalid password, passwords must be at least 5 characters long')
-                if not errors:
-                        response.set_secure_cookie('username', username)
-                        user.User.create(username, password, email=email)
-                        response.redirect('/')
-                        return
+            if EMAIL_RE.match(email) is None:
+                errors.append('Invalid email')
+            if re.match(r'^\w{3,12}$', username) is None:
+                errors.append('Invalid username, usernames must be 3-12 characters and alphanumeric, optionally containing underscores')
+            if user.User.from_username(username) is not None:
+                errors.append('Invalid username, username already taken')
+            if len(password) < 5:
+                errors.append('Invalid password, passwords must be at least 5  characters long')
+            if not errors:
+                response.set_secure_cookie('username', username)
+                user.User.create(username, password, email=email)
+                response.redirect('/')
+                return
 
-                else:
-                        username = password = None
-        else:
+            else:
                 username = password = None
+        else:
+            username = password = None
 
         context = {
             'user': username,
