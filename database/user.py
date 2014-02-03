@@ -12,7 +12,7 @@ def password_hash(password, salt):
     return hashlib.sha256((password+salt).encode('utf-8')).hexdigest()
 
 
-class User:
+class User(object):
     @classmethod
     def from_username(cla, username):
         cursor = connection.cursor()
@@ -119,7 +119,11 @@ class User:
     @property
     def image_url(self):
         size = 200
-        return 'http://www.gravatar.com/avatar/' + hashlib.md5(self.email.encode()).hexdigest() + '.png?s='+str(size)
+
+        return 'http://www.gravatar.com/avatar/{}.png?s={}'.format(
+            hashlib.md5(self.email.encode()).hexdigest(),
+            size
+        )
 
     @property
     def own_stories(self):
@@ -130,8 +134,11 @@ class User:
                                             SELECT storyID FROM words WHERE author=? AND parentID IS NULL
                                         )
                                         ''', (self.username,))
-        stories = [Story.from_id(x[0]) for x in returnedstories.fetchall()]
-        return stories
+
+        return [
+            Story.from_id(story[0])
+            for story in returnedstories.fetchall()
+        ]
 
     @cached_property
     def top_story(self):

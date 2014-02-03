@@ -18,10 +18,20 @@ class ParseException(Exception):
 
 
 def render(filename, context=None):
+    with open(filename) as f:
+        text = f.read()
+
+    return render_string(text, context)
+
+
+def render_string(string, context=None):
     context = context or {}
 
-    parser_inst = Parser.from_file(filename)
-    return parser_inst.expand(context)
+    # if it does not already have a value for errors
+    # add [] as errors
+    context.setdefault('errors', [])
+
+    return Parser(string).expand(context)
 
 
 class Parser:
@@ -81,81 +91,14 @@ Creates a new Parser object from a string that can be expanded. """
         else:
             return None, None
 
-    @classmethod
-    def from_file(cls, file_name):
-        with open(file_name) as f:
-            text = f.read()
-        return Parser(text)
-
     def expand(self, context=None):
-        r""" p.expand(context = {}) -> str
+        """
+        p.expand(context = {}) -> str
 
-expanded form of the text given in the constructor.
+        expanded form of the text given in the constructor.
 
-Context is a dictionary representing the variables in the local scope.
-
->>> Parser('Test {{ 3 * 9 }}').expand()
-'Test 27'
->>> Parser('Test {{ var + 3 }}').expand({ 'var' : 9})
-'Test 12'
->>> Parser('Test {{ var }}').expand({ 'var' : '<p> <!-- --> "\'\\/ &amp; & #? <!CDATA[[ &'})
-'Test &lt;p&gt; &lt;!-- --&gt; &quot;&#x27;\\/ &amp;amp; &amp; #? &lt;!CDATA[[ &amp;'
->>> Parser('var * 9 = {{ var * 9 }} WORDS! {{ 6 * 9 - (var + 4)}}').expand({ 'var' : 1.4})
-'var * 9 = 12.6 WORDS! 48.6'
->>> text = 'Test words {% if var == 1 %} The world is good {% end if %} '
->>> Parser(text).expand({'var' : 1})
-'Test words  The world is good  '
->>> Parser(text).expand({'var' : 0})
-'Test words  '
->>> Parser('{% hello').expand()
-Traceback (most recent call last):
-  ...
-ParseException: No endtag
->>> Parser('{% if 1 == 1 %}hello').expand()
-Traceback (most recent call last):
-  ...
-ParseException: No end if/else
->>> text = '{% if var >= 1%}{%if var == 1 %}var = 1, {% end if %}var >= 1{% end if %}'
->>> Parser(text).expand({ 'var' : 1})
-'var = 1, var >= 1'
->>> Parser(text).expand({ 'var' : 2})
-'var >= 1'
->>> Parser(text).expand({ 'var' : 0})
-''
->>> Parser(text).expand({ 'var' : ''})
-Traceback (most recent call last):
-  ...
-TypeError: unorderable types: str() >= int()
->>> Parser('Test {% for i in range(10) %} i = {{ i }} {% end for %}').expand()
-'Test  i = 0  i = 1  i = 2  i = 3  i = 4  i = 5  i = 6  i = 7  i = 8  i = 9 '
->>> Parser('Test: {% for i in range(10) %}{% if i / 2 == int(i / 2) %}{{ i }} is divisible by two. {% end if %}{% end for %}').expand()
-'Test: 0 is divisible by two. 2 is divisible by two. 4 is divisible by two. 6 is divisible by two. 8 is divisible by two. '
->>> Parser('{% for i in range(5) %} {{ i }}').expand()
-Traceback (most recent call last):
-  ...
-ParseException: No end for/else
->>> Parser('{%for i in (\'dog\', \'cat\', \'frog\') %}{{ i }} {% end for %}').expand()
-'dog cat frog '
->>> Parser('{% for i in range(9) %}{% for j in \'abcd\'%}{{ str(i) + j }},{%end for %}{% end for %}').expand()
-'0a,0b,0c,0d,1a,1b,1c,1d,2a,2b,2c,2d,3a,3b,3c,3d,4a,4b,4c,4d,5a,5b,5c,5d,6a,6b,6c,6d,7a,7b,7c,7d,8a,8b,8c,8d,'
->>> Parser('{%if var == 1 %} var = 1 {% else%} var != 1{%end if %}').expand({'var':0})
-' var != 1'
->>> Parser('{%if var == 1 %} var = 1 {% else%} var != 1{%end if %}').expand({'var':1})
-' var = 1 '
->>> Parser('{% for i,e in enumerate("abcde") %}{{e}} is the {{i}}th letter, {%end for%}').expand()
-'a is the 0th letter, b is the 1th letter, c is the 2th letter, d is the 3th letter, e is the 4th letter, '
->>> text = '{%for a in [i for i in range(10) if i == var] %} {{a}} == {{var}} {%else%}No numbers in 0..9 equal {{var}}{%end for%}'
->>> Parser(text).expand({'var':100})
-'No numbers in 0..9 equal 100'
->>> Parser(text).expand({'var':5})
-' 5 == 5 '
->>> Parser('{{[s for s in range(9) if s == var]}}').expand({'var':5})
-'[5]'
->>> Parser('{%json {"bla":["a", "b"]}%}').expand()
-'{"bla": ["a", "b"]}'
->>> #Parser("{% json {'word':'this', 'id':3, 'childern_ids':[1,2,4]} %}" ).expand()
->>> #'{"childern_ids": [1, 2, 4], "id": 3, "word": "this"}'
-"""
+        Context is a dictionary representing the variables in the local scope.
+        """
 
         context = context or {}
 
@@ -278,9 +221,3 @@ ParseException: No end for/else
         return IncludeNode(file_name, context)
 
 from .IncludeNode import IncludeNode
-
-if __name__ == '__main__':
-    import doctest
-    nFailed, nTests = doctest.testmod()
-    if nFailed == 0:
-        print('Passed')

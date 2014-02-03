@@ -1,8 +1,10 @@
+import itertools
+
 from .word import Word
 from . import connection
 
 
-class Story:
+class Story(object):
     @classmethod
     def from_id(cla, id):
         cursor = connection.cursor()
@@ -15,6 +17,7 @@ class Story:
         first_word = Word.from_story_id(id)
         if first_word is None:
             return None
+
         return cla(row[0], first_word, first_word.author, id)
 
     @classmethod
@@ -33,11 +36,12 @@ class Story:
             GROUP BY stories.storyID
             ORDER BY n_votes DESC
             LIMIT ?''', (limit,))
-        stories_list = []
-        for s in stories:
-            stories_list.append(Story.from_id(s[0]))
-        return stories_list
-            
+
+        return [
+            Story.from_id(s[0])
+            for s in stories
+        ]
+
     def __init__(self, title, first_word, author, story_id=None):
         """
         Creates a story
@@ -87,20 +91,24 @@ class Story:
         return self.first_word.author
 
     def walk_first_words(self, num=10):
+        return itertools.islice(self.walk_words(), num)
+
+    def walk_words(self):
         word = self.first_word
-        for _ in range(num):
+
+        while word:
             yield word
             word = word.favourite_child
-            if not word:
-                break
 
     def first_non_fixed(self):
         word = self.first_word
+
         while word.fixed():
             next_word = word.favourite_child
             if next_word is None:
                 break
             word = next_word
+
         return word
 
     def first_words(self, num=10):
@@ -119,6 +127,7 @@ class Story:
     def prune(self, n=5):
         len_deepest = self.first_word._deepest_child()
         last_fixed = len_deepest - n
+
         for w in self.walk_first_words(last_fixed):
             for child in w.children[1:]:
                 child.remove()
