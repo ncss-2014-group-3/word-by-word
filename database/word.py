@@ -150,17 +150,7 @@ class Word(object):
             ORDER BY (SELECT COUNT(*) FROM votes WHERE wordID=?)
             LIMIT 1''', (self.id,self.id))
         row = cursor.fetchone()
-        return None if row is None else Word(row[0], row[1], row[2], row[3], row[4])
-
-    def _deepest_child(self):
-        # Depth first, brah.
-        m = 0
-        for child in self.children:
-            m = max(m, child._deepest_child())
-        return m + 1
-
-    def fixed(self, n=5):
-        return self._deepest_child() > n
+        return None if row is None else Word(*row)
 
     def fixed_children(self):
         if not self.children:
