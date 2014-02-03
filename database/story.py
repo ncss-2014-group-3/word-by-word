@@ -91,7 +91,7 @@ class Story(object):
         return self.first_word.author
 
     def walk_first_words(self, num=10):
-        return itertools.islice(self.walk_words(), num=10)
+        return itertools.islice(self.walk_words(), num)
 
     def walk_words(self):
         word = self.first_word
