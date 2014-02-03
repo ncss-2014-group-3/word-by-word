@@ -18,16 +18,9 @@ def get_current_user(response):
     return user.User.from_username(username.decode())
 
 
-def stories(response):
-    """
-    function:   stories()
-    arguments:  response
-    description:
-        When the page is called for listing the stories avaliable.
-    """
-
+def render_stories(response, stories):
     variables = {
-        'stories': story.Story.story_list(),
+        'stories': stories,
         'user': get_current_user(response)
     }
 
@@ -37,13 +30,29 @@ def stories(response):
     ))
 
 
+def stories(response):
+    """
+    function:   stories()
+    arguments:  response
+    description:
+        When the page is called for listing the stories avaliable.
+    """
+    render_stories(
+        response,
+        story.Story.story_list()
+    )
+
+
 def my_stories(response):
     username = get_current_user(response)
     if username is None:
         response.redirect("/")
-        return
 
-    return stories(response)
+    else:
+        render_stories(
+            response,
+            username.own_stories
+        )
 
 
 def style(response):
