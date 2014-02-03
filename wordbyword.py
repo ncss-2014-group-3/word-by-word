@@ -123,7 +123,6 @@ def view_story(response, sid):
 
     variables = {
         "story": story_inst,
-        "errors": [],
         "user": get_current_user(response)
     }
 

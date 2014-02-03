@@ -27,6 +27,10 @@ def render(filename, context=None):
 def render_string(string, context=None):
     context = context or {}
 
+    # if it does not already have a value for errors
+    # add [] as errors
+    context.setdefault('errors', [])
+
     return Parser(string).expand(context)
 
 
