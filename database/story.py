@@ -90,10 +90,11 @@ class Story(object):
 
     def walk_first_words(self, num=10):
         word = self.first_word
-
-        while word:
+        for _ in range(num):
             yield word
             word = word.favourite_child
+            if not word:
+                break
 
     def first_non_fixed(self):
         word = self.first_word
