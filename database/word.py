@@ -28,16 +28,18 @@ class Word(object):
         self.id = id
         self.parent_id = parent_id
         self.story_id = story_id
+
         self.value = value
         self.author = author
 
         c = connection.cursor()
         c.execute("""SELECT count(*) FROM votes WHERE wordID = ?""", (self.id,))
         result = c.fetchone()
+
         self._dir_votes = 0
         if result is not None:
-            #print(self.value, result[0], self.id)
             self._dir_votes = result[0]
+
         if not id:
             self.save()
 

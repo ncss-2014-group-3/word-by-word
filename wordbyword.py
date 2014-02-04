@@ -64,6 +64,7 @@ def create(response):
     # get the variables we need using get_field
     title = response.get_field("title")
     firstword = response.get_field("firstword")
+
     # a list of strings of things that went wrong
     # we will give this to the template.
     errors = []
@@ -71,7 +72,12 @@ def create(response):
     username = response.get_secure_cookie('username')
     if not username:
         errors.append('You must be logged in to post a story')
-        variables = {'errors': errors, 'user': get_current_user(response)}
+        variables = {
+            'errors': errors,
+            'user': get_current_user(response),
+            'title': '',
+            'firstword': ''
+        }
 
         return render(
             "templates/createastory.html",
@@ -80,7 +86,7 @@ def create(response):
 
     if response.request.method == "POST":
         if not title:
-            #we didn't get given a title
+            # we didn't get given a title
             errors.append("You didn't enter a title!")
         if len(title) > 50:
             errors.append("Your title was too long!")
@@ -90,6 +96,7 @@ def create(response):
             errors.append("Please only enter one word")
         if len(firstword) > 25:
             errors.append("Your word is too long. Word must be below 26 characters long")
+
         author = get_current_user(response)
         if author is None:
             errors.append('You must be logged in to create a story')

@@ -14,13 +14,6 @@ if should_create_db:
         cursor.execute(statement)
 
 
-def dict_factory(cursor, row):
-    d = {}
-    for idx, col in enumerate(cursor.description):
-        d[col[0]] = row[idx]
-    return d
-
-
 def cached_property(f):
     """returns a cached property that is calculated by function f"""
     def get(self):  # webscale

@@ -1,16 +1,16 @@
-from .PythonNode import PythonNode
-from .GroupNode import GroupNode
-from .JSONNode import JSONNode
-from .TextNode import TextNode
 from .ForNode import ForNode
+from .GroupNode import GroupNode
 from .IfNode import IfNode
+from .JSONNode import JSONNode
+from .PythonNode import PythonNode
+from .TextNode import TextNode
 
 TOKENS = {
     '{{': 'startvar',
     '}}': 'endvar',
     '{%': 'starttag',
     '%}': 'endtag',
-    }
+}
 
 
 class ParseException(Exception):
@@ -35,12 +35,17 @@ def render_string(string, context=None):
 
 
 class Parser:
-    """ Parser(text) -> parser object
+    """
+    Parser(text) -> parser object
 
-Creates a new Parser object from a string that can be expanded. """
+    Creates a new Parser object from a string that can be expanded.
+    """
 
     def __init__(self, text):
-        """ p.__init__(text) initialises the Parser and stores in p. """
+        """
+        p.__init__(text) initialises the Parser and stores in p.
+        """
+
         self._tokens = []
         while text:
             minpos = len(text)
