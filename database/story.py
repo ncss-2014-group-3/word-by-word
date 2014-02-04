@@ -1,4 +1,5 @@
 import itertools
+from operator import attrgetter
 
 from .word import Word
 from . import connection
@@ -112,10 +113,12 @@ class Story(object):
         return word
 
     def first_words(self, num=10):
-        nwords = []
-        for w in self.walk_first_words(num):
-            nwords.append(w.value)
-        return ' '.join(nwords)
+        words = self.walk_first_words(num)
+
+        return ' '.join(map(
+            attrgetter('value'),
+            words
+        ))
 
     def save(self):
         self._cursor.execute('''UPDATE stories SET
