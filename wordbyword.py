@@ -121,7 +121,15 @@ def view_story(response, sid):
     if not story_inst:
         raise tornado.web.HTTPError(404)
 
-    render_stories(response, [story_inst])
+    variables = {
+        "story": story_inst,
+        "user": get_current_user(response)
+    }
+
+    response.write(render(
+        "templates/viewstory.html",
+        variables
+    ))
 
 
 def add_word(response, sid, wid):

@@ -116,8 +116,8 @@ class Word(object):
             FROM words
             WHERE parentID = ?
         """, (self.id,))
-
-        return list(map(Word, c))
+        
+        return [Word(*w) for w in c]
 
     def _deepest_child(self):
         # Depth first, brah.
