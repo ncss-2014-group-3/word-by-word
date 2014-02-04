@@ -43,7 +43,7 @@ class Parser:
 
     def __init__(self, text):
         """
-        p.__init__(text) initialises the Parser and stores in p.
+        Initialise the Parser with tokens from the text
         """
 
         self._tokens = []
