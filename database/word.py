@@ -76,15 +76,28 @@ class Word(object):
         cursor = connection.cursor()
         cursor.execute('SELECT username FROM votes WHERE wordID=?', (self.id,))
 
-        users.update(cursor.fetchall())
+        for u in cursor.fetchall():
+            users.add(u[0])
 
         for child in self._children_unsorted:
             users.update(child.voters)
 
         return users
 
+    #For some reason this does not like being cached
+    @property
+    def direct_voters(self):
+        users = set()
+        cursor = connection.cursor()
+        cursor.execute('SELECT username FROM votes WHERE wordID=?', (self.id,))
+
+        for u in cursor.fetchall():
+            users.add(u[0])
+
+        return users
+
     def has_voted(self, voter):
-        return True if voter.username in self.voters else False
+        return False if voter is None else (True if voter.username in self.direct_voters else False)
 
     def add_vote(self, voter):
         self._dir_votes += 1
