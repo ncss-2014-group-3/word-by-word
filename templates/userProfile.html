@@ -59,7 +59,7 @@
             {% if display_user.top_story is None %}
             <td class="bold">N/A</td>
             {% else %}
-            <td class="normal"><a href="/story/{{ display_user.top_story.story_id }}">{{display_user.top_story.title}}</a></td>
+            <td class="normal"><a href="/story/{{ display_user.top_story.story_id }}">{{display_user.top_story.title}}</a> ({{ display_user.top_story.total_votes }})</td>
             {% end if %}
         </tr>
     </table>
