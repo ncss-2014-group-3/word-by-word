@@ -2,12 +2,12 @@
 	<div class="voting">
 		Votes: <sup>{{ word.votes }}</sup>
 		<div class="vote">
-	    	<form class="vote_button" method="POST" action="/story/{{ story.story_id }}/word/{{ word.id }}/vote">
-				<input type="submit" value = "&uarr;">
+	    	<form class="vote_button" method="POST" action="/story/{{ story.story_id }}/word/{{ word.id }}/vote{% if word.has_voted(user) %}/remove{% end if %}">
+				<input type="submit" value="{% if word.has_voted(user) %}&darr;{% else %}&uarr;{% end if %}">
 			</form>
 		</div>
 	</div>
-	<div class="reply,new_add_word">
+	<div class="reply new_add_word">
 		<form class = "up" method="POST" action="/story/{{ story.story_id }}/{{ word.id }}/reply">
 			<input type="text" style='font-size:10pt;'placeholder="Next?" name="word" autocomplete="off">
 
