@@ -1,7 +1,7 @@
 <div class="popup" id="word-{{word.id}}">
-	<div class="vote">
+	<div class="voting">
 		Votes: <sup>{{ word.votes }}</sup>
-		<div class="upvotes">
+		<div class="vote">
 	    	<form class="vote_button" method="POST" action="/story/{{ story.story_id }}/word/{{ word.id }}/vote">
 				<input type="submit" value = "&uarr;">
 			</form>
