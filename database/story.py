@@ -126,7 +126,7 @@ class Story(object):
 
     def prune(self, n=5):
         len_deepest = self.first_word._deepest_child()
-        last_fixed = len_deepest - n
+        last_fixed = max(len_deepest - n,0)
 
         for w in self.walk_first_words(last_fixed):
             for child in w.children[1:]:
