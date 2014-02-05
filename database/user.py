@@ -104,10 +104,14 @@ class User(object):
     @property
     def score(self):
         cursor = connection.cursor()
-        returnedvotes = cursor.execute('''SELECT COUNT(wordID) FROM votes WHERE wordID IN
-                                        (SELECT wordID FROM words WHERE author=?)''', (self.username,))
-        score = returnedvotes.fetchone()[0]
-        return score
+        result = cursor.execute('''
+            SELECT COUNT(votes.wordID)
+            FROM users
+            INNER JOIN words ON users.username=words.author
+            INNER JOIN votes ON words.wordID=votes.wordID
+            WHERE words.author = ?
+        ''', (self.username,))
+        return result.fetchone()[0]
 
     @property
     def email(self):
@@ -231,7 +235,8 @@ class User(object):
                 ORDER BY COUNT(votes.wordID) DESC
                 LIMIT 1
             )
-        ''', (self.username, self.username))
+            LIMIT ?
+        ''', (self.username, self.username, 5))
         results = result.fetchall()
         if not results:
             return None
