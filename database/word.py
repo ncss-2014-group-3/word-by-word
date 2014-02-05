@@ -83,6 +83,9 @@ class Word(object):
 
         return users
 
+    def has_voted(self, voter):
+        return True if voter.username in self.voters else False
+
     def add_vote(self, voter):
         self._dir_votes += 1
         if self.remove_vote(voter):
