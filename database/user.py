@@ -108,7 +108,7 @@ class User(object):
             SELECT COUNT(votes.wordID)
             FROM users
             INNER JOIN words ON users.username=words.author
-            INNER JOIN votes ON words.wordID=votes.wordID
+            INNER JOIN votes ON words.storyID=votes.storyID AND words.wordID=votes.wordID
             WHERE words.author = ?
         ''', (self.username,))
         return result.fetchone()[0]
@@ -149,19 +149,18 @@ class User(object):
         cursor = connection.cursor()
         result = cursor.execute("""
             SELECT
-                storyID,
+                stories.storyID,
                 (
-                SELECT count(*) FROM votes
-                WHERE votes.wordID IN
-                    (SELECT wordID FROM words WHERE words.storyID = stories.storyID)
-                ) as totalVotes
-                ,(
-                SELECT author FROM words WHERE words.storyID = stories.storyID AND
-                    parentID IS NULL
-                ) as sauthor
+                    SELECT COUNT(*)
+                    FROM votes
+                    INNER JOIN words ON words.storyID = stories.storyID
+                    WHERE votes.storyID = words.storyID AND votes.wordID = words.wordID
+                ) AS n_votes
             FROM stories
-            WHERE sauthor = ?
-            ORDER BY totalVotes DESC
+            INNER JOIN words ON stories.storyID=words.storyID
+            WHERE parentID IS NULL AND author = ?
+            GROUP BY stories.storyID
+            ORDER BY n_votes DESC
             LIMIT 1
         """, (self.username,))
         story = result.fetchone()
@@ -212,27 +211,28 @@ class User(object):
     def best_words(self):
         cursor = connection.cursor()
         result = cursor.execute('''
-            SELECT words.wordID, wordVotes
+            SELECT
+                words.storyID, words.wordID, wordVotes
             FROM words
             INNER JOIN (
                 SELECT
-                    words.wordID as wID, COUNT(votes.wordID) as wordVotes
+                    words.storyID as sID, words.wordID as wID, COUNT(*) as wordVotes
                 FROM
                     votes
-                LEFT JOIN words on words.wordID=votes.wordID
+                LEFT JOIN words ON words.storyID=votes.storyID AND words.wordID=votes.wordID
                 WHERE words.author = ?
-                GROUP BY words.wordID
-            ) ON words.wordID=wID
-            GROUP BY wordID
+                GROUP BY sID, wID
+            ) ON words.storyID=sID AND words.wordID=wID
+            GROUP BY words.storyID, words.wordID
             HAVING wordVotes=(
                 SELECT
-                    COUNT(votes.wordID) as wordVotes
+                    COUNT(votes.username) as wVotes
                 FROM
                     votes
-                LEFT JOIN words on words.wordID=votes.wordID
+                LEFT JOIN words ON words.storyID=votes.storyID AND words.wordID=votes.wordID
                 WHERE words.author = ?
-                GROUP BY votes.wordID
-                ORDER BY COUNT(votes.wordID) DESC
+                GROUP BY votes.storyID, votes.wordID
+                ORDER BY wVotes DESC
                 LIMIT 1
             )
             LIMIT ?
@@ -243,9 +243,9 @@ class User(object):
 
         words = []
         for w in results:
-            words.append(Word.from_id(w[0]))
+            words.append(Word.from_id(w[1]))
 
-        return words, w[1]
+        return words, w[2]
 
     @property
     def votes_cast(self):

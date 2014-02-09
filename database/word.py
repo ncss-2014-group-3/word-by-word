@@ -67,8 +67,8 @@ class Word(object):
 
         c = connection.cursor()
         c.execute("""
-        DELETE FROM words WHERE wordID = ?
-        """, (self.id,))
+        DELETE FROM words WHERE storyID = ? AND wordID = ?
+        """, (self.story_id, self.id,))
         connection.commit()
 
     @property
@@ -86,7 +86,7 @@ class Word(object):
     def voters(self):
         users = set()
         cursor = connection.cursor()
-        cursor.execute('SELECT username FROM votes WHERE wordID=?', (self.id,))
+        cursor.execute('SELECT username FROM votes WHERE storyID=? AND wordID=?', (self.story_id, self.id))
 
         for u in cursor.fetchall():
             users.add(u[0])
@@ -101,7 +101,7 @@ class Word(object):
     def direct_voters(self):
         users = set()
         cursor = connection.cursor()
-        cursor.execute('SELECT username FROM votes WHERE wordID=?', (self.id,))
+        cursor.execute('SELECT username FROM votes WHERE storyID=? AND wordID=?', (self.story_id, self.id))
 
         for u in cursor.fetchall():
             users.add(u[0])
@@ -118,15 +118,15 @@ class Word(object):
 
         c = connection.cursor()
         c.execute("""
-        INSERT INTO votes VALUES (?,?)
-        """, (self.id, voter.username))
+        INSERT INTO votes (storyID, wordID, username) VALUES (?,?,?)
+        """, (self.story_id, self.id, voter.username))
         connection.commit()
 
     def remove_vote(self, voter):
         cursor = connection.cursor()
         cursor.execute(
-            'DELETE FROM votes WHERE wordID=? AND username=?',
-            (self.id, voter.username)
+            'DELETE FROM votes WHERE storyID=? AND wordID=? AND username=?',
+            (self.story_id, self.id, voter.username)
         )
         connection.commit()
 
@@ -174,9 +174,9 @@ class Word(object):
         cursor.execute('''
             SELECT words.wordID, storyID, word, author, parentID
             FROM words
-            WHERE parentID = ?
-            ORDER BY (SELECT COUNT(*) FROM votes WHERE wordID=?)
-            LIMIT 1''', (self.id,self.id))
+            WHERE storyID = ? AND parentID = ?
+            ORDER BY (SELECT COUNT(*) FROM votes WHERE storyID=? AND wordID=?)
+            LIMIT 1''', (self.story_id, self.id, self.story_id, self.id))
         row = cursor.fetchone()
         return None if row is None else Word(*row)
 

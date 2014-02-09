@@ -30,7 +30,7 @@ class Story(object):
                     SELECT COUNT(*)
                     FROM votes
                     INNER JOIN words ON words.storyID = stories.storyID
-                    WHERE votes.wordID = words.wordID
+                    WHERE votes.storyID = words.storyID AND votes.wordID = words.wordID
                 ) AS n_votes
             FROM stories
             GROUP BY stories.storyID
@@ -70,7 +70,7 @@ class Story(object):
     def total_votes(self):
         result = self._cursor.execute('''
             SELECT COUNT(*) FROM votes as v 
-            INNER JOIN words as m ON v.wordID = m.wordID
+            INNER JOIN words as m ON v.storyID = m.storyID AND v.wordID = m.wordID
             WHERE m.storyID = ?
         ''', (self.story_id,))
         return result.fetchone()[0]
