@@ -1,6 +1,9 @@
 import sqlite3
 import os
 
+class DuplicateWordException(Exception):
+    pass
+
 # Check if we have an existing DB.
 should_create_db = not os.path.exists('database.db')
 
