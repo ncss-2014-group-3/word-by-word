@@ -4,7 +4,7 @@ import re
 import tornado.web
 from tornado.ncss import Server
 from template_engine.parser import render
-from database import story, word, user
+from database import story, word, user, DuplicateWordException
 
 EMAIL_RE = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
 
@@ -155,7 +155,7 @@ def add_word(response, sid, wid):
     if not errors:  # if there are no errors
         try:
             word_inst.add_child(new_word, author)
-        except database.word.DuplicateWordException:
+        except DuplicateWordException:
             errors.append('Duplicate word detected.')
         if not errors:
             story_inst.prune()

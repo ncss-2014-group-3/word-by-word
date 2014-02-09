@@ -1,5 +1,6 @@
 from . import connection
 from . import cached_property
+from . import DuplicateWordException
 
 
 class Word(object):
@@ -50,8 +51,6 @@ class Word(object):
             if int(same) == 0:
                 self.save()
             else:
-                class DuplicateWordException(Exception):
-                    pass
                 raise DuplicateWordException
 
     def __str__(self):
