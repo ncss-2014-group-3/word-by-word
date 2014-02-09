@@ -18,7 +18,7 @@
         <form method="post">
             <table id="tbl_input_user">
                 <tr>
-                    <td align="right">*Username:</td>
+                    <td style="text-align: right;">*Username:</td>
                     {% if len(errors) != 0 %}
                         {% if "Invalid username, usernames must be 3-12 characters and alphanumeric, optionally containing underscores" not in errors %}
                             <td><input name="name" id="name" type="text" 
@@ -33,7 +33,7 @@
                     {% end if %}
                 </tr>
                 <tr>
-                    <td align="right">*Password:</td>
+                    <td style="text-align: right;">*Password:</td>
                     {% if len(errors) != 0 %}
                         {% if "Invalid password, passwords must be at least 5 characters long" not in errors %}
                             <td><input name="password" id="password" type="password" 
@@ -48,7 +48,7 @@
                     {% end if %}
                 </tr>
                 <tr>
-                    <td align="right">*Email:</td>
+                    <td style="text-align: right;">*Email:</td>
                     {% if len(errors) != 0 %}
                         {% if "Invalid email" not in errors %}
                             <td><input name="email" id="email" type="email" 
@@ -63,7 +63,7 @@
                     {% end if %}
                 </tr>
                 <tr>
-                    <td align="right">Full Name:</td>
+                    <td style="text-align: right;">Full Name:</td>
                     <td><input name="fullname" id="fullname" type="text" 
                     title="Please Enter Your Full Name" placeholder="Enter full name here" autocomplete="off" /></td>
                 </tr>

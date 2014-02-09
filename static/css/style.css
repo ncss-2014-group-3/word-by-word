@@ -242,7 +242,6 @@ header {
         float:right;
     }
     header nav ul li {
-        float:right;
         text-align: right;
         margin-left:15px;
     }
@@ -425,9 +424,6 @@ input {
 #profileImage img {
     width: 200px;
 }
-
-
-
 
 
 /*form input {

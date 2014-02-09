@@ -9,7 +9,7 @@
 	</div>
 	<div class="reply new_add_word">
 		<form class = "up" method="POST" action="/story/{{ story.story_id }}/{{ word.id }}/reply">
-			<input type="text" style='font-size:10pt;'placeholder="Next?" name="word" autocomplete="off"{% if user is None %} disabled="disabled"{% end if %}>
+			<input type="text" style='font-size:10pt;' placeholder="Next?" name="word" autocomplete="off"{% if user is None %} disabled="disabled"{% end if %}>
 
 		</form>
 	</div>
