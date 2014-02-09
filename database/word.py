@@ -3,6 +3,7 @@ from . import cached_property
 
 
 class Word(object):
+
     @classmethod
     def from_story_id(cla, story_id):
         """
@@ -17,9 +18,9 @@ class Word(object):
     @classmethod
     def from_id(cla, word_id):
         c = connection.cursor()
-        c.execute("""SELECT wordID, storyID, word, author, parentID
+        c.execute('''SELECT wordID, storyID, word, author, parentID
                     FROM words
-                    WHERE wordID = ?""", (word_id,))
+                    WHERE wordID = ?''', (word_id,))
         result = c.fetchone()
         if result:
             return cla(*result)
@@ -31,15 +32,27 @@ class Word(object):
         self.value = value
         self.author = author
 
-        c = connection.cursor()
-        c.execute("""SELECT count(*) FROM votes WHERE wordID = ?""", (self.id,))
-        result = c.fetchone()
+        cursor = connection.cursor()
+        cursor.execute('''SELECT COUNT(*) FROM votes WHERE wordID = ?''', (self.id,))
+        result = cursor.fetchone()
         self._dir_votes = 0
         if result is not None:
-            #print(self.value, result[0], self.id)
             self._dir_votes = result[0]
         if not id:
-            self.save()
+            same = cursor.execute('''
+                SELECT COUNT(*)
+                FROM words
+                WHERE
+                storyID = ?
+                AND parentID = ?
+                AND word = ?
+            ''', (self.story_id, self.parent_id, self.value)).fetchone()[0]
+            if int(same) == 0:
+                self.save()
+            else:
+                class DuplicateWordException(Exception):
+                    pass
+                raise DuplicateWordException
 
     def __str__(self):
         return self.value

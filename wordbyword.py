@@ -153,10 +153,14 @@ def add_word(response, sid, wid):
         errors.append('You must be logged in to post a word')
 
     if not errors:  # if there are no errors
-        word_inst.add_child(new_word, author)
-        story_inst.prune()
-        response.redirect("/story/{}".format(story_inst.story_id))
-        return
+        try:
+            word_inst.add_child(new_word, author)
+        except database.word.DuplicateWordException:
+            errors.append('Duplicate word detected.')
+        if not errors:
+            story_inst.prune()
+            response.redirect("/story/{}".format(story_inst.story_id))
+            return
 
     errors.append("Please try again.")
 
