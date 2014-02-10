@@ -56,14 +56,14 @@
 }
 
 
-div#new_add_word.reply form.up input {
+div.new_add_word.reply form.up input {
 	position: absolute;
 	width: 65px;
 	display: inline-block;
 	font-size: 1em;
 } 
 
-div#new_add_word.reply form.up{
+div.new_add_word.reply form.up{
 	width:90px;
 	height:2.3em;
 	line-height: 2.3em;

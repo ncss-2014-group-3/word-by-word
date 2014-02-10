@@ -5,10 +5,9 @@
 	    	<form class="vote_button" method="POST" action="/story/{{ story.story_id }}/word/{{ word.id }}/vote">
 				<input type="submit" value = "&uarr;">
 			</form>
-			<!-- <span class="num">0</span> -->
 		</div>
 	</div>
-	<div class="reply" id="new_add_word">
+	<div class="reply new_add_word">
 		<form class = "up" method="POST" action="/story/{{ story.story_id }}/{{ word.id }}/reply">
 			<input type="text" style='font-size:10pt;'placeholder="Next?" name="word" autocomplete="off">
 
