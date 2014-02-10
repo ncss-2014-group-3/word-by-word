@@ -87,13 +87,10 @@ class Word(object):
     #For some reason this does not like being cached
     @property
     def direct_voters(self):
-        users = set()
         cursor = connection.cursor()
         cursor.execute('SELECT username FROM votes WHERE wordID=?', (self.id,))
 
-        for u in cursor.fetchall():
-            users.add(u[0])
-
+        users = set(voters.fetchall())
         return users
 
     def has_voted(self, voter):
