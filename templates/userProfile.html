@@ -37,6 +37,10 @@
             <td class="normal">{{display_user.votes_cast}}</td>
         </tr>
         <tr class="stats-row">
+            <td>Total votes received:</td>
+            <td class="normal">{{display_user.score}}</td>
+        </tr>
+        <tr class="stats-row">
             <td>Best word(s):</td>
             {% if display_user.best_words is None %}
             <td class="bold">N/A</td>

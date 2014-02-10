@@ -171,18 +171,21 @@ def add_word(response, sid, wid):
     ))
 
 
-def upvote(response, story_id, word_id):
+def vote(response, story_id, word_id, remove):
     # TODO; actually use the errors
 
     author = get_current_user(response)
+    word_inst = word.Word.from_id(word_id)
     errors = []
     if author is None:
-        errors.append('You must be logged in to upvote a word')
-
+        errors.append('You must be logged in to vote on a word')
+    if word_inst is None:
+        errors.append('Invalid word ID')
     if response.request.method == "POST" and not errors:
-        # Write to database
-        word_inst = word.Word.from_id(word_id)
-        word_inst.add_vote(author)
+        if remove is None:
+            word_inst.add_vote(author)
+        else:
+            word_inst.remove_vote(author)
 
     response.redirect("/story/{}".format(story_id))
 
@@ -299,7 +302,7 @@ if __name__ == "__main__":
     server.register("/style.css", style)
     server.register("/story", create)
     server.register("/story/(\d+)", view_story)
-    server.register("/story/(\d+)/word/(\d+)/vote", upvote)
+    server.register("/story/(\d+)/word/(\d+)/vote(/remove)?", vote)
     server.register("/story/(\d+)/(\d+)/reply", add_word)
     server.register('/login', login)
     server.register('/logout', logout)

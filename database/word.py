@@ -72,16 +72,27 @@ class Word(object):
 
     @cached_property
     def voters(self):
-        users = set()
         cursor = connection.cursor()
         cursor.execute('SELECT username FROM votes WHERE wordID=?', (self.id,))
 
-        users.update(cursor.fetchall())
+        users = set([u[0] for u in cursor.fetchall()])
 
         for child in self._children_unsorted:
             users.update(child.voters)
 
         return users
+
+    #For some reason this does not like being cached
+    @property
+    def direct_voters(self):
+        cursor = connection.cursor()
+        cursor.execute('SELECT username FROM votes WHERE wordID=?', (self.id,))
+
+        users = set(cursor.fetchall())
+        return users
+
+    def has_voted(self, voter):
+        return False if voter is None else (voter.username in self.direct_voters)
 
     def add_vote(self, voter):
         self._dir_votes += 1
