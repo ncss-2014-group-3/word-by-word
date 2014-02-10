@@ -293,18 +293,28 @@ def scoreboard(response):
         variables
     ))
 
-if __name__ == "__main__":
+
+handlers = [
+    ("/", stories),
+    ("/style.css", style),
+    ("/story", create),
+    ("/story/(\d+)", view_story),
+    ("/story/(\d+)/word/(\d+)/vote", upvote),
+    ("/story/(\d+)/(\d+)/reply", add_word),
+    ('/login', login),
+    ('/logout', logout),
+    ('/register', register),
+    ('/mystories', my_stories),
+    ('/scoreboard', scoreboard),
+    ('/user/(\w+)', profile)
+]
+
+
+def main():
     server = Server()
-    server.register("/", stories)
-    server.register("/style.css", style)
-    server.register("/story", create)
-    server.register("/story/(\d+)", view_story)
-    server.register("/story/(\d+)/word/(\d+)/vote", upvote)
-    server.register("/story/(\d+)/(\d+)/reply", add_word)
-    server.register('/login', login)
-    server.register('/logout', logout)
-    server.register('/register', register)
-    server.register('/mystories', my_stories)
-    server.register('/scoreboard', scoreboard)
-    server.register('/user/(\w+)', profile)
+    for pattern, handler in handlers:
+        server.register(pattern, handler)
     server.run()
+
+if __name__ == "__main__":
+    main()
