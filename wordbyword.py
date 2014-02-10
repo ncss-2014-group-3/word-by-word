@@ -294,11 +294,6 @@ def scoreboard(response):
         variables
     ))
 
-def favicon(response):
-    #Not webscale
-    with open('static/images/favicon.ico', 'r') as f:
-        response.write(f.read())
-
 if __name__ == "__main__":
     server = Server()
     server.register("/", stories)
@@ -312,5 +307,4 @@ if __name__ == "__main__":
     server.register('/mystories', my_stories)
     server.register('/scoreboard', scoreboard)
     server.register('/user/(\w+)', profile)
-    server.register(r'/(favicon\.ico)', favicon)
     server.run()
