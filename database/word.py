@@ -88,11 +88,11 @@ class Word(object):
         cursor = connection.cursor()
         cursor.execute('SELECT username FROM votes WHERE wordID=?', (self.id,))
 
-        users = set(voters.fetchall())
+        users = set(cursor.fetchall())
         return users
 
     def has_voted(self, voter):
-        return voter.username in self.direct_voters
+        return False if voter is None else (voter.username in self.direct_voters)
 
     def add_vote(self, voter):
         self._dir_votes += 1
