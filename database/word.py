@@ -97,7 +97,7 @@ class Word(object):
         return users
 
     def has_voted(self, voter):
-        return False if voter is None else (True if voter.username in self.direct_voters else False)
+        return voter.username in self.direct_voters
 
     def add_vote(self, voter):
         self._dir_votes += 1
