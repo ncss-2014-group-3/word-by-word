@@ -72,12 +72,10 @@ class Word(object):
 
     @cached_property
     def voters(self):
-        users = set()
         cursor = connection.cursor()
         cursor.execute('SELECT username FROM votes WHERE wordID=?', (self.id,))
 
-        for u in cursor.fetchall():
-            users.add(u[0])
+        users = set([u[0] for u in cursor.fetchall()])
 
         for child in self._children_unsorted:
             users.update(child.voters)
