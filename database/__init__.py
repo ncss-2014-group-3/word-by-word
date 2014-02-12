@@ -6,7 +6,7 @@ class DuplicateWordException(Exception):
         self.story_id = story_id
         self.parent_id = parent_id
         self.word_value = word_value
-        Exception.__init__(self, 'Duplicate word \'{}\' attempted on word ({},{})'.format(self.word_value, self.story_id, self.parent_id))
+        super().__init__(self, 'Duplicate word \'{}\' attempted on word ({},{})'.format(self.word_value, self.story_id, self.parent_id))
 
 # Check if we have an existing DB.
 should_create_db = not os.path.exists('database.db')
