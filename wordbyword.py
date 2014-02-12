@@ -150,8 +150,8 @@ def add_word(response, sid, wid):
         try:
             word_inst.add_child(new_word, author)
         except DuplicateWordException:
-            errors.append('Duplicate word detected.')
-        if not errors:
+            errors.append('Your word has already been entered')
+        else:
             story_inst.prune()
             response.redirect("/story/{}".format(story_inst.story_id))
             return
