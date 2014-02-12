@@ -245,7 +245,7 @@ class User(object):
         for w in results:
             words.append(Word.from_id(w[1]))
 
-        return words, w[2]
+        return words, results[-1][2]
 
     @property
     def votes_cast(self):
