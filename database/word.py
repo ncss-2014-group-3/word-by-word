@@ -52,7 +52,7 @@ class Word(object):
             if int(same) == 0:
                 self.save()
             else:
-                raise DuplicateWordException
+                raise DuplicateWordException(self.story_id, self.parent_id, self.value)
 
     def __str__(self):
         return self.value
