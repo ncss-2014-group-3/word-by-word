@@ -40,14 +40,15 @@ class Word(object):
         if result is not None:
             self._dir_votes = result[0]
         if not id:
-            same = cursor.execute('''
+            cursor.execute('''
                 SELECT COUNT(*)
                 FROM words
                 WHERE
                 storyID = ?
                 AND parentID = ?
                 AND word = ?
-            ''', (self.story_id, self.parent_id, self.value)).fetchone()[0]
+            ''', (self.story_id, self.parent_id, self.value))
+            same = cursor.fetchone()[0]
             if int(same) == 0:
                 self.save()
             else:
