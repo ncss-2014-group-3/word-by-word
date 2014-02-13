@@ -90,7 +90,7 @@ def create(response):
             #write to the database
             new_story = story.Story(title, firstword, author)
             story_id = new_story.story_id
-            response.redirect''+ str(story_id))
+            response.redirect('/story/'+ str(story_id))
             return
 
         #if there are errors, relay back to user
