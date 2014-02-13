@@ -21,7 +21,7 @@ class Story(object):
         return cla(row[0], first_word, first_word.author, id)
 
     @classmethod
-    def story_list(cls, limit=10):
+    def story_list(cls, limit=10, page=1):
         cursor = connection.cursor()
         stories = cursor.execute('''
             SELECT
@@ -35,7 +35,9 @@ class Story(object):
             FROM stories
             GROUP BY stories.storyID
             ORDER BY n_votes DESC
-            LIMIT ?''', (limit,))
+            LIMIT ?
+            OFFSET ?
+        ''', (limit, (page-1)*limit))
 
         return [
             Story.from_id(s[0])

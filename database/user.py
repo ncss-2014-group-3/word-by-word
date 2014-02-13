@@ -62,7 +62,7 @@ class User(object):
             return cla(username)  # return User object
 
     @classmethod
-    def user_list(cls, limit=10):
+    def user_list(cls, limit=10, page=1):
         cursor = connection.cursor()
         users = cursor.execute('''
             SELECT
@@ -78,7 +78,8 @@ class User(object):
             ORDER BY
                 totalVotes DESC
             LIMIT ?
-        ''', (limit,))
+            OFFSET ?
+        ''', (limit, (page-1)*limit))
         user_list = []
         for u in users:
             user_list.append(User.from_username(u[0]))
