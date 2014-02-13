@@ -21,7 +21,8 @@ def render_stories(response, stories, page):
     variables = {
         'stories': stories,
         'user': get_current_user(response),
-        'page': page
+        'page': page,
+        'total_stories': story.Story.total_stories()
     }
 
     response.write(render(
@@ -300,7 +301,8 @@ def scoreboard(response, page):
     variables = {
         'users': user_list,
         'user': get_current_user(response),
-        'page': page
+        'page': page,
+        'total_users': user.User.total_users()
     }
 
     response.write(render(
