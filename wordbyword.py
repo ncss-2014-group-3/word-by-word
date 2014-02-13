@@ -20,7 +20,7 @@ def get_current_user(response):
 def render_stories(response, stories, page):
     variables = {
         'stories': stories,
-        'user': get_current_user(response)
+        'user': get_current_user(response),
         'page': page
     }
 
