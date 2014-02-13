@@ -130,7 +130,6 @@ class User(object):
             size
         )
 
-    @property
     def own_stories(self, limit=10, page=1):
         cursor = connection.cursor()
         returnedstories = cursor.execute('''
