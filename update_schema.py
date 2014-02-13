@@ -45,10 +45,12 @@ else:
         FROM votes_old
     ''').fetchall()
     for v in old_votes:
-        cursor.execute('''
-            INSERT INTO
-                votes
-            (storyID, wordID, username)
-            VALUES(?,?,?)
-        ''', (word.Word.from_id(v[0]).story_id, v[0], v[1]))
+    	word_inst = word.Word.from_id(v[0])
+    	if word_inst is not None:
+        	cursor.execute('''
+            	INSERT INTO
+                	votes
+            	(storyID, wordID, username)
+            	VALUES(?,?,?)
+        	''', (word_inst.story_id, v[0], v[1]))
     cursor.execute('DROP TABLE votes_old')
