@@ -17,10 +17,11 @@ def get_current_user(response):
     return user.User.from_username(username.decode())
 
 
-def render_stories(response, stories):
+def render_stories(response, stories, page):
     variables = {
         'stories': stories,
         'user': get_current_user(response)
+        'page': page
     }
 
     response.write(render(
@@ -36,12 +37,14 @@ def stories(response, page):
     description:
         When the page is called for listing the stories avaliable.
     """
-    story_list = story.Story.story_list(10, 1 if page is None else int(page))
+    page = 1 if page is None else int(page)
+    story_list = story.Story.story_list(10, page)
     if not story_list and page is not None:
         raise tornado.web.HTTPError(404)
     render_stories(
         response,
-        story_list
+        story_list,
+        page
     )
 
 
@@ -50,12 +53,14 @@ def my_stories(response, page):
     if username is None:
         response.redirect('/')
     else:
-        own_stories = username.own_stories(10, 1 if page is None else int(page))
+        page = 1 if page is None else int(page)
+        own_stories = username.own_stories(10, page)
         if not own_stories and page is not None:
             raise tornado.web.HTTPError(404)
         render_stories(
             response,
-            own_stories
+            own_stories,
+            page
         )
 
 def create(response):
@@ -288,12 +293,14 @@ def profile(response, username):
 
 
 def scoreboard(response, page):
-    user_list = user.User.user_list(10, 1 if page is None else int(page))
+    page = 1 if page is None else int(page)
+    user_list = user.User.user_list(10, page)
     if not user_list and page is not None:
         raise tornado.web.HTTPError(404)
     variables = {
         'users': user_list,
-        'user': get_current_user(response)
+        'user': get_current_user(response),
+        'page': page
     }
 
     response.write(render(
