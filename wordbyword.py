@@ -94,7 +94,7 @@ def create(response):
             return
 
         #if there are errors, relay back to user
-        errors.append''
+        errors.append('Please try again')
 
     variables = {
         'errors': errors,
