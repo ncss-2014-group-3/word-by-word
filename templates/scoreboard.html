@@ -25,6 +25,20 @@
                     {% end if %}
                 </tr>
             {% end for %}
+            <tr class="user-row">
+                <td colspan="4">
+                    {% if page > 1 %}
+                        <span style='float:left;'>
+                            <a href="/page/{{ str(page-1) }}">Page {{ str(page-1) }}</a>
+                        </span>
+                    {% end if %}
+                    {% if page*10 < total_users %}
+                        <span style='float:right;'>
+                            <a href="/page/{{ str(page+1) }}">Page {{ str(page+1) }}</a>
+                        </span>
+                    {% end if %}
+                </td>
+            </tr>
         {% else %}
             <tr>
                 <th colspan="4">
@@ -34,8 +48,5 @@
             </td>
         {% end if %}
     </table>
-    {% if page*10 < total_users %}
-    <!-- Do stuff -->
-    {% end if %}
 </article>
 {% include templates/footer.html %}
