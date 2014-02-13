@@ -143,11 +143,12 @@ class User(object):
                     WHERE author = ? AND votes.storyID = words.storyID AND votes.wordID = words.wordID
                 ) AS n_votes
             FROM stories
+            WHERE author = ?
             GROUP BY stories.storyID
             ORDER BY n_votes DESC
             LIMIT ?
             OFFSET ?
-        ''', (self.username, limit, (page-1)*limit))
+        ''', (self.username, self.username, limit, (page-1)*limit))
 
         return [
             Story.from_id(story[0])
