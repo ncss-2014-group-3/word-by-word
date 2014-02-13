@@ -34,5 +34,8 @@
             </td>
         {% end if %}
     </table>
+    {% if page*10 < total_users %}
+    <!-- Do stuff -->
+    {% end if %}
 </article>
 {% include templates/footer.html %}

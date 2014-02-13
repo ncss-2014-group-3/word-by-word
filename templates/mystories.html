@@ -32,5 +32,8 @@
             </td>
         {% end if %}
     </table>
+    {% if page*10 < user.total_stories %}
+    <!-- Do stuff -->
+    {% end if %}
 </article>
 {% include templates/footer.html %}
