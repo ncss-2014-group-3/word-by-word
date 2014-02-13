@@ -4,7 +4,7 @@ import re
 import tornado.web
 from tornado.ncss import Server
 from template_engine.parser import render
-from database import story, word, user
+from database import story, word, user, DuplicateWordException
 
 EMAIL_RE = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
 
@@ -53,12 +53,6 @@ def my_stories(response):
             response,
             username.own_stories
         )
-
-
-def style(response):
-    with open('style.css', 'r') as f:
-        response.write(f.read())
-
 
 def create(response):
     # get the variables we need using get_field
@@ -153,10 +147,14 @@ def add_word(response, sid, wid):
         errors.append('You must be logged in to post a word')
 
     if not errors:  # if there are no errors
-        word_inst.add_child(new_word, author)
-        story_inst.prune()
-        response.redirect("/story/{}".format(story_inst.story_id))
-        return
+        try:
+            word_inst.add_child(new_word, author)
+        except DuplicateWordException:
+            errors.append('Your word has already been entered')
+        else:
+            story_inst.prune()
+            response.redirect("/story/{}".format(story_inst.story_id))
+            return
 
     errors.append("Please try again.")
 
@@ -299,7 +297,6 @@ def scoreboard(response):
 if __name__ == "__main__":
     server = Server()
     server.register("/", stories)
-    server.register("/style.css", style)
     server.register("/story", create)
     server.register("/story/(\d+)", view_story)
     server.register("/story/(\d+)/word/(\d+)/vote(/remove)?", vote)

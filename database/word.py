@@ -1,8 +1,10 @@
 from . import connection
 from . import cached_property
+from . import DuplicateWordException
 
 
 class Word(object):
+
     @classmethod
     def from_story_id(cla, story_id):
         """
@@ -17,9 +19,9 @@ class Word(object):
     @classmethod
     def from_id(cla, word_id):
         c = connection.cursor()
-        c.execute("""SELECT wordID, storyID, word, author, parentID
+        c.execute('''SELECT wordID, storyID, word, author, parentID
                     FROM words
-                    WHERE wordID = ?""", (word_id,))
+                    WHERE wordID = ?''', (word_id,))
         result = c.fetchone()
         if result:
             return cla(*result)
@@ -31,15 +33,26 @@ class Word(object):
         self.value = value
         self.author = author
 
-        c = connection.cursor()
-        c.execute("""SELECT count(*) FROM votes WHERE wordID = ?""", (self.id,))
-        result = c.fetchone()
+        cursor = connection.cursor()
+        cursor.execute('''SELECT COUNT(*) FROM votes WHERE wordID = ?''', (self.id,))
+        result = cursor.fetchone()
         self._dir_votes = 0
         if result is not None:
-            #print(self.value, result[0], self.id)
             self._dir_votes = result[0]
         if not id:
-            self.save()
+            cursor.execute('''
+                SELECT COUNT(*)
+                FROM words
+                WHERE
+                storyID = ?
+                AND parentID = ?
+                AND word = ?
+            ''', (self.story_id, self.parent_id, self.value))
+            same = cursor.fetchone()[0]
+            if int(same) == 0:
+                self.save()
+            else:
+                raise DuplicateWordException(self.story_id, self.parent_id, self.value)
 
     def __str__(self):
         return self.value
@@ -55,8 +68,8 @@ class Word(object):
 
         c = connection.cursor()
         c.execute("""
-        DELETE FROM words WHERE wordID = ?
-        """, (self.id,))
+        DELETE FROM words WHERE storyID = ? AND wordID = ?
+        """, (self.story_id, self.id,))
         connection.commit()
 
     @property
@@ -73,7 +86,7 @@ class Word(object):
     @cached_property
     def voters(self):
         cursor = connection.cursor()
-        cursor.execute('SELECT username FROM votes WHERE wordID=?', (self.id,))
+        cursor.execute('SELECT username FROM votes WHERE storyID=? AND wordID=?', (self.story_id, self.id))
 
         users = set([u[0] for u in cursor.fetchall()])
 
@@ -86,7 +99,7 @@ class Word(object):
     @property
     def direct_voters(self):
         cursor = connection.cursor()
-        cursor.execute('SELECT username FROM votes WHERE wordID=?', (self.id,))
+        cursor.execute('SELECT username FROM votes WHERE storyID=? AND wordID=?', (self.story_id, self.id))
 
         users = set(cursor.fetchall())
         return users
@@ -101,15 +114,15 @@ class Word(object):
 
         c = connection.cursor()
         c.execute("""
-        INSERT INTO votes VALUES (?,?)
-        """, (self.id, voter.username))
+        INSERT INTO votes (storyID, wordID, username) VALUES (?,?,?)
+        """, (self.story_id, self.id, voter.username))
         connection.commit()
 
     def remove_vote(self, voter):
         cursor = connection.cursor()
         cursor.execute(
-            'DELETE FROM votes WHERE wordID=? AND username=?',
-            (self.id, voter.username)
+            'DELETE FROM votes WHERE storyID=? AND wordID=? AND username=?',
+            (self.story_id, self.id, voter.username)
         )
         connection.commit()
 
@@ -157,9 +170,9 @@ class Word(object):
         cursor.execute('''
             SELECT words.wordID, storyID, word, author, parentID
             FROM words
-            WHERE parentID = ?
-            ORDER BY (SELECT COUNT(*) FROM votes WHERE wordID=?)
-            LIMIT 1''', (self.id,self.id))
+            WHERE storyID = ? AND parentID = ?
+            ORDER BY (SELECT COUNT(*) FROM votes WHERE storyID=? AND wordID=?)
+            LIMIT 1''', (self.story_id, self.id, self.story_id, self.id))
         row = cursor.fetchone()
         return None if row is None else Word(*row)
 
