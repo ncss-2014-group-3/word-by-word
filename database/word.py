@@ -30,15 +30,18 @@ class Word(object):
         self.id = id
         self.parent_id = parent_id
         self.story_id = story_id
+
         self.value = value
         self.author = author
 
         cursor = connection.cursor()
-        cursor.execute('''SELECT COUNT(*) FROM votes WHERE wordID = ?''', (self.id,))
+        cursor.execute('SELECT COUNT(*) FROM votes WHERE wordID = ?', (self.id,))
         result = cursor.fetchone()
+
         self._dir_votes = 0
         if result is not None:
             self._dir_votes = result[0]
+
         if not id:
             cursor.execute('''
                 SELECT COUNT(*)
@@ -52,7 +55,11 @@ class Word(object):
             if int(same) == 0:
                 self.save()
             else:
-                raise DuplicateWordException(self.story_id, self.parent_id, self.value)
+                raise DuplicateWordException(
+                    self.story_id,
+                    self.parent_id,
+                    self.value
+                )
 
     def __str__(self):
         return self.value
@@ -140,7 +147,7 @@ class Word(object):
             FROM words
             WHERE parentID = ?
         """, (self.id,))
-        
+
         return [Word(*w) for w in c]
 
     def _deepest_child(self):
