@@ -131,14 +131,23 @@ class User(object):
         )
 
     @property
-    def own_stories(self):
+    def own_stories(self, limit=10, page=1):
         cursor = connection.cursor()
         returnedstories = cursor.execute('''
-                                        SELECT storyID from stories WHERE storyID IN
-                                        (
-                                            SELECT storyID FROM words WHERE author=? AND parentID IS NULL
-                                        )
-                                        ''', (self.username,))
+            SELECT
+                stories.storyID,
+                (
+                    SELECT COUNT(*)
+                    FROM votes
+                    INNER JOIN words ON words.storyID = stories.storyID
+                    WHERE author = ? AND votes.storyID = words.storyID AND votes.wordID = words.wordID
+                ) AS n_votes
+            FROM stories
+            GROUP BY stories.storyID
+            ORDER BY n_votes DESC
+            LIMIT ?
+            OFFSET ?
+        ''', (self.username, limit, (page-1)*limit))
 
         return [
             Story.from_id(story[0])
