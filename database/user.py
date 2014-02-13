@@ -147,7 +147,8 @@ class User(object):
                     WHERE author = ? AND votes.storyID = words.storyID AND votes.wordID = words.wordID
                 ) AS n_votes
             FROM stories
-            WHERE author = ?
+            INNER JOIN words ON words.storyID = stories.storyID
+            WHERE parentID IS NULL AND author = ?
             GROUP BY stories.storyID
             ORDER BY n_votes DESC
             LIMIT ?
