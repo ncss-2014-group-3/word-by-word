@@ -44,6 +44,11 @@ class Story(object):
             for s in stories
         ]
 
+    @classmethod
+    def total_stories(cls):
+    	cursor = connection.cursor()
+    	return cursor.execute('SELECT COUNT(*) FROM stories').fetchone()[0]
+
     def __init__(self, title, first_word, author, story_id=None):
         """
         Creates a story

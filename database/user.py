@@ -85,6 +85,11 @@ class User(object):
             user_list.append(User.from_username(u[0]))
         return user_list
 
+    @classmethod
+    def total_users(cls):
+        cursor = connection.cursor()
+        return cursor.execute('SELECT COUNT(*) FROM users').fetchone()[0]
+
     def __init__(self, username):
         self.username = username
 
