@@ -29,28 +29,33 @@ def render_stories(response, stories):
     ))
 
 
-def stories(response):
+def stories(response, page):
     """
     function:   stories()
     arguments:  response
     description:
         When the page is called for listing the stories avaliable.
     """
+    story_list = story.Story.story_list(10, 1 if page is None else int(page))
+    if not story_list and page is not None:
+        raise tornado.web.HTTPError(404)
     render_stories(
         response,
-        story.Story.story_list()
+        story_list
     )
 
 
-def my_stories(response):
+def my_stories(response, page):
     username = get_current_user(response)
     if username is None:
         response.redirect('/')
-
     else:
+        own_stories = username.own_stories(10, 1 if page is None else int(page))
+        if not own_stories and page is not None:
+            raise tornado.web.HTTPError(404)
         render_stories(
             response,
-            username.own_stories
+            own_stories
         )
 
 def create(response):
@@ -282,9 +287,12 @@ def profile(response, username):
         ))
 
 
-def scoreboard(response):
+def scoreboard(response, page):
+    user_list = user.User.user_list(10, 1 if page is None else int(page))
+    if not user_list and page is not None:
+        raise tornado.web.HTTPError(404)
     variables = {
-        'users': user.User.user_list(),
+        'users': user_list,
         'user': get_current_user(response)
     }
 
@@ -295,15 +303,15 @@ def scoreboard(response):
 
 if __name__ == '__main__':
     server = Server()
-    server.register('/', stories)
+    server.register(r'/(?:page/(\d+))?', stories)
     server.register('/story', create)
-    server.register('/story/(\d+)', view_story)
-    server.register('/story/(\d+)/word/(\d+)/vote(/remove)?', vote)
-    server.register('/story/(\d+)/(\d+)/reply', add_word)
+    server.register(r'/story/(\d+)', view_story)
+    server.register(r'/story/(\d+)/word/(\d+)/vote(/remove)?', vote)
+    server.register(r'/story/(\d+)/(\d+)/reply', add_word)
     server.register('/login', login)
     server.register('/logout', logout)
     server.register('/register', register)
-    server.register('/mystories', my_stories)
-    server.register('/scoreboard', scoreboard)
-    server.register('/user/(\w+)', profile)
+    server.register(r'/mystories(?:/page/(\d+))?', my_stories)
+    server.register(r'/scoreboard(?:/page/(\d+))?', scoreboard)
+    server.register(r'/user/(\w+)', profile)
     server.run()
