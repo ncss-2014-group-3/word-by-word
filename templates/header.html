@@ -1,15 +1,16 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-    <head>    
+    <head>
+       <meta charset="UTF-8" />
        <title>{{ story.title + ' - '}}Word By Word</title>
-       <link rel= "stylesheet" type="text/css" href="/static/css/reset.css">
-       <link rel= "stylesheet" type="text/css" href="/static/css/style.css">
-       <link rel= "stylesheet" type="text/css" href="/static/css/font.css">
+       <link rel= "stylesheet" type="text/css" href="/static/css/reset.css" />
+       <link rel= "stylesheet" type="text/css" href="/static/css/style.css" />
+       <link rel= "stylesheet" type="text/css" href="/static/css/font.css" />
        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
        <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.2/raphael-min.js"></script>
-       <link rel= "stylesheet" type="text/css" href="/static/fonts/gotham/gotham.css">
-       <link rel="stylesheet" type="text/css" href="/static/css/viewstory.css">
+       <link rel= "stylesheet" type="text/css" href="/static/fonts/gotham/gotham.css" />
+       <link rel="stylesheet" type="text/css" href="/static/css/viewstory.css" />
     </head>
     <body>
         <header>
@@ -23,17 +24,18 @@
             <nav>
                 <ul>
                     {% if user is not None %}
-                        <li>Welcome, {{ user.username }}</li><br /><br />
+                        <li>Welcome, {{ user.username }}</li>
+                        <li>&nbsp;</li>
                     {% end if %}
-                    <li><a href="/">Top Stories</a></li><br />
-                    <li><a href="/scoreboard">Scoreboard</a></li><br />
+                    <li><a href="/">Top Stories</a></li>
+                    <li><a href="/scoreboard">Scoreboard</a></li>
                     {% if user is not None %}
-                        <li><a href="/story">Create a Story</a></li><br />
-                        <li><a href="/user/{{ user.username }}">{{ user.username }}'s Profile</a></li><br />
-                        <li><a href="/mystories">My Stories</a></li><br />
-                        <li><a href="/logout">Logout</a></li><br />
+                        <li><a href="/story">Create a Story</a></li>
+                        <li><a href="/user/{{ user.username }}">{{ user.username }}'s Profile</a></li>
+                        <li><a href="/mystories">My Stories</a></li>
+                        <li><a href="/logout">Logout</a></li>
                     {% else %}
-                        <li><a href="/login">Login</a></li><br />
+                        <li><a href="/login">Login</a></li>
                         <li><a href="/register">Register</a></li>
                     {% end if %}
                 </ul>

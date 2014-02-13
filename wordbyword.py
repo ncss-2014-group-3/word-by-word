@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 import re
 
 import tornado.web
 from tornado.ncss import Server
 from template_engine.parser import render
-from database import story, word, user
+from database import story, word, user, DuplicateWordException
 
 EMAIL_RE = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')
 
@@ -46,18 +45,13 @@ def stories(response):
 def my_stories(response):
     username = get_current_user(response)
     if username is None:
-        response.redirect("/")
+        response.redirect('/')
 
     else:
         render_stories(
             response,
             username.own_stories
         )
-
-
-def style(response):
-    with open('style.css', 'r') as f:
-        response.write(f.read())
 
 
 def create(response):
@@ -80,20 +74,20 @@ def create(response):
         }
 
         return render(
-            "templates/createastory.html",
+            'templates/createastory.html',
             variables,
         )
 
-    if response.request.method == "POST":
+    if response.request.method == 'POST':
         if not title:
             # we didn't get given a title
             errors.append("You didn't enter a title!")
         if len(title) > 50:
-            errors.append("Your title was too long!")
+            errors.append('Your title was too long!')
         if not firstword:
-            errors.append("You didn't enter a starting word!")
+            errors.append('You didn\'t enter a starting word!')
         if ' ' in firstword:
-            errors.append("Please only enter one word")
+            errors.append('Please only enter one word')
         if len(firstword) > 25:
             errors.append("Your word is too long. Word must be below 26 characters long")
 
@@ -104,11 +98,11 @@ def create(response):
             #write to the database
             new_story = story.Story(title, firstword, author)
             story_id = new_story.story_id
-            response.redirect("/story/" + str(story_id))
+            response.redirect('/story/{}'.format(story_id))
             return
 
         #if there are errors, relay back to user
-        errors.append("Please try again.")
+        errors.append('Please try again')
 
     variables = {
         'errors': errors,
@@ -118,7 +112,7 @@ def create(response):
     }
 
     response.write(render(
-        "templates/createastory.html",
+        'templates/createastory.html',
         variables,
     ))
 
@@ -129,12 +123,12 @@ def view_story(response, sid):
         raise tornado.web.HTTPError(404)
 
     variables = {
-        "story": story_inst,
-        "user": get_current_user(response)
+        'story': story_inst,
+        'user': get_current_user(response)
     }
 
     response.write(render(
-        "templates/viewstory.html",
+        'templates/viewstory.html',
         variables
     ))
 
@@ -144,54 +138,61 @@ def add_word(response, sid, wid):
     word_inst = word.Word.from_id(wid)
     errors = []
 
-    new_word = response.get_field("word").strip()
+    new_word = response.get_field('word').strip()
 
     if not new_word:
-        errors.append("Please enter a word")
+        errors.append('Please enter a word')
 
-    if " " in new_word:
-        errors.append("Please only enter one word")
+    if ' ' in new_word:
+        errors.append('Please only enter one word')
 
     if len(new_word) > 50:
-        errors.append("Your word is too long. Word must be below 51 characters long")
+        errors.append('Your word is too long. Word must be below 51 characters long')
 
     author = get_current_user(response)
     if author is None:
         errors.append('You must be logged in to post a word')
 
     if not errors:  # if there are no errors
-        word_inst.add_child(new_word, author)
-        story_inst.prune()
-        response.redirect("/story/{}".format(story_inst.story_id))
-        return
+        try:
+            word_inst.add_child(new_word, author)
+        except DuplicateWordException:
+            errors.append('Your word has already been entered')
+        else:
+            story_inst.prune()
+            response.redirect('/story/{}'.format(story_inst.story_id))
+            return
 
-    errors.append("Please try again.")
+    errors.append('Please try again.')
 
     variables = {
         'errors': errors,
-        "story": story_inst,
+        'story': story_inst,
         'user': get_current_user(response)
     }
     response.write(render(
-        "templates/viewstory.html",
+        'templates/viewstory.html',
         variables,
     ))
 
 
-def upvote(response, story_id, word_id):
+def vote(response, story_id, word_id, remove):
     # TODO; actually use the errors
 
     author = get_current_user(response)
+    word_inst = word.Word.from_id(word_id)
     errors = []
     if author is None:
-        errors.append('You must be logged in to upvote a word')
+        errors.append('You must be logged in to vote on a word')
+    if word_inst is None:
+        errors.append('Invalid word ID')
+    if response.request.method == 'POST' and not errors:
+        if remove is None:
+            word_inst.add_vote(author)
+        else:
+            word_inst.remove_vote(author)
 
-    if response.request.method == "POST" and not errors:
-        # Write to database
-        word_inst = word.Word.from_id(word_id)
-        word_inst.add_vote(author)
-
-    response.redirect("/story/{}".format(story_id))
+    response.redirect('/story/{}'.format(story_id))
 
 
 def login(response):
@@ -279,12 +280,12 @@ def profile(response, username):
         current_user = get_current_user(response)
 
         context = {
-            "current_user": current_user,
-            "display_user": display_user
+            'current_user': current_user,
+            'display_user': display_user
         }
 
         response.write(render(
-            "templates/userProfile.html",
+            'templates/userProfile.html',
             context
         ))
 
@@ -300,14 +301,13 @@ def scoreboard(response):
         variables
     ))
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     server = Server()
-    server.register("/", stories)
-    server.register("/style.css", style)
-    server.register("/story", create)
-    server.register("/story/(\d+)", view_story)
-    server.register("/story/(\d+)/word/(\d+)/vote", upvote)
-    server.register("/story/(\d+)/(\d+)/reply", add_word)
+    server.register('/', stories)
+    server.register('/story', create)
+    server.register('/story/(\d+)', view_story)
+    server.register('/story/(\d+)/word/(\d+)/vote(/remove)?', vote)
+    server.register('/story/(\d+)/(\d+)/reply', add_word)
     server.register('/login', login)
     server.register('/logout', logout)
     server.register('/register', register)

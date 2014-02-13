@@ -10,15 +10,16 @@
             </ul>
         </div>
 	{% end if %}
+    
+    <h2>The story so far...</h2>
     <p id="current-story">
-    	<h2>The story so far...</h2>
         {{ story.first_word }} {% include templates/story_part.html word=story.first_word %}
     </p>
     <br>
-    <content id="story-tree">
+    <div id="story-tree">
         {% include templates/word.html user=user word=story.first_word story=story %}
-    </content>
-    <div id="diagram-tree" />
+    </div>
+    <div id="diagram-tree"></div>
 </article>
 <script>
 function show_popup(id, x, y) {
