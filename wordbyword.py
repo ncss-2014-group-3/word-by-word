@@ -1,4 +1,5 @@
 import re
+import math
 
 import tornado.web
 from tornado.ncss import Server
@@ -17,12 +18,12 @@ def get_current_user(response):
     return user.User.from_username(username.decode())
 
 
-def render_stories(response, stories, page):
+def render_stories(response, stories, page, pages):
     variables = {
         'stories': stories,
         'user': get_current_user(response),
         'page': page,
-        'total_stories': story.Story.total_stories()
+        'pages': pages
     }
 
     response.write(render(
@@ -42,10 +43,12 @@ def stories(response, page):
     story_list = story.Story.story_list(10, page)
     if not story_list and page is not None:
         raise tornado.web.HTTPError(404)
+    pages = int(math.ceil(story.Story.total_stories() / 10))
     render_stories(
         response,
         story_list,
-        page
+        page,
+        pages
     )
 
 
@@ -58,10 +61,12 @@ def my_stories(response, page):
         own_stories = username.own_stories(10, page)
         if not own_stories and page is not None:
             raise tornado.web.HTTPError(404)
+        pages = int(math.ceil(username.total_stories))
         render_stories(
             response,
             own_stories,
-            page
+            page,
+            pages
         )
 
 def create(response):
@@ -302,7 +307,7 @@ def scoreboard(response, page):
         'users': user_list,
         'user': get_current_user(response),
         'page': page,
-        'total_users': user.User.total_users()
+        'pages': int(math.ceil(user.User.total_users() / 10))
     }
 
     response.write(render(
