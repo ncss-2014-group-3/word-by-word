@@ -90,11 +90,11 @@ def create(response):
             #write to the database
             new_story = story.Story(title, firstword, author)
             story_id = new_story.story_id
-            response.redirect''+ str(story_id))
+            response.redirect('/story/{}'.format(story_id))
             return
 
         #if there are errors, relay back to user
-        errors.append''
+        errors.append('Please try again')
 
     variables = {
         'errors': errors,
@@ -306,4 +306,4 @@ if __name__ == '__main__':
     server.register('/mystories', my_stories)
     server.register('/scoreboard', scoreboard)
     server.register('/user/(\w+)', profile)
-    server.run()
+    server.run(debug=False)

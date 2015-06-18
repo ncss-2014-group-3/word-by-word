@@ -37,6 +37,8 @@ import tornado.log
 import tornado.web
 import tornado.websocket
 
+from tornado import httpserver
+
 # Setup pretty logging for ncssbook and tornado loggers.
 ncssbook_log = logging.getLogger('ncssbook')
 for logger in (tornado.log.access_log, tornado.log.app_log, tornado.log.gen_log, ncssbook_log):
@@ -124,15 +126,18 @@ class Server:
         url_spec = tornado.web.URLSpec(url_pattern, h, name=url_name)
         self.handlers.append(url_spec)
 
-    def run(self):
+    def run(self, debug=True):
         # Randomise the cookie secret upon reload.
         m = hashlib.md5()
         m.update((str(random.random()) + str(random.random())).encode('utf-8'))
         cookie_secret = m.digest()
 
         # Create the app in debug mode (autoreload), binding to the appropriate address.
-        app = tornado.web.Application(self.handlers, static_path=self.static_path, cookie_secret=cookie_secret, debug=True)
-        app.listen(port=self.port, address=self.hostname)
+        app = tornado.web.Application(self.handlers, static_path=self.static_path, cookie_secret=cookie_secret, debug=debug)
+        
+        http_server = httpserver.HTTPServer(app, xheaders=True)
+        http_server.listen(port=self.port, address=self.hostname)
+        
         ncssbook_log.info('Reloading... waiting for requests on http://{}:{}'.format(self.hostname or 'localhost', self.port))
 
         # Start the ioloop.
