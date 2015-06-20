@@ -314,4 +314,4 @@ if __name__ == '__main__':
     server.register('/mystories', my_stories)
     server.register('/scoreboard', scoreboard)
     server.register('/user/(\w+)', profile)
-    server.run()
+    server.run(debug=False)
