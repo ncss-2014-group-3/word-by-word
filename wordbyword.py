@@ -56,8 +56,8 @@ def my_stories(response):
 
 def create(response):
     # get the variables we need using get_field
-    title = response.get_field("title")
-    firstword = response.get_field("firstword")
+    title = response.get_field('title')
+    firstword = response.get_field('firstword')
 
     # a list of strings of things that went wrong
     # we will give this to the template.
