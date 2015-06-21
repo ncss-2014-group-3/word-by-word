@@ -69,10 +69,12 @@ def my_stories(response, page):
             pages
         )
 
+
 def create(response):
     # get the variables we need using get_field
     title = response.get_field('title')
     firstword = response.get_field('firstword')
+
     # a list of strings of things that went wrong
     # we will give this to the template.
     errors = []
@@ -80,7 +82,12 @@ def create(response):
     username = response.get_secure_cookie('username')
     if not username:
         errors.append('You must be logged in to post a story')
-        variables = {'errors': errors, 'user': get_current_user(response)}
+        variables = {
+            'errors': errors,
+            'user': get_current_user(response),
+            'title': '',
+            'firstword': ''
+        }
 
         return render(
             'templates/createastory.html',
@@ -89,7 +96,7 @@ def create(response):
 
     if response.request.method == 'POST':
         if not title:
-            #we didn't get given a title
+            # we didn't get given a title
             errors.append('You didn\'t enter a title!')
         if len(title) > 50:
             errors.append('Your title was too long!')
@@ -99,6 +106,7 @@ def create(response):
             errors.append('Please only enter one word')
         if len(firstword) > 25:
             errors.append('Your word is too long. Word must be below 26 characters long')
+
         author = get_current_user(response)
         if author is None:
             errors.append('You must be logged in to create a story')
@@ -106,7 +114,7 @@ def create(response):
             #write to the database
             new_story = story.Story(title, firstword, author)
             story_id = new_story.story_id
-            response.redirect('/story/'+ str(story_id))
+            response.redirect('/story/{}'.format(story_id))
             return
 
         #if there are errors, relay back to user
@@ -328,4 +336,4 @@ if __name__ == '__main__':
     server.register(r'/mystories(?:/page/(\d+))?', my_stories)
     server.register(r'/scoreboard(?:/page/(\d+))?', scoreboard)
     server.register(r'/user/(\w+)', profile)
-    server.run()
+    server.run(debug=False)
