@@ -41,7 +41,7 @@ def stories(response, page):
     """
     page = 1 if page is None else int(page)
     story_list = story.Story.story_list(10, page)
-    if not story_list and page is not None:
+    if not story_list and page != 1:
         raise tornado.web.HTTPError(404)
     pages = int(math.ceil(story.Story.total_stories() / 10))
     render_stories(
