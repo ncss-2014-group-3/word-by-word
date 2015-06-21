@@ -59,7 +59,7 @@ def my_stories(response, page):
     else:
         page = 1 if page is None else int(page)
         own_stories = username.own_stories(10, page)
-        if not own_stories and page is not None:
+        if not own_stories and page != 1:
             raise tornado.web.HTTPError(404)
         pages = int(math.ceil(username.total_stories))
         render_stories(
@@ -301,7 +301,7 @@ def profile(response, username):
 def scoreboard(response, page):
     page = 1 if page is None else int(page)
     user_list = user.User.user_list(10, page)
-    if not user_list and page is not None:
+    if not user_list and page != 1:
         raise tornado.web.HTTPError(404)
     variables = {
         'users': user_list,
