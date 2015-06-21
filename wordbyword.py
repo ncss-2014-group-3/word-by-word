@@ -81,7 +81,7 @@ def create(response):
     if response.request.method == 'POST':
         if not title:
             # we didn't get given a title
-            errors.append("You didn't enter a title!")
+            errors.append('You didn\'t enter a title!')
         if len(title) > 50:
             errors.append('Your title was too long!')
         if not firstword:
@@ -89,7 +89,7 @@ def create(response):
         if ' ' in firstword:
             errors.append('Please only enter one word')
         if len(firstword) > 25:
-            errors.append("Your word is too long. Word must be below 26 characters long")
+            errors.append('Your word is too long. Word must be below 26 characters long')
 
         author = get_current_user(response)
         if author is None:
