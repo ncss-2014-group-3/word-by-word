@@ -62,7 +62,7 @@ class User(object):
             return cla(username)  # return User object
 
     @classmethod
-    def user_list(cls, limit=10):
+    def user_list(cls, limit=10, page=1):
         cursor = connection.cursor()
         users = cursor.execute('''
             SELECT
@@ -78,11 +78,17 @@ class User(object):
             ORDER BY
                 totalVotes DESC
             LIMIT ?
-        ''', (limit,))
+            OFFSET ?
+        ''', (limit, (page-1)*limit))
         user_list = []
         for u in users:
             user_list.append(User.from_username(u[0]))
         return user_list
+
+    @classmethod
+    def total_users(cls):
+        cursor = connection.cursor()
+        return cursor.execute('SELECT COUNT(*) FROM users').fetchone()[0]
 
     def __init__(self, username):
         self.username = username
@@ -129,15 +135,25 @@ class User(object):
             size
         )
 
-    @property
-    def own_stories(self):
+    def own_stories(self, limit=10, page=1):
         cursor = connection.cursor()
         returnedstories = cursor.execute('''
-                                        SELECT storyID from stories WHERE storyID IN
-                                        (
-                                            SELECT storyID FROM words WHERE author=? AND parentID IS NULL
-                                        )
-                                        ''', (self.username,))
+            SELECT
+                stories.storyID,
+                (
+                    SELECT COUNT(*)
+                    FROM votes
+                    INNER JOIN words ON words.storyID = stories.storyID
+                    WHERE author = ? AND votes.storyID = words.storyID AND votes.wordID = words.wordID
+                ) AS n_votes
+            FROM stories
+            INNER JOIN words ON words.storyID = stories.storyID
+            WHERE parentID IS NULL AND author = ?
+            GROUP BY stories.storyID
+            ORDER BY n_votes DESC
+            LIMIT ?
+            OFFSET ?
+        ''', (self.username, self.username, limit, (page-1)*limit))
 
         return [
             Story.from_id(story[0])

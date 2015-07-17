@@ -25,6 +25,22 @@
                      </td>
                 </tr>
             {% end for %}
+            {% if pages > 1 %}
+            <tr class="story-row">
+                <td colspan="2">
+                    {% if page > 1 %}
+                        <span style='float:left;'>
+                            <a href="/page/{{ str(page-1) }}">Page {{ str(page-1) }}</a>
+                        </span>
+                    {% end if %}
+                    {% if page < pages %}
+                        <span style='float:right;'>
+                            <a href="/page/{{ str(page+1) }}">Page {{ str(page+1) }}</a>
+                        </span>
+                    {% end if %}
+                </td>
+            </tr>
+            {% end if %}
         {% else %}
             <tr colspan="2">
                 <th> You haven't started any stories. <a href=/story>Create one now!</a> </th>
